@@ -1,0 +1,62 @@
+MARK JOHN REY F. MANA-AY
+Software Developer · Philippines
+
+Email: your.email@example.com
+
+------------------------------------------------------------------
+SUMMARY
+------------------------------------------------------------------
+Bachelor of Science in Information Technology student and aspiring
+software developer. Experience building web and mobile projects
+using Python, Flask, JavaScript and React. Interested in full-stack
+development, mobile applications, and AI-assisted workflows.
+
+Open to OJT / internship placements and freelance software work.
+
+------------------------------------------------------------------
+TECHNICAL SKILLS
+------------------------------------------------------------------
+Programming   Python, JavaScript, Java, SQL, HTML, CSS
+Frontend      React, HTML, CSS, JavaScript
+Backend       Flask, Node.js
+Database      SQLite, PostgreSQL
+Mobile        Mobile application development, QR / NFC workflows
+AI & Tooling  AI API integration, AI-assisted development,
+              AI coding agents, prompt engineering, workflow automation
+Tools         Git, GitHub, Visual Studio Code, OpenCode
+
+------------------------------------------------------------------
+PROJECTS
+------------------------------------------------------------------
+QWERNFC - Mobile application
+  QR and NFC based scanning experiences.
+  Built the scan-to-action flow and tested it on a physical device.
+
+TIMECAPSULE - Mobile application
+  QR / NFC identity management, PIN authentication, camera capture,
+  and cloud synchronisation with Google Drive.
+
+NEXORA - Web application (Python + Flask)
+  Authentication, role-based user management, student / supervisor /
+  administrative interfaces, database integration.
+
+------------------------------------------------------------------
+EXPERIENCE
+------------------------------------------------------------------
+BIG BREW MILKTEASHOP - Team member (approximately 3 years)
+  Customer service, communication, teamwork, time management,
+  problem-solving and adaptability in a fast-paced environment.
+
+------------------------------------------------------------------
+EDUCATION
+------------------------------------------------------------------
+Bachelor of Science in Information Technology
+  School: [to be added]
+  Academic year: [to be added]
+  Expected graduation: [to be added]
+
+------------------------------------------------------------------
+NOTE
+------------------------------------------------------------------
+This is a placeholder resume file. Replace it with your real PDF
+at public/resume/ and update the path in src/data/profile.js.

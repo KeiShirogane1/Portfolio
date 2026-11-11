@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Inter, Segoe UI, sans-serif">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e1524"/>
+      <stop offset="0.65" stop-color="#0a0f18"/>
+      <stop offset="1" stop-color="#080b12"/>
+    </linearGradient>
+    <linearGradient id="btn1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#548CFF"/>
+      <stop offset="1" stop-color="#7c6cff"/>
+    </linearGradient>
+    <linearGradient id="bar1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#548CFF"/>
+      <stop offset="1" stop-color="#9B70FF"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.2" cy="0.05" r="0.75">
+      <stop offset="0" stop-color="#548CFF" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#548CFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg1)"/>
+  <rect width="1600" height="900" fill="url(#glow1)"/>
+
+  <!-- browser window -->
+  <rect x="60" y="48" width="1480" height="804" rx="10" fill="#0c1220" stroke="#1d2740" stroke-width="1.5"/>
+  <rect x="60" y="48" width="1480" height="44" rx="10" fill="#101a2c"/>
+  <rect x="60" y="84" width="1480" height="8" fill="#101a2c"/>
+  <circle cx="88" cy="70" r="6" fill="#2b3a5c"/>
+  <circle cx="108" cy="70" r="6" fill="#2b3a5c"/>
+  <circle cx="128" cy="70" r="6" fill="#2b3a5c"/>
+  <rect x="150" y="60" width="330" height="20" rx="4" fill="#0a101c" stroke="#1d2740"/>
+
+  <!-- sidebar -->
+  <rect x="60" y="92" width="250" height="760" fill="#0a101c"/>
+  <line x1="310" y1="92" x2="310" y2="852" stroke="#1d2740"/>
+
+  <circle cx="96" cy="130" r="13" fill="none" stroke="#548CFF" stroke-width="2"/>
+  <line x1="96" y1="123" x2="96" y2="137" stroke="#548CFF" stroke-width="2"/>
+  <line x1="89" y1="130" x2="103" y2="130" stroke="#548CFF" stroke-width="2"/>
+  <text x="118" y="128" fill="#F4F6FA" font-size="16" font-weight="600" letter-spacing="1">NEXORA</text>
+  <text x="118" y="144" fill="#5d6b87" font-size="9" letter-spacing="2.4">STUDENT PORTAL</text>
+
+  <g font-size="12.5" fill="#7f8ba3">
+    <rect x="76" y="180" width="218" height="36" rx="5" fill="#142038"/>
+    <rect x="76" y="180" width="3" height="36" fill="#548CFF"/>
+    <text x="98" y="204" fill="#F4F6FA" font-weight="600">Dashboard</text>
+    <text x="98" y="248">Attendance</text>
+    <text x="98" y="288">Daily Logbook</text>
+    <text x="98" y="328">My Classes</text>
+    <text x="98" y="368">Assignments</text>
+    <text x="98" y="408">Gradebook</text>
+    <text x="98" y="448">Evaluation</text>
+    <text x="98" y="488">Documents</text>
+  </g>
+
+  <!-- header -->
+  <text x="344" y="140" fill="#F4F6FA" font-size="22" font-weight="600">Dashboard</text>
+  <text x="344" y="163" fill="#6f7c95" font-size="12">OJT progress and recent activity</text>
+
+  <rect x="1290" y="122" width="160" height="34" rx="5" fill="#101a2c" stroke="#24304b"/>
+  <text x="1306" y="144" fill="#8d99b0" font-size="11.5">Search…</text>
+  <circle cx="1450" cy="139" r="14" fill="#1b2740"/>
+  <circle cx="1450" cy="134" r="5.5" fill="#5d6b87"/>
+  <path d="M1441 149c0-5 4.5-8 9-8s9 3 9 8" fill="#5d6b87"/>
+
+  <line x1="310" y1="178" x2="1512" y2="178" stroke="#1d2740"/>
+
+  <!-- stat cards -->
+  <g>
+    <rect x="344" y="204" width="230" height="112" rx="8" fill="#101827" stroke="#223050"/>
+    <text x="366" y="238" fill="#6f7c95" font-size="10.5" letter-spacing="1.6">HOURS RENDERED</text>
+    <text x="366" y="278" fill="#F4F6FA" font-size="30" font-weight="600">318<tspan fill="#6f7c95" font-size="15"> / 486</tspan></text>
+    <rect x="366" y="292" width="186" height="6" rx="3" fill="#1b2740"/>
+    <rect x="366" y="292" width="121" height="6" rx="3" fill="url(#bar1)"/>
+
+    <rect x="594" y="204" width="230" height="112" rx="8" fill="#101827" stroke="#223050"/>
+    <text x="616" y="238" fill="#6f7c95" font-size="10.5" letter-spacing="1.6">LOGBOOK ENTRIES</text>
+    <text x="616" y="278" fill="#F4F6FA" font-size="30" font-weight="600">64</text>
+    <text x="616" y="298" fill="#8fd7a2" font-size="11.5">Reviewed by supervisor</text>
+
+    <rect x="844" y="204" width="230" height="112" rx="8" fill="#101827" stroke="#223050"/>
+    <text x="866" y="238" fill="#6f7c95" font-size="10.5" letter-spacing="1.6">CLASSWORK</text>
+    <text x="866" y="278" fill="#F4F6FA" font-size="30" font-weight="600">9<tspan fill="#6f7c95" font-size="15"> open</tspan></text>
+    <text x="866" y="298" fill="#9B70FF" font-size="11.5">2 due this week</text>
+
+    <rect x="1094" y="204" width="230" height="112" rx="8" fill="#101827" stroke="#223050"/>
+    <text x="1116" y="238" fill="#6f7c95" font-size="10.5" letter-spacing="1.6">STANDING</text>
+    <text x="1116" y="278" fill="#F4F6FA" font-size="22" font-weight="600">Very Satisfactory</text>
+    <text x="1116" y="298" fill="#8d99b0" font-size="11.5">Derived from evaluation</text>
+  </g>
+
+  <!-- logbook panel -->
+  <rect x="344" y="348" width="580" height="416" rx="8" fill="#0e1626" stroke="#223050"/>
+  <text x="368" y="384" fill="#F4F6FA" font-size="15" font-weight="600">Daily Logbook</text>
+  <text x="720" y="384" fill="#6f7c95" font-size="11">Week 12 · Oct</text>
+  <line x1="344" y1="402" x2="924" y2="402" stroke="#1d2740"/>
+
+  <g>
+    <rect x="368" y="424" width="72" height="72" rx="6" fill="#16213a" stroke="#24304b"/>
+    <circle cx="392" cy="450" r="9" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <path d="M376 494l22-20 34 24" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <text x="456" y="446" fill="#F4F6FA" font-size="12.5" font-weight="600">Site visit · photo evidence</text>
+    <text x="456" y="466" fill="#6f7c95" font-size="11">08:00 – 17:00 · 9 hrs · approved</text>
+    <rect x="456" y="478" width="76" height="20" rx="10" fill="#12312a"/>
+    <text x="468" y="492" fill="#8fd7a2" font-size="9.5" letter-spacing="1">APPROVED</text>
+
+    <line x1="368" y1="516" x2="900" y2="516" stroke="#18223a"/>
+
+    <rect x="368" y="536" width="72" height="72" rx="6" fill="#16213a" stroke="#24304b"/>
+    <circle cx="392" cy="562" r="9" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <path d="M376 606l22-20 34 24" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <text x="456" y="558" fill="#F4F6FA" font-size="12.5" font-weight="600">Classroom assistance</text>
+    <text x="456" y="578" fill="#6f7c95" font-size="11">08:00 – 17:00 · 9 hrs · pending review</text>
+    <rect x="456" y="590" width="96" height="20" rx="10" fill="#33281a"/>
+    <text x="468" y="604" fill="#e0b980" font-size="9.5" letter-spacing="1">PENDING</text>
+
+    <line x1="368" y1="628" x2="900" y2="628" stroke="#18223a"/>
+
+    <rect x="368" y="648" width="72" height="72" rx="6" fill="#16213a" stroke="#24304b"/>
+    <circle cx="392" cy="674" r="9" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <path d="M376 718l22-20 34 24" fill="none" stroke="#5d6b87" stroke-width="1.6"/>
+    <text x="456" y="670" fill="#F4F6FA" font-size="12.5" font-weight="600">Documentation day</text>
+    <text x="456" y="690" fill="#6f7c95" font-size="11">08:00 – 16:00 · 8 hrs · approved</text>
+    <rect x="456" y="702" width="76" height="20" rx="10" fill="#12312a"/>
+    <text x="468" y="716" fill="#8fd7a2" font-size="9.5" letter-spacing="1">APPROVED</text>
+  </g>
+
+  <!-- feedback panel -->
+  <rect x="956" y="348" width="368" height="416" rx="8" fill="#0e1626" stroke="#223050"/>
+  <text x="980" y="384" fill="#F4F6FA" font-size="15" font-weight="600">Feedback Analysis</text>
+  <rect x="1220" y="366" width="82" height="20" rx="4" fill="#1a1533"/>
+  <text x="1232" y="380" fill="#9B70FF" font-size="9" letter-spacing="1">ML-ASSISTED</text>
+  <line x1="956" y1="402" x2="1324" y2="402" stroke="#1d2740"/>
+
+  <text x="980" y="430" fill="#6f7c95" font-size="10.5" letter-spacing="1.4">PREDICTED CATEGORY</text>
+  <text x="980" y="462" fill="#F4F6FA" font-size="20" font-weight="600">Satisfactory</text>
+
+  <text x="980" y="500" fill="#6f7c95" font-size="10.5" letter-spacing="1.4">CONFIDENCE</text>
+  <rect x="980" y="512" width="316" height="8" rx="4" fill="#1b2740"/>
+  <rect x="980" y="512" width="238" height="8" rx="4" fill="url(#bar1)"/>
+  <text x="1260" y="536" fill="#8d99b0" font-size="11">0.76</text>
+
+  <line x1="980" y1="556" x2="1324" y2="556" stroke="#18223a"/>
+
+  <text x="980" y="584" fill="#6f7c95" font-size="10.5" letter-spacing="1.4">SENTIMENT</text>
+  <text x="980" y="606" fill="#F4F6FA" font-size="12.5">Constructive</text>
+
+  <text x="980" y="636" fill="#6f7c95" font-size="10.5" letter-spacing="1.4">COMPETENCY</text>
+  <text x="980" y="658" fill="#F4F6FA" font-size="12.5">Reliable · needs initiative</text>
+
+  <text x="980" y="688" fill="#6f7c95" font-size="10.5" letter-spacing="1.4">RECOMMENDATION</text>
+  <rect x="980" y="700" width="316" height="30" rx="5" fill="#101827" stroke="#223050"/>
+  <text x="994" y="720" fill="#8d99b0" font-size="11">Add more logbook detail</text>
+
+  <!-- label -->
+  <rect x="60" y="860" width="404" height="0" />
+  <text x="60" y="888" fill="#5d6b87" font-size="11" letter-spacing="1.6">ILLUSTRATIVE MOCKUP · STUDENT PORTAL · NOT A SCREENSHOT</text>
+</svg>

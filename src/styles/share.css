@@ -1,0 +1,339 @@
+/* ============================================================
+   Share — nav button, dialog sheet, QR block
+   ============================================================ */
+
+.nav__share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-soft),
+    background-color var(--dur-fast) var(--ease-soft),
+    color var(--dur-fast) var(--ease-soft);
+}
+
+.nav__share:hover,
+.nav__share:focus-visible {
+  border-color: rgba(84, 140, 255, 0.6);
+  background: var(--blue-dim);
+  color: var(--white);
+}
+
+.nav__share svg {
+  flex: none;
+  opacity: 0.9;
+}
+
+.menu__share {
+  margin-top: 1.1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.menu__share:hover,
+.menu__share:focus-visible {
+  border-color: rgba(84, 140, 255, 0.6);
+  background: var(--blue-dim);
+}
+
+/* ---------- Sheet ---------- */
+
+.shareSheet__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: rgba(4, 6, 11, 0.78);
+  backdrop-filter: blur(10px) saturate(1.1);
+  animation: shareBackdrop 240ms var(--ease-soft) both;
+}
+
+.shareSheet__backdrop.isClosing {
+  animation: shareBackdropOut 200ms var(--ease-soft) both;
+}
+
+.shareSheet {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 2 * var(--gutter));
+  overflow-y: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--glass-strong);
+  box-shadow: 0 40px 120px -40px rgba(0, 0, 0, 0.9);
+  animation: shareIn var(--dur-slow) var(--ease-soft) both;
+}
+
+.shareSheet__backdrop.isClosing .shareSheet {
+  animation: shareOut 200ms var(--ease-soft) both;
+}
+
+.shareSheet__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 1.6rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.shareSheet__eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.shareSheet__head h2 {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.shareSheet__close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.shareSheet__close:hover,
+.shareSheet__close:focus-visible {
+  border-color: rgba(84, 140, 255, 0.6);
+  color: var(--white);
+}
+
+.shareSheet__body {
+  display: grid;
+  grid-template-columns: 244px 1fr;
+  gap: 1.6rem;
+  padding: 1.5rem 1.6rem 1.7rem;
+}
+
+.shareSheet__qr {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.shareSheet__qr img {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  background: var(--white);
+  /* Keep the modules crisp when the panel is scaled on a phone. */
+  image-rendering: crisp-edges;
+}
+
+.shareSheet__qrEmpty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 0.6rem;
+}
+
+.shareSheet__caption {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+
+.shareSheet__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.shareSheet__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.shareSheet__field span {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.shareSheet__field input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: rgba(8, 11, 18, 0.75);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+}
+
+.shareSheet__field input:focus-visible {
+  outline: 2px solid rgba(84, 140, 255, 0.6);
+  outline-offset: 1px;
+}
+
+.shareSheet__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.shareSheet__btn {
+  padding: 0.62rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-soft),
+    background-color var(--dur-fast) var(--ease-soft),
+    opacity var(--dur-fast) var(--ease-soft);
+}
+
+.shareSheet__btn:hover:not(:disabled),
+.shareSheet__btn:focus-visible {
+  border-color: rgba(84, 140, 255, 0.6);
+  background: var(--blue-dim);
+}
+
+.shareSheet__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shareSheet__btn.isPrimary {
+  border-color: transparent;
+  background: linear-gradient(100deg, var(--blue), var(--violet));
+  color: #060912;
+  font-weight: 600;
+}
+
+.shareSheet__btn.isPrimary:hover {
+  background: linear-gradient(100deg, var(--blue), var(--violet));
+  filter: brightness(1.08);
+}
+
+.shareSheet__status {
+  min-height: 1.1rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes shareBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shareBackdropOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes shareIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes shareOut {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(14px) scale(0.98); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1080px) {
+  .nav__shareText {
+    display: none;
+  }
+
+  .nav__share {
+    padding: 0.55rem 0.6rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .shareSheet__body {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1.2rem;
+  }
+
+  .shareSheet__qr img,
+  .shareSheet__qrEmpty {
+    max-width: 190px;
+  }
+
+  .shareSheet__head {
+    padding: 1.1rem 1.2rem 0.9rem;
+  }
+
+  .shareSheet__buttons {
+    flex-direction: column;
+  }
+
+  .shareSheet__btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shareSheet__backdrop,
+  .shareSheet__backdrop.isClosing,
+  .shareSheet,
+  .shareSheet__backdrop.isClosing .shareSheet {
+    animation: none;
+  }
+}
