@@ -1,0 +1,12 @@
+{
+  "name": "mark-john-rey-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Premium futuristic portfolio for Mark John Rey F. Mana-ay — software developer.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}

@@ -1,0 +1,206 @@
+/* ============================================================
+   HERO INSTRUMENT — portrait in a 360 degree ring whose pupils
+   follow the pointer
+   ============================================================ */
+
+.eyeStage {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------------- breathing light outside the ring ---------------- */
+
+.eyeStage__glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(84, 140, 255, 0.34) 0%,
+    rgba(84, 140, 255, 0.14) 44%,
+    rgba(155, 112, 255, 0.08) 58%,
+    transparent 72%
+  );
+  filter: blur(6px);
+  animation: stageBreath 7s ease-in-out infinite;
+}
+
+/* breathing halo sitting right on the ring's border */
+.eyeStage__breath {
+  position: absolute;
+  inset: 1.5%;
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 1px rgba(84, 140, 255, 0.35),
+    0 0 26px 6px rgba(84, 140, 255, 0.28),
+    0 0 70px 16px rgba(155, 112, 255, 0.16);
+  animation: borderBreath 5.5s ease-in-out infinite;
+}
+
+@keyframes borderBreath {
+  0%,
+  100% {
+    opacity: 0.45;
+    box-shadow:
+      0 0 0 1px rgba(84, 140, 255, 0.28),
+      0 0 18px 3px rgba(84, 140, 255, 0.18),
+      0 0 50px 10px rgba(155, 112, 255, 0.1);
+  }
+  50% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 1px rgba(84, 140, 255, 0.6),
+      0 0 34px 9px rgba(84, 140, 255, 0.42),
+      0 0 90px 22px rgba(155, 112, 255, 0.26);
+  }
+}
+
+@keyframes stageBreath {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+/* ---------------- the measuring ring ---------------- */
+
+.eyeStage__dial {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.dial__edge {
+  fill: none;
+  stroke: rgba(146, 155, 173, 0.22);
+  stroke-width: 1;
+}
+
+.dial__inner {
+  fill: none;
+  stroke: rgba(84, 140, 255, 0.16);
+  stroke-width: 1;
+}
+
+.dial__tick {
+  stroke: rgba(146, 155, 173, 0.28);
+  stroke-width: 1;
+}
+
+.dial__tick--major {
+  stroke: rgba(146, 155, 173, 0.55);
+}
+
+.dial__arc {
+  fill: none;
+  stroke: none;
+}
+
+.dial__marker {
+  fill: none;
+}
+
+/* ---------------- the portrait, clipped to a circle ---------------- */
+
+.eyeStage__window {
+  position: relative;
+  z-index: 2;
+  width: 86%;
+  height: 86%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0b1018;
+  box-shadow:
+    0 0 0 1px rgba(244, 246, 250, 0.1),
+    0 24px 60px -18px rgba(0, 0, 0, 0.9),
+    inset 0 0 60px rgba(8, 11, 18, 0.35);
+}
+
+.eyeStage__base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: saturate(0.98) contrast(1.03);
+}
+
+/* Only inside this mask may a pupil show. */
+.eyeStage__pupils {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask-image: url('/eyes-mask.png');
+  mask-image: url('/eyes-mask.png');
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.eyeStage__iris {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------------- reduced motion ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .eyeStage__glow {
+    animation: none;
+    opacity: 0.8;
+  }
+
+  .eyeStage__breath {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .eyeStage__iris {
+    will-change: auto;
+    transition: none;
+  }
+
+  .dial__arc {
+    transition: none;
+  }
+}
+
+/* Narrow screens. */
+@media (max-width: 520px) {
+  .eyeStage {
+    max-width: 340px;
+  }
+}

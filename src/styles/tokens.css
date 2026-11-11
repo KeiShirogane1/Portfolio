@@ -1,0 +1,40 @@
+:root {
+  /* Palette */
+  --bg: #080b12;
+  --bg-2: #101522;
+  --bg-3: #0b0f18;
+  --blue: #548cff;
+  --violet: #9b70ff;
+  --white: #f4f6fa;
+  --muted: #929bad;
+
+  /* Derived */
+  --line: rgba(244, 246, 250, 0.08);
+  --line-strong: rgba(244, 246, 250, 0.16);
+  --glass: rgba(16, 21, 34, 0.62);
+  --glass-strong: rgba(16, 21, 34, 0.88);
+  --blue-dim: rgba(84, 140, 255, 0.14);
+  --violet-dim: rgba(155, 112, 255, 0.14);
+
+  /* Type */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  /* Rhythm */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-y: clamp(5rem, 12vh, 9rem);
+  --max: 1360px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+
+  /* Radius — deliberately restrained */
+  --r-xs: 2px;
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-pill: 999px;
+}

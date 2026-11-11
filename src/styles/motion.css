@@ -1,0 +1,318 @@
+/* ============================================================
+   Motion system — cinematic, purposeful, GPU-friendly
+   ============================================================ */
+
+/* ---------- Boot screen (real measured progress) ---------- */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-mono);
+  transition: opacity 900ms var(--ease-soft);
+}
+
+.boot[data-phase='leaving'],
+.boot[data-phase='gone'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot__aurora {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background:
+    radial-gradient(600px 400px at 30% 20%, rgba(84, 140, 255, 0.25), transparent 60%),
+    radial-gradient(500px 500px at 70% 80%, rgba(155, 112, 255, 0.2), transparent 60%);
+  filter: blur(30px);
+  animation: aurora 10s var(--ease-soft) alternate infinite;
+}
+
+@keyframes aurora {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(40px, -30px) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot__aurora { animation: none; }
+}
+
+.boot__orbit {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  display: grid;
+  place-items: center;
+}
+
+.boot__orbitRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  animation: orbit var(--ease-soft) infinite linear;
+}
+
+.boot__orbitRing--a { border-color: rgba(84, 140, 255, 0.35); animation-duration: 12s; }
+.boot__orbitRing--b { border-color: rgba(155, 112, 255, 0.35); animation-duration: 18s; animation-direction: reverse; }
+.boot__orbitRing--c { border-color: rgba(244, 246, 250, 0.12); animation-duration: 24s; }
+
+.boot__orbitCore {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--blue), var(--violet));
+  box-shadow: 0 0 18px rgba(84, 140, 255, 0.9);
+  z-index: 2;
+}
+
+.boot__orbitSatellite {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 0 12px var(--blue);
+  animation: satellite 10s var(--ease-soft) infinite linear;
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes satellite {
+  from { transform: rotate(0deg) translateY(0); }
+  to { transform: rotate(360deg) translateY(0); }
+}
+
+.boot__readout {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.boot__mark {
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.boot__percent {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.boot__percent i {
+  font-style: normal;
+  font-size: 0.5em;
+  opacity: 0.6;
+  margin-left: 0.12em;
+}
+
+.boot__meter {
+  margin-top: 1rem;
+  width: 220px;
+  height: 2px;
+  background: rgba(244, 246, 250, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.boot__meter > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--violet));
+  transform-origin: 0 0;
+  transition: transform 300ms var(--ease-soft);
+}
+
+.boot__label {
+  margin-top: 0.6rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.boot__curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--bg);
+  transition: transform 900ms var(--ease-soft);
+}
+
+.boot[data-phase='leaving'] .boot__curtain,
+.boot[data-phase='gone'] .boot__curtain {
+  transform: translateY(-100%);
+}
+
+/* ---------- Split text (character / word reveals) ---------- */
+
+.splitText {
+  display: inline-block;
+  line-height: 1;
+}
+
+.splitText__unit {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px) scale(0.97);
+  animation: splitUnit var(--dur-slow) var(--ease-soft) both;
+  animation-delay: calc(var(--split-base) + var(--i) * var(--split-step));
+  will-change: transform, opacity;
+}
+
+.splitText__word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.splitText__space {
+  display: inline-block;
+  white-space: pre;
+}
+
+@keyframes splitUnit {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splitText__unit { opacity: 1; transform: none; animation: none; }
+}
+
+/* ---------- Card depth (tilt + cursor light) ---------- */
+
+[data-depth] {
+  transform-style: preserve-3d;
+  transform: perspective(900px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    scale3d(var(--card-scale, 1), var(--card-scale, 1), 1);
+  transition: transform var(--dur) var(--ease-soft);
+}
+
+[data-depth='off'] {
+  transform: perspective(900px) rotateX(0) rotateY(0) scale3d(1, 1, 1);
+}
+
+.cardLight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--light-x, 50%) var(--light-y, 50%),
+    rgba(244, 246, 250, 0.14) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+  opacity: var(--lift, 0);
+  transition: opacity 500ms var(--ease-soft);
+}
+
+/* ---------- Scroll parallax targets ---------- */
+
+.parallax {
+  will-change: transform;
+}
+
+/* Canvas atmosphere starts transparent and fills its parent. */
+.particleField {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Entrance from depth ---------- */
+
+.emerge {
+  opacity: 0;
+  transform: translateZ(-400px) scale(0.92);
+  animation: emergeIn var(--dur-slow) var(--ease-soft) both;
+  animation-delay: var(--emerge-delay, 0ms);
+}
+
+@keyframes emergeIn {
+  from { opacity: 0; transform: translateZ(-400px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emerge { opacity: 1; transform: none; animation: none; }
+}
+
+/* ---------- Section scroll background shift ---------- */
+
+.sectionBg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  will-change: transform;
+}
+
+.nav__markRing {
+  transition: transform var(--dur) var(--ease-soft), border-color var(--dur) var(--ease-soft);
+}
+
+.nav__markDot {
+  transition: transform var(--dur-fast) var(--ease-soft), box-shadow var(--dur-fast) var(--ease-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot { transition: none; }
+  .boot__curtain { transition: none; }
+  [data-depth] { transition: none; }
+  .cardLight { transition: none; }
+}
+
+/* ---------- Modal transitions ---------- */
+
+.projectModal__backdrop {
+  animation: modalBackdrop 260ms var(--ease-soft) both;
+}
+
+.projectModal__backdrop.isClosing {
+  animation: modalBackdropOut 200ms var(--ease-soft) both;
+}
+
+.projectModal {
+  animation: modalIn var(--dur-slow) var(--ease-soft) both;
+}
+
+.projectModal__backdrop.isClosing .projectModal {
+  animation: modalOut 200ms var(--ease-soft) both;
+}
+
+@keyframes modalBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalBackdropOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes modalOut {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(16px) scale(0.98); }
+}
