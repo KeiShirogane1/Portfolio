@@ -7,6 +7,7 @@ import Projects from './components/Projects.jsx'
 import Experience from './components/Experience.jsx'
 import Education from './components/Education.jsx'
 import AIExperiments from './components/AIExperiments.jsx'
+import Certifications from './components/Certifications.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import BootScreen from './components/BootScreen.jsx'
@@ -74,6 +75,7 @@ export default function App() {
             <Experience />
             <Education />
             <AIExperiments />
+            <Certifications />
             <Contact />
           </main>
 

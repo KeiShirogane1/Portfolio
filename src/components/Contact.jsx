@@ -111,6 +111,10 @@ export default function Contact() {
                   {status === 'copied' ? 'Copied' : 'Click to copy'}
                 </span>
               </button>
+              <p className="contact__socialNote">
+                Email is the fastest way to reach me. My mobile numbers are on the resume only, not on
+                this page.
+              </p>
               <a className="contact__mailLink" href={`mailto:${profile.email}`}>
                 Or open your mail app
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
@@ -121,7 +125,7 @@ export default function Contact() {
 
             <div className="contact__card panel reveal" style={{ '--reveal-delay': '90ms' }}>
               <span className="mono">Resume</span>
-              <p>One page, listing the same projects and skills shown here.</p>
+              <p>One page, listing the same projects and skills shown here. Updated {profile.resumeUpdated}.</p>
               <a className="btn btn--ghost contact__resume" href={profile.resumeHref} download={profile.resumeFileName}>
                 Download Resume
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">

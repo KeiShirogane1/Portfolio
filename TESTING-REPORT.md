@@ -7,51 +7,42 @@ Run date: this build. Local preview: `http://localhost:5174/` (`npm run dev`).
 
 ---
 
-## 1. The 360° eye tracking
+## 1. The circular hero portrait
 
-### Angle maths — checked in isolation
+The design changed during this build: the **360° protractor, the degree numbers and the gaze
+read-out were removed at your request**. What replaced them is a plain circular ring, your real
+photo filling the circle, and your pupils following the pointer.
 
-`src/lib/angle.js` was run with Node, outside React, against a fixed set of points:
+### What the code does
 
-| Pointer position | Expected | Result |
-|---|---|---|
-| straight up | 0° | **0°** |
-| straight right | 90° | **90°** |
-| straight down | 180° | **180°** |
-| straight left | 270° | **270°** |
-| up and slightly left | 350° | **350°** |
-| just past 0° clockwise | 0–10° | correct, no negative values |
+| Item | Detail |
+|---|---|
+| Ring | SVG circle, perfect geometry — `viewBox` is square (400 × 400), so it can never become an ellipse |
+| Ticks | 5° minor, 30° major, no numbers and no labels |
+| Border glow | `.eyeStage__breath` — blue/violet pulse on the ring's own edge |
+| Pupil motion | `transform: translate3d(...)` on the iris layer only, eased with `requestAnimationFrame` |
+| Clipping | `eyes-mask.png` is the exact shape of the eye openings in the eyeless photo, so a pupil can never paint over an eyelid |
+| Sources | `portrait-base.png` (eyeless photo + eye-white fill) and `portrait-iris.png` (both irises cut from the real photo) |
 
-All passed. The mapping `atan2(dx, -dy)` normalised into 0–359° is correct in all four
-quadrants, and the 359° → 0° wraparound is handled (350° rounds to frame 35, 355°+ rounds to
-frame 0).
+### Checked on the live page — browser pane
 
-### Gaze frames — rebuilt this pass
+| Check | Result |
+|---|---|
+| Page loads with no console errors | **Pass** — `pageErrors: []` after load, on the final build |
+| Ring is circular, not elliptical | **Pass** — square viewBox, circle rendering confirmed on screen |
+| No degree numbers, no `0°`/`90°`/`180°`/`270°` text | **Pass** — read-out and all labels removed; confirmed in the page text dump |
+| No "Gaze" read-out | **Pass** — removed |
+| Blue breathing border | **Pass** — visible pulse on the ring edge in the screenshots |
+| Full body inside the circle | **Pass** — the whole square photo now fills the circle: hair, face, shirt, tie and both shoulders |
+| Pupils move with the pointer | **Pass (measured once)** — with the pointer moved right, the irises sat toward the outer corner of each eye and the pointer at the left edge left the eyes centred. Confirmed by pixel comparison of the eye band between two screenshots |
+| Face and ring never move | **Pass** — only the iris layer carries a transform; the base photo and the SVG have none |
+| Touch | Same code path (`touchstart` / `touchmove`), **not tested on a physical phone** |
 
-The frames are generated from the single portrait by `tools/make_eyes.py`. The iris centre is
-found by scoring every candidate in each eye window for "dark disc, brighter ring around it";
-both irises were located at **(151, 132)** and **(210, 133)**. Each frame then warps the eye
-with a piecewise weight: weight 1.0 across the iris (so the iris travels as a solid disc and
-does not smear), easing to 0 at the eyelid opening (so the sclera stretches while the lids and
-skin stay put). Travel is ±7 px horizontally and ±4 px vertically, and the whole face shifts a
-few percent in the same direction as one head movement.
+### Honest limitation
 
-- A four-direction review sheet (`tools/gaze-check.png`) was rendered at 4× magnification and
-  looked at directly: up, right, down and left are distinct, the pupils move, no holes, no
-  seams, no duplicated eyelids.
-- Measured difference between the 0° and 180° frames over the eye band: **3.95 mean grey levels**
-  (it was 0 with the earlier blank placeholders).
-
-### Live page — checked in the browser pane
-
-- Pointer at the bottom of the page → read-out **GAZE 180°**; pointer at the top right →
-  **GAZE 080°**, with the rim marker and wedge landing in the matching sector and the face
-  shifting that way. Confirmed on screenshots.
-- Only **one** frame carries `.isActive` at a time — the other 35 sit at opacity 0. No ghosting,
-  no second face, no flicker while sweeping the cursor around the dial.
-- **36 frames preloaded**, 36 files present in `public/eyes/`, ≈1.9 MB total.
-- Touch uses `touchstart` / `touchmove` / `touchend` with the same angle calculation. Verified by
-  code inspection; **not tested on a physical phone**.
+The pupils are a 2D composite: the iris is cut from one photo and slid inside the lids. It reads
+as real eye movement at this size, but it is not a real 36-direction photo shoot. When you have
+those photos, the same component accepts them without any code change.
 
 ---
 
@@ -62,57 +53,84 @@ few percent in the same direction as one head movement.
 | Exactly six projects | **Pass** — 5 with `group: 'qwernfc'`, 1 with `group: 'internship'` |
 | Order 01→06 | **Pass** — Live Memories, QyorFoundMe, GReview, QwerNFC Music, TimeCapsule, Nexora |
 | Two visible groups | **Pass** — "GROUP A · QwerNFC Ecosystem — 5 PROJECTS", "GROUP B · Internship Experience — 1 PROJECT" |
-| Status labels | **Pass** — Developing Soon, Almost Done, Coming Soon, In Development · ~70% Complete, Internship Project, each as a pill beside the card title |
+| Status labels | **Pass** — Developing Soon, Almost Done, Coming Soon, In Development · ~70% Complete, Internship Project, each beside the card title |
 | TimeCapsule progress bar | **Pass** — 70% with "MY ESTIMATE" |
 | Nexora not grouped with QwerNFC | **Pass** — separate group, separate styling |
 | Detail dialog opens and closes | **Pass** — opened for every project; backdrop, close button and Escape all close it |
 | No fake links | **Pass** — no repo or deploy URLs except Nexora's real public repo |
-| Product visuals sharp | **Pass** — five visuals cut from the supplied product images, trimmed of rounded corners, saved at 1200 px wide, quality 88, `object-fit: cover` on a 16:9 frame |
-| Nothing of the artwork covered | **Pass** — status pill moved from over the image to beside the card title; the number badge is a small corner chip |
-
-Verified visually in the live pane: Live Memories shows the green QR keepsake and phone; below it
-QyorFoundMe shows the orange lost-and-found tag with its "Tag Your Item → Scan QR → Get Contacted"
-steps. Both are crisp, not blurred, and carry their real status labels.
+| Product visuals sharp | **Pass** — five visuals cut from the supplied product images at 1200 px wide, quality 88, shown whole |
+| Nothing of the artwork covered | **Pass** — the status pill sits beside the title, not over the image |
 
 ---
 
-## 3. Motion and page behaviour
+## 3. Resume (updated this pass)
+
+- `public/resume/mark-john-rey-mana-ay-resume.pdf` replaced with the **November 2026** resume
+  (`Mark_Manaay_ATS_Resume_QR_Top_Right.pdf`, 114 541 bytes).
+- The file was read back with a PDF library to confirm it really is that resume, not a renamed
+  copy: metadata title *"Humanized ATS OJT Resume - Mark John Rey F. Mana-ay"*, subject
+  *"Information Technology OJT Application - Teleperformance Silver City"*, both pages readable.
+- The served file was fetched over HTTP from the running preview: **status 200, 114 541 bytes** —
+  so the Download Resume buttons point at the new document.
+- Contact card now reads "Updated November 2026" from `profile.resumeUpdated`.
+
+---
+
+## 4. Content pulled from the new resume
+
+| Field | Now shows | Source |
+|---|---|---|
+| Email | `jrmanaay999@gmail.com` | resume header |
+| Location | Pasig City, Philippines | resume header |
+| Phone numbers | **deliberately left off the public page** | resume header |
+| School | Arellano University – Andres Bonifacio Campus | resume |
+| Standing | Fourth-year student | resume |
+| OJT requirement | 486 hours of OJT required | resume |
+| OJT target | Applying for a 486-hour OJT placement at Teleperformance Silver City | resume summary |
+| Skills | unchanged set, already matched the resume | resume + brief |
+| Big Brew Milkteashop | customer-facing service role, 3 years | resume |
+
+Verified on the live Education section after the rebuild: the heading, degree, school (no longer
+greyed out), standing and OJT requirement all render correctly.
+
+Still placeholders on purpose: **academic year** and **expected graduation year** — the resume
+does not state them.
+
+---
+
+## 5. Motion and page behaviour
 
 - Boot screen completes and hands over to the hero; the counter tracks real preload.
 - Scroll reveals fire and stay. Card tilt, magnetic buttons and parallax all respond.
-- The face shift is a GPU `translate3d` on one wrapper, and is disabled under
-  `prefers-reduced-motion` (code-level; not observed by switching the OS setting).
-- Canvas particle field pauses when off-screen or the tab is hidden (code-level, from an earlier pass).
+- Reduced motion disables the pupil easing (code-level; not observed by switching the OS setting).
+- Canvas particle field pauses when off-screen or the tab is hidden (code-level).
 
 ---
 
-## 4. Console and network
+## 6. Console and network
 
 - **No page errors** reported by the pane after load (`pageErrors: []`).
-- Production build: `✓ built in 5.36s`, no errors.
+- Production build: `✓ built in 20.39s`, no errors.
+- Preview server live on `http://localhost:5174/`.
 
 ---
 
-## 5. Not verified
+## 7. Not verified
 
 | Item | Why |
 |---|---|
-| Real phone / tablet touch | No physical device used. Layout checked at 590 × 819 and 1440 wide only. |
-| Look of the gaze with real photos | The frames are an approximation built from one portrait, not a real eye-direction shoot. |
-| Contact form delivery | There is no backend on purpose. It opens the visitor's own mail app; nothing is sent from the site. |
-| Screen readers | Fonts, labels and `aria` attributes were written deliberately, but no screen reader was run. |
+| Real phone / tablet touch | No physical device used. Layout checked in the pane at 400 px wide. |
+| The feel of the pupils on a real cursor sweep | The pane's synthetic pointer produced one confirmed shift; a human sweep was not performed |
+| Contact form delivery | There is no backend on purpose. It opens Gmail with the message written; nothing is sent from the site |
+| Screen readers | Labels and `aria` attributes are written deliberately, but no screen reader was run |
+| QR scanning | The share panel draws a real QR from a library, but it was not scanned with a phone |
 
 ---
 
-## 6. Reproduce these checks
+## 8. Reproduce these checks
 
 ```powershell
-# the angle maths, alone
-node -e "import('./src/lib/angle.js').then(m => console.log(m))"
-
-# rebuild the gaze frames from the portrait (writes tools/gaze-check.png too)
-python tools/make_eyes.py
-
-# production build
-npm run build
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # production build
 ```

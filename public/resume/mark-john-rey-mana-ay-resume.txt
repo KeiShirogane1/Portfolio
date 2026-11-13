@@ -1,62 +1,49 @@
 MARK JOHN REY F. MANA-AY
-Software Developer · Philippines
-
-Email: your.email@example.com
-
-------------------------------------------------------------------
-SUMMARY
-------------------------------------------------------------------
-Bachelor of Science in Information Technology student and aspiring
-software developer. Experience building web and mobile projects
-using Python, Flask, JavaScript and React. Interested in full-stack
-development, mobile applications, and AI-assisted workflows.
-
-Open to OJT / internship placements and freelance software work.
-
-------------------------------------------------------------------
+INFORMATION TECHNOLOGY STUDENT | OJT APPLICANT
+Pasig City, Philippines  |  0934 827 238 / 0945 886 6105  |  jrmanaay999@gmail.com
+QR PROFILE
+PROFESSIONAL SUMMARY
+Fourth-year Information Technology student at Arellano University – Andres Bonifacio Campus, applying for a 486-
+hour OJT placement at Teleperformance Silver City. I have built and worked on web and mobile application projects 
+and have practical experience with programming, databases, application testing, and troubleshooting. I am developing 
+QwerNFC, a future technology business focused on software and web applications, database solutions, and NFC 
+products. Three years of customer-facing work have also helped me build communication, teamwork, and time-
+management skills.
 TECHNICAL SKILLS
-------------------------------------------------------------------
-Programming   Python, JavaScript, Java, SQL, HTML, CSS
-Frontend      React, HTML, CSS, JavaScript
-Backend       Flask, Node.js
-Database      SQLite, PostgreSQL
-Mobile        Mobile application development, QR / NFC workflows
-AI & Tooling  AI API integration, AI-assisted development,
-              AI coding agents, prompt engineering, workflow automation
-Tools         Git, GitHub, Visual Studio Code, OpenCode
-
-------------------------------------------------------------------
-PROJECTS
-------------------------------------------------------------------
-QWERNFC - Mobile application
-  QR and NFC based scanning experiences.
-  Built the scan-to-action flow and tested it on a physical device.
-
-TIMECAPSULE - Mobile application
-  QR / NFC identity management, PIN authentication, camera capture,
-  and cloud synchronisation with Google Drive.
-
-NEXORA - Web application (Python + Flask)
-  Authentication, role-based user management, student / supervisor /
-  administrative interfaces, database integration.
-
-------------------------------------------------------------------
-EXPERIENCE
-------------------------------------------------------------------
-BIG BREW MILKTEASHOP - Team member (approximately 3 years)
-  Customer service, communication, teamwork, time management,
-  problem-solving and adaptability in a fast-paced environment.
-
-------------------------------------------------------------------
+Programming: Python, JavaScript, Java, PHP, SQL
+Web and application development: HTML5, CSS3, JSON, Flask, Capacitor, responsive web development, mobile 
+application development
+Databases and backend: SQLite, PostgreSQL, relational database concepts, CRUD operations, database 
+connectivity, API integration
+Tools and platforms: Visual Studio Code, Git, GitHub, PowerShell, Cloudflare Workers, Render
+AI-assisted development: AI coding assistants, prompt-based workflows, Python automation, model selection and 
+cooldown-aware routing
+SELECTED PROJECTS
+QwerNFC | Technology business initiative | Application, Web, Database and NFC products
+- Developing QwerNFC as a future technology business that brings together application and web development, database-backed 
+services, and NFC-enabled products.
+- Product initiatives include GReview, TimeCapsule, QwerNFC Music, Live Memories, and QyorFoundMe. Live Memories is 
+designed to connect an NFC/QR keychain to a personal digital photo gallery; QyorFoundMe is a QR-based lost-and-found 
+concept with offline-readable contact details and an online recovery page.
+- Worked on JavaScript and Capacitor mobile-app workflows, QR scanning and camera integration, PIN-based app security, 
+gallery features, identity and event management, and cloud synchronization.
+- Tested camera behavior across portrait and landscape orientations, investigated rotation issues, and used version control while 
+testing changes and supporting staging deployments.
+Nexora | Python / Flask web application
+- Worked on a web application with user authentication, role-based access for administrators, students, and supervisors, and 
+role-specific dashboards.
+- Worked with SQLite and PostgreSQL configurations and features for user management and administrative operations.
+AI Model Rotation Utility | Python automation
+- Built a Python utility to select AI coding models by task, track cooldown periods, and switch to an available model when usage 
+limits are reached; created automated tests for its behavior.
+PROFESSIONAL EXPERIENCE
+Big Brew Milkteashop | Customer-facing service role | 3 years
+- Served customers in a busy, fast-paced environment and communicated with them about their orders and requests.
+- Worked with teammates to support daily operations while maintaining a helpful and professional approach.
+- Built practical skills in customer communication, teamwork, reliability, adaptability, and time management.
 EDUCATION
-------------------------------------------------------------------
-Bachelor of Science in Information Technology
-  School: [to be added]
-  Academic year: [to be added]
-  Expected graduation: [to be added]
-
-------------------------------------------------------------------
-NOTE
-------------------------------------------------------------------
-This is a placeholder resume file. Replace it with your real PDF
-at public/resume/ and update the path in src/data/profile.js.
+Arellano University – Andres Bonifacio Campus
+Bachelor of Science in Information Technology | Fourth-Year Student
+Required On-the-Job Training: 486 hours
+Additional strengths: Problem-solving, customer service, communication, teamwork, adaptability, and attention to 
+detail.

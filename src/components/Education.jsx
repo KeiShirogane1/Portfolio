@@ -25,11 +25,19 @@ export default function Education() {
             <dl className="edu__facts">
               <div>
                 <dt>School</dt>
-                <dd className="edu__placeholder">{education.school}</dd>
+                <dd>{education.school}</dd>
+              </div>
+              <div>
+                <dt>Standing</dt>
+                <dd>{education.standing}</dd>
+              </div>
+              <div>
+                <dt>OJT requirement</dt>
+                <dd>{education.ojthours}</dd>
               </div>
               <div>
                 <dt>Academic year</dt>
-                <dd className="edu__placeholder">{education.period}</dd>
+                <dd className="edu__placeholder">{education.period || 'Academic year — to be added'}</dd>
               </div>
               <div>
                 <dt>Expected graduation</dt>
@@ -37,7 +45,7 @@ export default function Education() {
               </div>
             </dl>
 
-            <p className="edu__note">{education.note}</p>
+            <p className="edu__note">{education.ojttarget}. {education.note}</p>
           </article>
 
           <div className="edu__side">

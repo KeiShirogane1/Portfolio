@@ -70,18 +70,27 @@ TimeCapsule screenshots and they can go into `timecapsule/`.
 
 ## 4. Resume
 
-`public/resume/mark-john-rey-mana-ay-resume.pdf`
+`public/resume/mark-john-rey-mana-ay-resume.pdf` — **updated November 2026** with the new
+`Mark_Manaay_ATS_Resume_QR_Top_Right.pdf` (114 KB, includes the QR profile block).
 
-The `.txt` version is there for reference. To update the site with a newer resume, replace the
-PDF and keep the same filename, or change `resumeHref` in `src/data/profile.js`.
+`public/resume/mark-john-rey-mana-ay-resume.txt` is a text copy extracted from that same PDF,
+kept so the content can be checked without opening the PDF.
+
+To update the site with a newer resume later, replace the PDF and keep the same filename, or change
+`resumeHref` in `src/data/profile.js`. The card in Contact also shows `resumeUpdated`, so update
+that date at the same time.
 
 ---
 
-## 5. Contact email
+## 5. Contact details
 
-`src/data/profile.js` → `email: 'jrmanaay999@gmail.com'`
+`src/data/profile.js`
 
-Confirm this is the address you want on a public page.
+- `email: 'jrmanaay999@gmail.com'`
+- `location: 'Pasig City, Philippines'`
+
+Both come from the current resume. The two mobile numbers on the resume (`0934 827 238` and
+`0945 886 6105`) were deliberately kept off the public page — email is the contact route on the site.
 
 ---
 

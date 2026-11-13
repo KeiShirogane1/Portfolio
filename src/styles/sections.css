@@ -1760,3 +1760,210 @@
     font-size: 1.15rem;
   }
 }
+
+/* ============================================================
+   Certifications & Professional Development
+   ============================================================ */
+
+.certs__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1rem, 2vw, 1.4rem);
+}
+
+.certs__card {
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  transition: border-color var(--dur) var(--ease-soft), background-color var(--dur) var(--ease-soft);
+}
+
+.certs__card:hover {
+  border-color: rgba(84, 140, 255, 0.42);
+  background: rgba(84, 140, 255, 0.05);
+}
+
+.certs__preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  background: var(--bg-3);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.certs__preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.certs__preview:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.certs__zoom {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.2rem 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--line);
+  background: var(--glass-strong);
+  color: rgba(244, 246, 250, 0.9);
+  pointer-events: none;
+}
+
+.certs__body {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.certs__index {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+}
+
+.certs__body h3 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.certs__issuer {
+  font-size: 0.78rem;
+  color: rgba(146, 155, 173, 0.9);
+}
+
+.certs__facts {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+}
+
+.certs__facts div {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+
+.certs__facts dt {
+  flex: none;
+  min-width: 5.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.certs__facts dd {
+  font-size: 0.8rem;
+  color: rgba(244, 246, 250, 0.82);
+}
+
+.certs__note {
+  margin-top: 0.5rem;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: rgba(146, 155, 173, 0.85);
+}
+
+/* Certificate image viewer */
+
+.certModal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: grid;
+  place-items: center;
+  padding: clamp(0.75rem, 3vw, 2.5rem);
+  background: rgba(4, 6, 10, 0.84);
+  animation: fadeIn 220ms var(--ease-soft) both;
+}
+
+.certModal {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(880px, 100%);
+  max-height: min(90svh, 960px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--bg-2);
+  overflow: hidden;
+}
+
+.certModal__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.certModal__head .mono {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.certModal__close {
+  flex: none;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--white);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.certModal__close:hover {
+  border-color: var(--line-strong);
+  background: var(--bg-3);
+}
+
+.certModal__close:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.certModal__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  background: var(--bg-3);
+}
+
+@media (max-width: 420px) {
+  .certs__facts div {
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .certs__facts dt {
+    min-width: 0;
+  }
+}

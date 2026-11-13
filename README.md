@@ -1,8 +1,8 @@
 # Mark John Rey F. Mana-ay — Portfolio
 
 A dark, futuristic developer portfolio built with **React + Vite**, with a signature
-**360° protractor in the hero**: your portrait sits in the middle and follows the pointer's
-angle, choosing one of 36 eye-direction frames.
+**circular hero portrait**: your photo sits inside a ring and the pupils in your eyes follow the
+pointer, in every direction, with no numbers on the dial.
 
 ---
 
@@ -81,23 +81,30 @@ portfolio/
 
 ---
 
-## 4. How the 360° eye tracking works
+## 4. The interactive portrait (hero)
+
+The portrait sits in a circular ring. There are **no degree numbers, no `0°`/`90°` labels and no
+gaze read-out** — the only thing that moves is the eyes.
+
+**How the pupils move**
 
 | Step | What happens |
 |------|--------------|
-| 1 | The pointer position is read against the **centre of the dial** on every move. |
-| 2 | Angle = `atan2(dx, -dy)` in degrees, normalised to 0–359. `0° = up`, `90° = right`, `180° = down`, `270° = left`. |
-| 3 | The nearest 10° frame is chosen: `round(angle / 10) % 36`. |
-| 4 | A small deadband at each sector border stops flicker between two neighbouring faces. |
-| 5 | Exactly one frame carries `.isActive` (opacity 1, highest layer); the other 35 sit at opacity 0 — no ghosting, no double faces. |
-| 6 | All 36 frames are preloaded on boot, so switching is instant. |
-| 7 | Leaving the dial, or lifting a finger, returns to the resting gaze at **180°**. |
+| 1 | The pointer position is read against the **centre of the ring** on every move. |
+| 2 | Direction and distance from the centre give a target offset: `dx/d`, `dy/d`, scaled by distance so the pupils lean further the further away the cursor is. |
+| 3 | Only `transform: translate3d(...)` is animated, eased with `requestAnimationFrame` — the photo, the ring and the page never move. |
+| 4 | The iris layer is clipped by `eyes-mask.png`, the exact shape of the openings in the eyeless photo, so a pupil can never paint over an eyelid. |
+| 5 | Pointer, mouse, touch and pen all drive the same code path. Leaving the page settles the eyes back to centre. |
 
-Pointer tracking listens on the **window**, so the gaze keeps following the cursor outside the
-dial; the dial itself decides only what counts as "engaged". Touch uses `touchstart` /
-`touchmove` / `touchend` — no hover dependency.
+**Layers, bottom to top** (`EyeProtractor.jsx`)
 
-The maths is in `src/lib/angle.js`, plain JavaScript with no React, so it can be checked alone.
+1. `portrait-base.png` — your photo with the eye openings filled to eye-white
+2. `portrait-iris.png` — both irises cut from the real photo, moved by the pointer
+3. the SVG ring — circular border and 5°/30° tick marks
+4. the breathing halo — blue-violet light pulsing on the border
+
+**Reduced motion:** the easing constant becomes 1, so the pupils jump straight to the pointer
+position with no animation.
 
 ---
 
@@ -105,7 +112,7 @@ The maths is in `src/lib/angle.js`, plain JavaScript with no React, so it can be
 
 | Layer | Where | What it does |
 |-------|-------|--------------|
-| Boot | `BootScreen.jsx` | Orbit rings assemble while a **measured** counter tracks the real preload of the portrait and the 36 eye frames. No fake percentage. |
+| Boot | `BootScreen.jsx` | Orbit rings assemble while a **measured** counter tracks the real preload of the portrait layers. No fake percentage. |
 | Headlines | `SplitText.jsx` | Letters stagger in per word; the full string stays in `aria-label` for screen readers. |
 | Reveals | `useRevealGroup` | Sections rise into place once, then stay. |
 | Depth | `useCardDepth` | Project cards tilt in 3D with light that follows the cursor. |

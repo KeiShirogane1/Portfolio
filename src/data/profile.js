@@ -3,6 +3,7 @@ export const profile = {
   shortName: 'Mark John Rey',
   initials: 'MM',
   title: 'Software Developer',
+  resumeHeadline: 'Information Technology Student | OJT Applicant',
   tagline: 'Building ideas into digital experiences.',
   supporting:
     'I develop software solutions, explore modern technologies, and turn ideas into functional digital experiences.',
@@ -19,8 +20,10 @@ export const profile = {
   // irises on their own transparent layer that slides with the cursor.
   portraitBase: '/portrait-base.png',
   portraitIris: '/portrait-iris.png',
-  resumeHref: '/resume/mark-john-rey-mana-ay-resume.pdf',
-  resumeFileName: 'Mark-Manaay-Resume.pdf'
+  // Latest resume: public/resume/Mark-John-Rey-F-Mana-ay-Resume.pdf
+  resumeHref: '/resume/Mark-John-Rey-F-Mana-ay-Resume.pdf',
+  resumeFileName: 'Mark-John-Rey-F-Mana-ay-Resume.pdf',
+  resumeUpdated: 'November 13, 2026'
 }
 
 export const navLinks = [
@@ -31,7 +34,8 @@ export const navLinks = [
   { id: 'experience', label: 'Experience', index: '05' },
   { id: 'education', label: 'Education', index: '06' },
   { id: 'ai', label: 'AI & Experiments', index: '07' },
-  { id: 'contact', label: 'Contact', index: '08' }
+  { id: 'certs', label: 'Certifications', index: '08' },
+  { id: 'contact', label: 'Contact', index: '09' }
 ]
 
 export const about = {
