@@ -5,16 +5,20 @@
 .nav__share {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
-  padding: 0.55rem 0.8rem;
+  height: var(--nav-ctrl-h);
+  padding: 0 0.8rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--r-xs);
   background: transparent;
   color: var(--muted);
   font-family: var(--font-mono);
   font-size: 0.66rem;
+  line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     border-color var(--dur-fast) var(--ease-soft),
@@ -293,13 +297,11 @@
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 1080px) {
-  .nav__shareText {
-    display: none;
-  }
-
-  .nav__share {
-    padding: 0.55rem 0.6rem;
+/* The compact rules for this button live with the rest of the nav breakpoints
+   in nav.css, so every control thins out at the same width. */
+@media (max-width: 380px) {
+  .nav__cta {
+    padding-inline: 0.55rem;
   }
 }
 

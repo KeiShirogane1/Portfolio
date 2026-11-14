@@ -1,96 +1,63 @@
-import { profile } from '../data/profile.js'
-import EyeProtractor from './EyeProtractor.jsx'
-import SplitText from './SplitText.jsx'
-import ParticleField from './ParticleField.jsx'
-import useParallax from '../hooks/useParallax.js'
-import useRevealGroup from '../hooks/useRevealGroup.js'
+import React from 'react';
+import SplitText from './SplitText';
+import ParticleField from './ParticleField';
+import EyeProtractor from './EyeProtractor';
+import useMagnetic from '../hooks/useMagnetic';
 
 export default function Hero() {
-  const ref = useRevealGroup()
-  const stageRef = useParallax(40)
+  const resumeRef = useMagnetic();
 
   return (
-    <section id="home" className="hero section section--flush" aria-labelledby="hero-title" ref={ref}>
-      <div className="hero__grid shell">
-        <div className="hero__copy">
-          <div className="hero__status reveal">
-            <span className="hero__dot" aria-hidden="true" />
-            <span>{profile.status}</span>
+    <section ref={resumeRef} className="hero" aria-label="Hero section">
+      <div className="hero__grid" aria-hidden="true" />
+      <div className="hero__glow" aria-hidden="true" />
+
+      <ParticleField density={48} className="hero__particles" tint="#548cff" />
+
+      <div className="hero__inner">
+        <nav className="hero__nav">
+          <div className="hero__logo">M<span className="logo__accent">J</span></div>
+          <div className="hero__nav-links">
+            <a href="#about" className="nav__link">About</a>
+            <a href="#projects" className="nav__link">Projects</a>
+            <a href="#skills" className="nav__link">Skills</a>
+            <a href="#contact" className="nav__link">Contact</a>
           </div>
+          <a href="mailto:markjohnreymanaay@gmail.com" className="btn btn--glass" data-magnetic>
+            Resume
+          </a>
+        </nav>
 
-          <p className="hero__kicker reveal" style={{ '--reveal-delay': '60ms' }}>
-            BS Information Technology · {profile.location}
+        <div className="hero__content">
+          <div className="hero__badge">01 — Introduction</div>
+
+          <SplitText
+            tag="h1"
+            className="hero__title"
+            lines={[
+              { text: "Building ideas into", delay: 0 },
+              { text: "digital experiences.", delay: 0.15 },
+            ]}
+          />
+
+          <p className="hero__subhead">
+            I develop software solutions, explore modern technologies, and turn ideas into functional digital experiences.
           </p>
 
-          <h1 id="hero-title" className="hero__name reveal" style={{ '--reveal-delay': '120ms' }}>
-            <SplitText text={profile.name} mode="chars" delay="300ms" step="36ms" />
-          </h1>
-
-          <p className="hero__role reveal" style={{ '--reveal-delay': '180ms' }}>
-            <span>{profile.title}</span>
-            <span className="hero__roleLine" aria-hidden="true" />
-          </p>
-
-          <p className="hero__tagline reveal" style={{ '--reveal-delay': '240ms' }}>
-            &ldquo;{profile.tagline}&rdquo;
-          </p>
-
-          <p className="hero__support reveal" style={{ '--reveal-delay': '300ms' }}>
-            {profile.supporting}
-          </p>
-
-          <div className="hero__actions reveal" style={{ '--reveal-delay': '360ms' }}>
-            <a className="btn btn--primary" href="#projects">
-              Explore My Projects
-              <svg className="btn__arrow" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-                <path d="M2 10L10 2M4 2h6v6" fill="none" stroke="currentColor" strokeWidth="1.4" />
-              </svg>
+          <div className="hero__cta-group">
+            <a href="#projects" className="btn btn--primary" data-magnetic>
+              Explore My Work
             </a>
-            <a className="btn btn--ghost" href="#about">
+            <a href="#about" className="btn btn--outline" data-magnetic>
               About Me
             </a>
-            <a className="btn btn--ghost" href={profile.resumeHref} download={profile.resumeFileName}>
-              Download Resume
-              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-                <path d="M6 2v7M3 6.5L6 9.5l3-3M2 11h8" fill="none" stroke="currentColor" strokeWidth="1.3" />
-              </svg>
-            </a>
-            <a className="btn btn--ghost" href="#contact">
-              Contact Me
-            </a>
           </div>
 
-          <dl className="hero__stats reveal" style={{ '--reveal-delay': '420ms' }}>
-            <div>
-              <dt>Focus</dt>
-              <dd>Full-stack &amp; AI-assisted builds</dd>
-            </div>
-            <div>
-              <dt>Available for</dt>
-              <dd>OJT, internship, freelance</dd>
-            </div>
-            <div>
-              <dt>Signature</dt>
-              <dd>Eyes that follow your cursor</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div className="hero__stageWrap reveal" style={{ '--reveal-delay': '260ms' }}>
-          <div className="parallax hero__atmosphere" ref={stageRef}>
-            <ParticleField density={44} tint="#548cff" />
+          <div className="hero__portrait-wrap">
+            <EyeProtractor />
           </div>
-          <EyeProtractor />
-          <p className="hero__hint">
-            <span aria-hidden="true">↳</span> Move your cursor anywhere on the page — the eyes follow it.
-          </p>
         </div>
-      </div>
-
-      <div className="hero__scroll shell" aria-hidden="true">
-        <span className="mono">Scroll</span>
-        <span className="hero__scrollLine" />
       </div>
     </section>
-  )
+  );
 }

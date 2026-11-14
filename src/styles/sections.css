@@ -121,13 +121,14 @@
 
 .skills__grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
   align-items: start;
 }
 
 .skills__tabs {
   display: grid;
+  gap: 0.55rem;
 }
 
 .skills__tab {
@@ -136,22 +137,34 @@
   align-items: center;
   gap: 0.9rem;
   width: 100%;
-  padding: 1rem 1rem 1rem 0.9rem;
-  border: 0;
-  border-top: 1px solid var(--line);
-  background: transparent;
+  padding: 0.95rem 1rem 0.95rem 0.9rem;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-xs);
+  background: rgba(244, 246, 250, 0.02);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-soft), padding-left var(--dur-fast) var(--ease-soft);
+  transition: border-color var(--dur-fast) var(--ease-soft),
+    background-color var(--dur-fast) var(--ease-soft),
+    color var(--dur-fast) var(--ease-soft);
+  position: relative;
 }
 
-.skills__tab:last-child {
-  border-bottom: 1px solid var(--line);
+.skills__tab::before {
+  content: attr(data-key);
+  position: absolute;
+  left: -0.55rem;
+  top: 50%;
+  transform: translatey(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(244, 246, 250, 0.14);
+  letter-spacing: 0.14em;
 }
 
 .skills__tab:hover {
-  background: rgba(84, 140, 255, 0.05);
-  padding-left: 1.15rem;
+  border-color: var(--stroke-hover);
+  background: rgba(244, 246, 250, 0.05);
 }
 
 .skills__tabIndex {
@@ -179,12 +192,13 @@
 }
 
 .skills__tab[aria-selected='true'] .skills__tabIndex {
-  color: var(--blue);
+  color: var(--electric-blue);
 }
 
 .skills__tab[aria-selected='true'] {
-  background: linear-gradient(90deg, rgba(84, 140, 255, 0.1), transparent 70%);
-  box-shadow: inset 2px 0 0 var(--blue);
+  border-color: var(--electric-blue);
+  background: rgba(84, 140, 255, 0.08);
+  box-shadow: 0 0 0 1px var(--electric-blue);
 }
 
 .skills__panel {
@@ -194,6 +208,9 @@
   gap: 1.5rem;
   min-height: 20rem;
   overflow: hidden;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(16, 21, 34, 0.6), rgba(8, 11, 18, 0.4));
   animation: panelIn 420ms var(--ease) both;
 }
 
@@ -229,26 +246,27 @@
   align-items: center;
   gap: 0.55rem;
   padding: 0.55rem 0.85rem;
-  border: 1px solid var(--line);
-  border-radius: var(--r-xs);
-  background: rgba(244, 246, 250, 0.025);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-full);
+  background: rgba(244, 246, 250, 0.02);
   font-size: 0.85rem;
   color: rgba(244, 246, 250, 0.9);
   animation: chipIn 400ms var(--ease) both;
   animation-delay: calc(var(--i) * 40ms);
-  transition: border-color var(--dur-fast) var(--ease-soft), background-color var(--dur-fast) var(--ease-soft);
+  transition: border-color var(--dur-fast) var(--ease-soft),
+    background-color var(--dur-fast) var(--ease-soft);
 }
 
 .skills__chips li:hover {
-  border-color: rgba(84, 140, 255, 0.5);
-  background: rgba(84, 140, 255, 0.08);
+  border-color: var(--stroke-hover);
+  background: rgba(84, 140, 255, 0.06);
 }
 
 .skills__chipBar {
   width: 3px;
   height: 12px;
   border-radius: 1px;
-  background: linear-gradient(180deg, var(--blue), var(--violet));
+  background: linear-gradient(180deg, var(--electric-blue), var(--violet));
 }
 
 @keyframes chipIn {
@@ -266,7 +284,7 @@
   gap: 0.4rem;
   margin-top: auto;
   padding-top: 1.2rem;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--ink);
 }
 
 .skills__node {
@@ -277,8 +295,14 @@
 }
 
 .skills__node[data-active='true'] {
-  background: linear-gradient(90deg, var(--blue), var(--violet));
+  background: linear-gradient(90deg, var(--electric-blue), var(--violet));
   box-shadow: 0 0 12px rgba(84, 140, 255, 0.6);
+}
+
+@media (max-width: 760px) {
+  .skills__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ============================================================

@@ -1,40 +1,108 @@
 :root {
-  /* Palette */
-  --bg: #080b12;
-  --bg-2: #101522;
-  --bg-3: #0b0f18;
-  --blue: #548cff;
-  --violet: #9b70ff;
-  --white: #f4f6fa;
-  --muted: #929bad;
+  /* Identity colors (from brief) */
+  --bg: #080B12;
+  --bg-secondary: #101522;
+  --electric-blue: #548CFF;
+  --violet: #9B70FF;
+  --white: #F4F6FA;
+  --muted: #929BAD;
 
-  /* Derived */
-  --line: rgba(244, 246, 250, 0.08);
-  --line-strong: rgba(244, 246, 250, 0.16);
-  --glass: rgba(16, 21, 34, 0.62);
-  --glass-strong: rgba(16, 21, 34, 0.88);
-  --blue-dim: rgba(84, 140, 255, 0.14);
-  --violet-dim: rgba(155, 112, 255, 0.14);
+  /* Design-system accents derived from references */
+  --ink: rgba(244, 246, 250, 0.06);
+  --ink-strong: rgba(244, 246, 250, 0.14);
+  --stroke: rgba(84, 140, 255, 0.18);
+  --stroke-hover: rgba(84, 140, 255, 0.45);
 
-  /* Type */
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* Typography scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 4rem;
+  --text-7xl: 5.5rem;
 
-  /* Rhythm */
-  --gutter: clamp(1.25rem, 4vw, 4rem);
-  --section-y: clamp(5rem, 12vh, 9rem);
-  --max: 1360px;
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
 
-  /* Motion */
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Shadows / glow */
+  --glow-blue: 0 0 24px rgba(84, 140, 255, 0.10);
+  --glow-violet: 0 0 24px rgba(155, 112, 255, 0.10);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* Borders & surfaces */
+  --line: rgba(244, 246, 250, 0.10);
+  --line-strong: rgba(244, 246, 250, 0.18);
+  --ink: rgba(244, 246, 250, 0.06);
+  --ink-strong: rgba(244, 246, 250, 0.14);
+
+  /* Colour shorthands */
+  --blue: var(--electric-blue);
+  --accent: var(--electric-blue);
+  --blue-dim: rgba(84, 140, 255, 0.12);
+
+  /* Radius shorthands */
+  --radius-xs: 0.25rem;
+  --radius-md: 0.75rem;
+  /* The stylesheets ask for these short names, so they must exist here: an
+     undefined custom property makes border-radius invalid, which is why the
+     bar buttons and chips were rendering with square corners. */
+  --r-xs: var(--radius-xs);
+  --r-sm: var(--radius-sm);
+  --r-md: var(--radius-md);
+  --r-pill: var(--radius-full);
+
+  /* Depth layers */
+  --bg-2: #0a0e16;
+  --bg-3: #0c1220;
+  --glass-strong: rgba(16, 21, 34, 0.72);
+
+  /* Layout primitives */
+  --font-display: Inter, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --max: 1100px;
+  --gutter: 1.5rem;
+  --section-y: 8rem;
+
+  /* One fixed height shared by every control in the top bar and the mobile
+     menu, so no two buttons can differ in size. */
+  --nav-ctrl-h: 2.25rem;
+
+  /* Durations */
+  --dur: 320ms;
+  --dur-fast: 200ms;
+  --dur-slow: 620ms;
+
+  /* Extra spacing step used by the gallery blocks */
+  --space-14: 3.5rem;
+
+  /* Easing */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
-  --dur-fast: 180ms;
-  --dur: 420ms;
-  --dur-slow: 900ms;
-
-  /* Radius — deliberately restrained */
-  --r-xs: 2px;
-  --r-sm: 4px;
-  --r-md: 8px;
-  --r-pill: 999px;
 }

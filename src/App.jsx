@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import About from './components/About.jsx'
+import ContributionGraph from './components/ContributionGraph.jsx'
 import Skills from './components/Skills.jsx'
 import Projects from './components/Projects.jsx'
 import Experience from './components/Experience.jsx'
@@ -70,6 +71,7 @@ export default function App() {
           <main>
             <Hero />
             <About />
+            <ContributionGraph />
             <Skills />
             <Projects />
             <Experience />
