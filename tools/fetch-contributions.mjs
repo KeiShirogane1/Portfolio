@@ -6,13 +6,17 @@ import { dirname, join } from 'node:path'
  * Refresh the combined contribution calendar from GitHub's official GraphQL API.
  *
  * Required environment variable:
- *   GITHUB_READ_USER_TOKEN — a classic PAT with read:user scope.
+ *   KEI_READ_USER_TOKEN — a classic PAT created while signed in as KeiShirogane1.
+ *   QWERNFC_READ_USER_TOKEN — a classic PAT created while signed in as TheNFCGuy.
  *
  * Private/internal contribution counts are included only when the token has
  * read:user and each target account has chosen to share private contribution
  * counts in its GitHub profile settings.
  */
-const TOKEN = process.env.GITHUB_READ_USER_TOKEN
+const TOKENS = {
+  KeiShirogane1: process.env.KEI_READ_USER_TOKEN,
+  TheNFCGuy: process.env.QWERNFC_READ_USER_TOKEN
+}
 const ACCOUNTS = [
   { login: 'KeiShirogane1', label: 'Main' },
   { login: 'TheNFCGuy', label: 'QwerNFC' }
@@ -53,10 +57,13 @@ function dateRange() {
 }
 
 async function fetchAccount(login, from, to) {
+  const token = TOKENS[login]
+  if (!token) throw new Error('Missing account token for ' + login)
+
   const response = await fetch(GRAPHQL_URL, {
     method: 'POST',
     headers: {
-      authorization: 'Bearer ' + TOKEN,
+      authorization: 'Bearer ' + token,
       'content-type': 'application/json',
       'user-agent': 'KeiShirogane1-Portfolio-Contribution-Refresh'
     },
@@ -164,9 +171,10 @@ function buildMonths(days) {
 }
 
 async function main() {
-  if (!TOKEN) {
+  const missingTokens = Object.entries(TOKENS).filter(([, token]) => !token).map(([login]) => login)
+  if (missingTokens.length) {
     throw new Error(
-      'Missing GITHUB_READ_USER_TOKEN. Add a classic GitHub PAT with read:user scope as a repository Actions secret.'
+      'Missing account token(s): ' + missingTokens.join(', ') + '. Add KEI_READ_USER_TOKEN and QWERNFC_READ_USER_TOKEN as repository Actions secrets. Each must be a classic PAT with read:user scope created by its matching account.'
     )
   }
 
