@@ -110,32 +110,25 @@ position with no animation.
 
 ---
 
-## 5. Activity grid — real GitHub data
+## 5. Activity grid — official GitHub GraphQL data
 
-The "Code Contributions" card shows **your real GitHub contributions**, not a decorative
-pattern. The data is a generated snapshot in `src/data/contributions.js`.
+The "Code Contributions" section is generated from GitHub's official GraphQL contribution calendars for **KeiShirogane1** and **TheNFCGuy**. Daily counts are merged by date, and all visible totals (combined total, account totals, active days and busiest days) are calculated from the same daily data.
 
-Refresh it whenever you want the card to catch up with your profile:
+The refresh script is:
 
 ```bash
-cd portfolio
 node tools/fetch-contributions.mjs
 ```
 
-What it does: reads your public contribution calendar (the same one your profile shows), keeps
-the trailing 53 weeks, and writes the day-by-day totals plus the month labels. The card's total,
-active-day count and busiest day all come from that file — nothing is estimated.
+It requires the `GITHUB_READ_USER_TOKEN` environment variable. Create a **classic GitHub Personal Access Token with only the `read:user` scope**, then add it to this repository under **Settings → Secrets and variables → Actions** with the exact name `GITHUB_READ_USER_TOKEN`.
 
-Where the numbers come from: GitHub's calendar exposes per-day **levels** (0–4) and the counts
-behind its own tooltips. The script cross-checked them against your profile page — 1,895
-contributions over 50 active days in the current window.
+GitHub's GraphQL documentation states that private and internal repository contributions are included only with the optional `read:user` scope. Each account must also opt to share private contribution counts in its own profile settings. The calendar reports aggregated daily counts; it does not disclose private repository names.
 
-A note on the empty months: your graph is concentrated between August and November because the
-private QwerNFC repositories do not report contributions to the public calendar unless you turn
-that on (**Profile → Contribution settings → "Include private contributions on my profile"**).
-Until you enable that, the public card only shows what GitHub can attribute.
+A scheduled GitHub Actions workflow refreshes the data daily and can also be run manually from the Actions tab:
 
----
+`.github/workflows/refresh-contributions.yml`
+
+The old third-party-mirror snapshot is intentionally not displayed as verified data. Once the token is configured and the workflow succeeds, the official daily calendar and all derived statistics appear automatically.
 
 ## 6. Motion system
 
