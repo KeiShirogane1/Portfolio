@@ -34,6 +34,7 @@ export const GITHUB_ACCOUNTS = [
 export const GITHUB_USER = "KeiShirogane1"
 
 export const contributions = {
+  source: 'legacy-third-party-mirror',
   generatedAt: '2026-11-15T17:21:43.867Z',
   windowStart: '2025-11-16',
   windowEnd: '2026-11-15',
