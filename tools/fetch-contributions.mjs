@@ -1,198 +1,276 @@
-/**
- * Fetch Mark's REAL GitHub contribution history from BOTH of his accounts
- * and write it as a single merged static data file the portfolio imports.
- *
- * Why a snapshot instead of a live fetch in the browser:
- *  - no third-party request at runtime (fast first paint, no broken state)
- *  - works offline and behind Cloudflare's cache
- *  - the source is unambiguous: this file is generated from GitHub's own API
- *
- * Refresh it any time with:  node tools/fetch-contributions.mjs
- */
-
 import { writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-/** Both accounts belong to Mark; their calendars are added together. */
+/**
+ * Refresh the combined contribution calendar from GitHub's official GraphQL API.
+ *
+ * Required environment variable:
+ *   GITHUB_READ_USER_TOKEN — a classic PAT with read:user scope.
+ *
+ * Private/internal contribution counts are included only when the token has
+ * read:user and each target account has chosen to share private contribution
+ * counts in its GitHub profile settings.
+ */
+const TOKEN = process.env.GITHUB_READ_USER_TOKEN
 const ACCOUNTS = [
   { login: 'KeiShirogane1', label: 'Main' },
   { login: 'TheNFCGuy', label: 'QwerNFC' }
 ]
-
+const GRAPHQL_URL = 'https://api.github.com/graphql'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = join(HERE, '..', 'src', 'data', 'contributions.js')
-
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-const api = (login) =>
-  `https://github-contributions-api.jogruber.de/v4/${login}?y=last`
+const QUERY = [
+  'query ContributionCalendar($login: String!, $from: DateTime!, $to: DateTime!) {',
+  '  user(login: $login) {',
+  '    login',
+  '    contributionsCollection(from: $from, to: $to) {',
+  '      hasAnyRestrictedContributions',
+  '      restrictedContributionsCount',
+  '      contributionCalendar {',
+  '        totalContributions',
+  '        weeks {',
+  '          contributionDays { date contributionCount }',
+  '        }',
+  '      }',
+  '    }',
+  '  }',
+  '}'
+].join('\n')
 
-const clampLevel = (level) => Math.max(0, Math.min(4, Number(level) || 0))
+function isoDate(date) {
+  return date.toISOString().slice(0, 10)
+}
 
-async function fetchAccount(login) {
-  const res = await fetch(api(login), {
-    headers: { 'user-agent': 'portfolio-build-script' }
+function dateRange() {
+  const end = new Date()
+  end.setUTCHours(0, 0, 0, 0)
+  const start = new Date(end)
+  start.setUTCDate(start.getUTCDate() - 364)
+  return { start: isoDate(start), end: isoDate(end) }
+}
+
+async function fetchAccount(login, from, to) {
+  const response = await fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      authorization: 'Bearer ' + TOKEN,
+      'content-type': 'application/json',
+      'user-agent': 'KeiShirogane1-Portfolio-Contribution-Refresh'
+    },
+    body: JSON.stringify({
+      query: QUERY,
+      variables: {
+        login,
+        from: from + 'T00:00:00Z',
+        to: to + 'T23:59:59Z'
+      }
+    })
   })
-  if (!res.ok) throw new Error(`${login}: GitHub API returned ${res.status}`)
 
-  const json = await res.json()
-  const all = Array.isArray(json.contributions) ? json.contributions : []
-  if (!all.length) throw new Error(`${login}: no contribution days returned`)
+  const payload = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(login + ': GitHub GraphQL HTTP ' + response.status)
+  }
+  if (!payload || (payload.errors && payload.errors.length)) {
+    const details = payload && payload.errors
+      ? payload.errors.map((error) => error.message).join('; ')
+      : 'Invalid GraphQL response'
+    throw new Error(login + ': ' + details)
+  }
+
+  const user = payload.data && payload.data.user
+  if (!user || user.login.toLowerCase() !== login.toLowerCase()) {
+    throw new Error('GitHub did not return the expected account: ' + login)
+  }
+
+  const collection = user.contributionsCollection
+  const calendar = collection && collection.contributionCalendar
+  if (!calendar || !Array.isArray(calendar.weeks)) {
+    throw new Error(login + ': contribution calendar is missing')
+  }
+
+  const days = calendar.weeks
+    .flatMap((week) => week.contributionDays || [])
+    .filter((day) => day.date >= from && day.date <= to)
+    .map((day) => ({
+      date: day.date,
+      count: Number(day.contributionCount) || 0
+    }))
+    .sort((a, b) => a.date.localeCompare(b.date))
+
+  const sum = days.reduce((total, day) => total + day.count, 0)
+  const expected = Number(calendar.totalContributions)
+  if (sum !== expected) {
+    throw new Error(
+      login + ': daily total (' + sum + ') does not match GitHub calendar total (' + expected + '); refusing to write incomplete data'
+    )
+  }
 
   return {
-    login,
-    total: Number(json.total?.lastYear) || 0,
-    days: all.map((day) => ({
-      date: day.date,
-      count: Number(day.count) || 0
-    }))
+    login: user.login,
+    total: expected,
+    activeDays: days.filter((day) => day.count > 0).length,
+    hasAnyRestrictedContributions: Boolean(collection.hasAnyRestrictedContributions),
+    restrictedContributionsCount: Number(collection.restrictedContributionsCount) || 0,
+    days
   }
 }
 
-/**
- * Levels are recomputed from the MERGED counts, using quartiles of the
- * non-zero days — the same idea GitHub uses for its four shades. Without
- * this the merged totals would keep per-account levels that no longer match
- * the numbers shown in the tooltips.
- */
 function assignLevels(days) {
-  const counts = days
-    .map((d) => d.count)
-    .filter((c) => c > 0)
+  const activeCounts = days
+    .map((day) => day.count)
+    .filter((count) => count > 0)
     .sort((a, b) => a - b)
 
-  if (!counts.length) return days.map((d) => ({ ...d, level: 0 }))
+  if (!activeCounts.length) {
+    return days.map((day) => ({ ...day, level: 0 }))
+  }
 
-  const q = (p) => counts[Math.min(counts.length - 1, Math.floor(counts.length * p))]
-  const t1 = Math.max(1, q(0.25))
-  const t2 = Math.max(t1, q(0.5))
-  const t3 = Math.max(t2, q(0.75))
+  const quantile = (position) =>
+    activeCounts[Math.min(activeCounts.length - 1, Math.floor(activeCounts.length * position))]
+  const t1 = Math.max(1, quantile(0.25))
+  const t2 = Math.max(t1, quantile(0.50))
+  const t3 = Math.max(t2, quantile(0.75))
 
-  return days.map((d) => {
+  return days.map((day) => {
     let level = 0
-    if (d.count >= t3 && d.count > 0) level = 4
-    else if (d.count >= t2 && d.count > 0) level = 3
-    else if (d.count >= t1 && d.count > 0) level = 2
-    else if (d.count > 0) level = 1
-    return { ...d, level: clampLevel(level) }
+    if (day.count > 0 && day.count >= t3) level = 4
+    else if (day.count > 0 && day.count >= t2) level = 3
+    else if (day.count > 0 && day.count >= t1) level = 2
+    else if (day.count > 0) level = 1
+    return { ...day, level }
   })
 }
 
+function buildMonths(days) {
+  const months = []
+  let previous = ''
+  days.forEach((day, index) => {
+    const monthKey = day.date.slice(0, 7)
+    if (monthKey !== previous) {
+      const date = new Date(day.date + 'T00:00:00Z')
+      const weekIndex = Math.floor((index + days[0].weekday) / 7)
+      months.push({
+        index: weekIndex * 7,
+        label: date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' })
+      })
+      previous = monthKey
+    }
+  })
+  return months
+}
+
 async function main() {
-  const accounts = await Promise.all(ACCOUNTS.map((a) => fetchAccount(a.login)))
+  if (!TOKEN) {
+    throw new Error(
+      'Missing GITHUB_READ_USER_TOKEN. Add a classic GitHub PAT with read:user scope as a repository Actions secret.'
+    )
+  }
 
-  // Use the widest window any account reports, so no day is dropped.
-  const allDates = accounts.flatMap((a) => a.days.map((d) => d.date))
-  allDates.sort()
+  const window = dateRange()
+  const accounts = await Promise.all(
+    ACCOUNTS.map((account) => fetchAccount(account.login, window.start, window.end))
+  )
+
   const merged = new Map()
-
   accounts.forEach((account) => {
     account.days.forEach((day) => {
       merged.set(day.date, (merged.get(day.date) || 0) + day.count)
     })
   })
 
-  const days = allDates
-    .filter((date, index) => allDates.indexOf(date) === index)
-    .map((date) => {
-      const parsed = new Date(`${date}T00:00:00Z`)
-      return {
-        date,
-        weekday: parsed.getUTCDay(),
-        count: merged.get(date) || 0,
-        level: 0
-      }
-    })
-
-  const leveled = assignLevels(days)
-  const total = leveled.reduce((sum, d) => sum + d.count, 0)
-  const activeDays = leveled.filter((d) => d.count > 0).length
-  const bestDay = leveled.reduce(
-    (best, d) => (d.count > best.count ? d : best),
-    { count: 0, date: '' }
-  )
-  const busiestDays = leveled
-    .filter((d) => d.count > 0)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
-
-  // Month labels sit above the column that starts that month.
-  const months = []
-  let lastMonth = -1
-  leveled.forEach((d, index) => {
-    if (d.weekday !== 0) return // only week-starting Sundays
-    const month = new Date(`${d.date}T00:00:00Z`).getUTCMonth()
-    if (month !== lastMonth) {
-      lastMonth = month
-      months.push({
-        index,
-        label: new Date(`${d.date}T00:00:00Z`).toLocaleString('en-US', {
-          month: 'short',
-          timeZone: 'UTC'
-        })
-      })
+  const startDate = new Date(window.start + 'T00:00:00Z')
+  const dayCount = 365
+  const rawDays = Array.from({ length: dayCount }, (_, offset) => {
+    const date = new Date(startDate)
+    date.setUTCDate(date.getUTCDate() + offset)
+    const key = isoDate(date)
+    return {
+      date: key,
+      weekday: date.getUTCDay(),
+      count: merged.get(key) || 0
     }
   })
 
-  const accountSummary = accounts.map((a) => ({
-    login: a.login,
-    label: ACCOUNTS.find((x) => x.login === a.login)?.label || a.login,
-    total: a.days.reduce((sum, d) => sum + d.count, 0),
-    activeDays: a.days.filter((d) => d.count > 0).length
+  const days = assignLevels(rawDays)
+  const total = days.reduce((sum, day) => sum + day.count, 0)
+  const accountTotal = accounts.reduce((sum, account) => sum + account.total, 0)
+  if (total !== accountTotal) {
+    throw new Error('Merged daily total does not equal the sum of the two GitHub account totals')
+  }
+
+  const activeDays = days.filter((day) => day.count > 0).length
+  const bestDay = days.reduce(
+    (best, day) => (day.count > best.count ? day : best),
+    { date: window.start, count: 0 }
+  )
+  const busiestDays = days
+    .filter((day) => day.count > 0)
+    .sort((a, b) => b.count - a.count || a.date.localeCompare(b.date))
+    .slice(0, 5)
+    .map(({ date, count }) => ({ date, count }))
+
+  const accountSummary = accounts.map((account) => ({
+    login: account.login,
+    label: ACCOUNTS.find((item) => item.login === account.login).label,
+    total: account.total,
+    activeDays: account.activeDays,
+    privateContributionCountsShared: account.hasAnyRestrictedContributions,
+    restrictedContributionsCount: account.restrictedContributionsCount
   }))
 
-  const generatedAt = new Date().toISOString()
+  const output = {
+    source: 'github-graphql',
+    generatedAt: new Date().toISOString(),
+    windowStart: window.start,
+    windowEnd: window.end,
+    total,
+    activeDays,
+    emptyDays: dayCount - activeDays,
+    bestDay: { date: bestDay.date, count: bestDay.count },
+    busiestDays,
+    weekdayLabels: WEEKDAYS,
+    months: buildMonths(rawDays),
+    accounts: accountSummary,
+    days
+  }
 
-  const file = `/**
- * REAL, MERGED GitHub contribution data for ${ACCOUNTS.map((a) => a.login).join(' + ')}.
- *
- * GENERATED by tools/fetch-contributions.mjs — do not edit by hand.
- * Refresh with:  node tools/fetch-contributions.mjs
- *
- * Both of these accounts belong to Mark. Their daily counts are ADDED
- * TOGETHER, so one dot on this graph means "activity across every account
- * that day", not a single-account figure.
- *
- * Source: GitHub's public contribution calendars
- * (https://github.com/users/<login>/contributions), read through the
- * github-contributions-api mirror, on ${generatedAt}.
- *
- * Private repositories that are not set to "show on profile" are still
- * invisible here — that covers most QwerNFC work.
- */
-
-export const GITHUB_ACCOUNTS = ${JSON.stringify(accountSummary, null, 2)}
-
-export const GITHUB_USER = ${JSON.stringify(accountSummary[0].login)}
-
-export const contributions = {
-  generatedAt: '${generatedAt}',
-  windowStart: '${leveled[0].date}',
-  windowEnd: '${leveled[leveled.length - 1].date}',
-  total: ${total},
-  activeDays: ${activeDays},
-  emptyDays: ${leveled.length - activeDays},
-  bestDay: { date: '${bestDay.date}', count: ${bestDay.count} },
-  busiestDays: ${JSON.stringify(busiestDays.map((d) => ({ date: d.date, count: d.count })))},
-  weekdayLabels: ${JSON.stringify(WEEKDAYS)},
-  months: ${JSON.stringify(months)},
-  days: ${JSON.stringify(leveled)}
-}
-
-export default contributions
-`
+  const file = [
+    '/**',
+    ' * GENERATED from GitHub official GraphQL contribution calendars.',
+    ' * Refresh with: node tools/fetch-contributions.mjs',
+    ' * Includes private/internal contribution counts only when GitHub returns',
+    ' * them for the account (read:user token scope + profile sharing setting).',
+    ' */',
+    '',
+    'export const GITHUB_ACCOUNTS = ' + JSON.stringify(accountSummary, null, 2),
+    '',
+    'export const GITHUB_USER = "KeiShirogane1"',
+    '',
+    'export const contributions = ' + JSON.stringify(output, null, 2),
+    '',
+    'export default contributions',
+    ''
+  ].join('\n')
 
   await writeFile(OUT, file, 'utf8')
-  console.log(`Wrote ${OUT}`)
-  console.log(`  accounts: ${accountSummary.map((a) => `${a.login}=${a.total}`).join(', ')}`)
-  console.log(`  window:   ${leveled[0].date} .. ${leveled[leveled.length - 1].date}`)
-  console.log(`  total:    ${total} contributions over ${activeDays} active days`)
-  console.log(`  empty:    ${leveled.length - activeDays} days with nothing`)
-  console.log(`  busiest:  ${bestDay.count} on ${bestDay.date}`)
+  console.log('Wrote ' + OUT)
+  console.log('Source: GitHub GraphQL')
+  console.log('Window: ' + window.start + ' through ' + window.end)
+  accountSummary.forEach((account) => {
+    console.log(
+      account.login + ': ' + account.total + ' contributions, ' +
+      account.activeDays + ' active days, restricted count shared: ' +
+      (account.privateContributionCountsShared ? 'yes' : 'not reported')
+    )
+  })
+  console.log('Combined: ' + total + ' contributions across ' + activeDays + ' active days')
 }
 
 main().catch((error) => {
-  console.error('FAILED:', error.message)
+  console.error('Contribution refresh failed: ' + error.message)
   process.exitCode = 1
 })
