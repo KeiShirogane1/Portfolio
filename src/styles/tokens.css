@@ -111,4 +111,10 @@
   /* Easing */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Breathing border glow — applied via .breath-border on bordered surfaces */
+  --breath-blue: rgba(84, 140, 255, 0.18);
+  --breath-violet: rgba(155, 112, 255, 0.16);
+  --breath-cyan: rgba(95, 205, 255, 0.14);
+  --breath-dur: 5.5s;
 }

@@ -274,6 +274,10 @@ ol {
   backdrop-filter: blur(10px);
 }
 
+.panel.breath-border {
+  overflow: hidden;
+}
+
 /* ---------- Reveal ---------- */
 
 .reveal {

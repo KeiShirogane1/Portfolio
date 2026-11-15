@@ -48,11 +48,14 @@ function formatDate(iso) {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-    timeZone: 'UTC'
+    timeZone: 'Asia/Manila'
   })
 }
 
 function dayTitle(day) {
+  if (day.offGithub) {
+    return `IM ACTIVE IM DOING THIS ${day.offGithubNote} ${formatDate(day.date)}`
+  }
   if (!day.count) return `Nothing on ${formatDate(day.date)} — no commits on either account`
   return `${day.count} contribution${day.count === 1 ? '' : 's'} on ${formatDate(day.date)} (both accounts combined)`
 }
@@ -141,7 +144,9 @@ export default function ContributionGraph() {
                       day ? (
                         <span
                           key={day.date}
-                          className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}`}
+                          className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}${
+                            day.offGithub ? ' contrib__cell--off-github' : ''
+                          }`}
                           title={dayTitle(day)}
                         >
                           <span className="sr-only">{dayTitle(day)}</span>
@@ -165,41 +170,47 @@ export default function ContributionGraph() {
         )}
 
         {isOfficialSnapshot && (
-        <div className="contrib__footer">
-          <div className="contrib__legend" aria-hidden="true">
-            <span className="contrib__legend-label">Less</span>
-            {LEVEL_CLASS.map((level) => (
-              <span key={level} className={`contrib__cell ${level}`} />
-            ))}
-            <span className="contrib__legend-label">More</span>
-          </div>
-
-          <p className="contrib__meta">
-            <strong className="contrib__meta-strong">
-              {activeDays} of {allDays} days had work
-            </strong>
-            {' '}&middot; {emptyDays} days empty &middot; busiest day{' '}
-            {bestDay.count} on {formatDate(bestDay.date)}
-          </p>
-        </div>
-
-        <ul className="contrib__peaks">
-          {busiestDays.map((peak) => (
-            <li key={peak.date} className="contrib__peak">
-              <span className="contrib__peak-date">{formatDate(peak.date)}</span>
-              <span className="contrib__peak-bars" aria-hidden="true">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <span
-                    key={index}
-                    className={`contrib__peak-bar ${index < Math.min(5, Math.ceil(peak.count / bestDay.count * 5)) ? 'is-on' : ''}`}
-                  />
+          <>
+            <div className="contrib__footer">
+              <div className="contrib__legend" aria-hidden="true">
+                <span className="contrib__legend-label">Less</span>
+                {LEVEL_CLASS.map((level) => (
+                  <span key={level} className={`contrib__cell ${level}`} />
                 ))}
-              </span>
-              <span className="contrib__peak-count">{peak.count}</span>
-            </li>
-          ))}
-        </ul>
+                <span className="contrib__legend-label">More</span>
+                <span className="contrib__legend-separator">│</span>
+                <span className="contrib__legend-label" style={{ color: 'rgba(255, 190, 60, 0.8)' }}>
+                  Off-GitHub Activity
+                </span>
+                <span className="contrib__cell contrib__cell--off-github" title="Off-GitHub Development Activity" />
+              </div>
 
+              <p className="contrib__meta">
+                <strong className="contrib__meta-strong">
+                  {activeDays} of {allDays} days had work
+                </strong>
+                {' '}&middot; {emptyDays} days empty &middot; busiest day{' '}
+                {bestDay.count} on {formatDate(bestDay.date)}
+              </p>
+            </div>
+
+            <ul className="contrib__peaks">
+              {busiestDays.map((peak) => (
+                <li key={peak.date} className="contrib__peak">
+                  <span className="contrib__peak-date">{formatDate(peak.date)}</span>
+                  <span className="contrib__peak-bars" aria-hidden="true">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <span
+                        key={index}
+                        className={`contrib__peak-bar ${index < Math.min(5, Math.ceil(peak.count / bestDay.count * 5)) ? 'is-on' : ''}`}
+                      />
+                    ))}
+                  </span>
+                  <span className="contrib__peak-count">{peak.count}</span>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
 
         {isOfficialSnapshot && (

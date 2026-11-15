@@ -2252,7 +2252,9 @@ export const contributions = {
       "date": "2026-11-02",
       "weekday": 1,
       "count": 0,
-      "level": 0
+      "level": 0,
+      "offGithub": true,
+      "offGithubNote": "TimeCapsule analysis, QwerNFC comparison, Agent spec search",
     },
     {
       "date": "2026-11-03",
@@ -2276,7 +2278,9 @@ export const contributions = {
       "date": "2026-11-06",
       "weekday": 5,
       "count": 0,
-      "level": 0
+      "level": 0,
+      "offGithub": true,
+      "offGithubNote": "OmniRoute CLI installation check, version 3.8.50 verification, environment-variable/config diagnostics",
     },
     {
       "date": "2026-11-07",

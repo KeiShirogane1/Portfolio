@@ -333,6 +333,19 @@
   box-shadow: 0 0 8px rgba(155, 112, 255, 0.5);
 }
 
+/* Off-GitHub Development Activity — distinct visual treatment from GitHub contributions.
+   Same cell size/shape, different fill so it never reads as a real contribution count. */
+.contrib__cell--off-github {
+  background: rgba(255, 190, 60, 0.28);
+  border: 1px solid rgba(255, 190, 60, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 190, 60, 0.35);
+}
+.contrib__cell--off-github:hover {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+  border-color: rgba(255, 210, 120, 0.75);
+}
+
 .contrib__cell:hover {
   transform: scale(1.06);
   filter: brightness(1.18);
@@ -368,6 +381,15 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.contrib__legend-separator {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.5;
 }
 
 .contrib__meta {
