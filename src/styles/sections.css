@@ -149,18 +149,7 @@
   position: relative;
 }
 
-.skills__tab::before {
-  content: attr(data-key);
-  position: absolute;
-  left: -0.55rem;
-  top: 50%;
-  transform: translatey(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: rgba(244, 246, 250, 0.14);
-  letter-spacing: 0.14em;
-}
+/* Category index is rendered once in JSX; no pseudo-element duplicate. */
 
 .skills__tab:hover {
   border-color: var(--stroke-hover);
@@ -168,10 +157,13 @@
 }
 
 .skills__tabIndex {
+  display: inline-block;
+  min-width: 2.1rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  color: rgba(146, 155, 173, 0.65);
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  color: rgba(146, 155, 173, 0.72);
   transition: color var(--dur-fast) var(--ease-soft);
 }
 
@@ -267,9 +259,18 @@
 }
 
 .skills__chipIcon {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.skills__chipIcon img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 
 .skills__chipLabel {
