@@ -28,7 +28,7 @@ jobs:
 
       - name: Verify read:user token is configured
         env:
-          GITHUB_READ_USER_TOKEN: \${{ secrets.GITHUB_READ_USER_TOKEN }}
+          GITHUB_READ_USER_TOKEN: ${{ secrets.GITHUB_READ_USER_TOKEN }}
         run: |
           if [ -z "$GITHUB_READ_USER_TOKEN" ]; then
             echo "::error::Add GITHUB_READ_USER_TOKEN in Settings > Secrets and variables > Actions. Use a classic PAT with read:user scope."
@@ -37,7 +37,7 @@ jobs:
 
       - name: Fetch official daily contribution calendars
         env:
-          GITHUB_READ_USER_TOKEN: \${{ secrets.GITHUB_READ_USER_TOKEN }}
+          GITHUB_READ_USER_TOKEN: ${{ secrets.GITHUB_READ_USER_TOKEN }}
         run: node tools/fetch-contributions.mjs
 
       - name: Commit refreshed calendar
