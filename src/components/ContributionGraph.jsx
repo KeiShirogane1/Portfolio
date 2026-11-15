@@ -61,6 +61,7 @@ export default function ContributionGraph() {
   const weeks = toWeeks(contributions.days)
   const { total, activeDays, emptyDays, bestDay, busiestDays } = contributions
   const allDays = activeDays + emptyDays
+  const isOfficialSnapshot = contributions.source === 'github-graphql'
 
   return (
     <section className="contrib" id="activity" aria-label="Code contributions">
@@ -78,82 +79,92 @@ export default function ContributionGraph() {
             </p>
           </div>
 
-          <div className="contrib__totals">
-            <span className="contrib__total-value">
-              {total.toLocaleString('en-US')}
-            </span>
-            <span className="contrib__total-label">
-              contributions in the last year
-            </span>
-            <ul className="contrib__accounts">
-              {GITHUB_ACCOUNTS.map((account) => (
-                <li key={account.login} className="contrib__account">
-                  <a
-                    href={`https://github.com/${account.login}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="contrib__account-link"
-                  >
-                    {account.login}
-                    <span className="contrib__account-count">
-                      {account.total.toLocaleString('en-US')}
+{isOfficialSnapshot ? (
+            <div className="contrib__totals">
+              <span className="contrib__total-value">{total.toLocaleString('en-US')}</span>
+              <span className="contrib__total-label">contributions in the last year</span>
+              <ul className="contrib__accounts">
+                {GITHUB_ACCOUNTS.map((account) => (
+                  <li key={account.login} className="contrib__account">
+                    <a href={`https://github.com/${account.login}`} target="_blank" rel="noopener noreferrer" className="contrib__account-link">
+                      {account.login}
+                      <span className="contrib__account-count">{account.total.toLocaleString('en-US')}</span>
+                    </a>
+                    <span className="contrib__account-privacy">
+                      {account.privateContributionCountsShared ? 'private included' : 'private counts not reported'}
                     </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="contrib__totals contrib__totals--pending">
+              <span className="contrib__total-label">official refresh required</span>
+              <span className="contrib__pending-value">—</span>
+              <span className="contrib__total-label">waiting for verified GitHub data</span>
+            </div>
+          )}
         </div>
 
-        <div
-          className="contrib__graph"
-          style={{ '--contrib-cols': weeks.length }}
-          role="img"
-          aria-label={`${total} contributions on ${activeDays} of ${allDays} days between ${formatDate(contributions.windowStart)} and ${formatDate(contributions.windowEnd)}`}
-        >
-          <div className="contrib__months">
-            {contributions.months.map((month) => (
-              <span
-                key={`${month.label}-${month.index}`}
-                className="contrib__month"
-                style={{ gridColumn: Math.floor(month.index / 7) + 2 }}
-              >
-                {month.label}
-              </span>
-            ))}
-          </div>
-
-          <div className="contrib__body">
-            <div className="contrib__weekdays" aria-hidden="true">
-              {WEEKDAY_ROWS.map((label) => (
-                <span key={label} className="contrib__weekday">
-                  {label}
+        {isOfficialSnapshot ? (
+          <div
+            className="contrib__graph"
+            style={{ '--contrib-cols': weeks.length }}
+            role="img"
+            aria-label={`${total} contributions on ${activeDays} of ${allDays} days between ${formatDate(contributions.windowStart)} and ${formatDate(contributions.windowEnd)}`}
+          >
+            <div className="contrib__months">
+              {contributions.months.map((month) => (
+                <span
+                  key={`${month.label}-${month.index}`}
+                  className="contrib__month"
+                  style={{ gridColumn: Math.floor(month.index / 7) + 2 }}
+                >
+                  {month.label}
                 </span>
               ))}
             </div>
-
-            <div className="contrib__grid">
-              {weeks.map((week, columnIndex) => (
-                <div className="contrib__week" key={columnIndex}>
-                  {week.map((day, rowIndex) =>
-                    day ? (
-                      <span
-                        key={day.date}
-                        className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}`}
-                        title={dayTitle(day)}
-                      >
-                        <span className="sr-only">{dayTitle(day)}</span>
-                      </span>
-                    ) : (
-                      <span key={`pad-${rowIndex}`} className="contrib__cell is-empty" />
-                    )
-                  )}
-                </div>
-              ))}
+  
+            <div className="contrib__body">
+              <div className="contrib__weekdays" aria-hidden="true">
+                {WEEKDAY_ROWS.map((label) => (
+                  <span key={label} className="contrib__weekday">
+                    {label}
+                  </span>
+                ))}
+              </div>
+  
+              <div className="contrib__grid">
+                {weeks.map((week, columnIndex) => (
+                  <div className="contrib__week" key={columnIndex}>
+                    {week.map((day, rowIndex) =>
+                      day ? (
+                        <span
+                          key={day.date}
+                          className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}`}
+                          title={dayTitle(day)}
+                        >
+                          <span className="sr-only">{dayTitle(day)}</span>
+                        </span>
+                      ) : (
+                        <span key={`pad-${rowIndex}`} className="contrib__cell is-empty" />
+                      )
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="contrib__status" role="status">
+            <span className="contrib__status-kicker">DATA SOURCE UPGRADE</span>
+            <strong>The previous contribution snapshot did not match your GitHub profiles.</strong>
+            <p>The old calendar has been hidden rather than showing misleading totals. The repository now uses GitHub's official daily GraphQL calendars and a scheduled refresh. Add the <code>GITHUB_READ_USER_TOKEN</code> Actions secret to activate it.</p>
+            <a href="https://github.com/KeiShirogane1/Portfolio/actions/workflows/refresh-contributions.yml" target="_blank" rel="noopener noreferrer">Open contribution refresh workflow ↗</a>
+          </div>
+        )}
 
+        {isOfficialSnapshot && (
         <div className="contrib__footer">
           <div className="contrib__legend" aria-hidden="true">
             <span className="contrib__legend-label">Less</span>
@@ -189,13 +200,14 @@ export default function ContributionGraph() {
           ))}
         </ul>
 
-        <p className="contrib__note">
-          A day counts when at least one commit, pull request or issue landed
-          on <em className="contrib__note-em">either</em> account. GitHub only
-          reports what the account chooses to publish &mdash; private QwerNFC
-          work stays invisible until &ldquo;Include private contributions&rdquo;
-          is switched on.
-        </p>
+        )}
+
+        {isOfficialSnapshot && (
+          <p className="contrib__note">
+            Official GitHub GraphQL snapshot refreshed {new Date(contributions.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}.
+            Private and internal contribution totals are included only when GitHub returns them for the account; each profile must enable private contribution counts and the refresh token must have the read:user scope.
+          </p>
+        )}
       </div>
     </section>
   )
