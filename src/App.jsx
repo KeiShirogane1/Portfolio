@@ -12,6 +12,7 @@ import Certifications from './components/Certifications.jsx'
 import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import BootScreen from './components/BootScreen.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { navLinks } from './data/profile.js'
 
 export default function App() {
@@ -61,28 +62,30 @@ export default function App() {
       {!ready ? (
         <BootScreen onReady={() => setReady(true)} />
       ) : (
-        <>
-          <div className="progress" aria-hidden="true">
-            <span style={{ transform: `scaleX(${progress})` }} />
-          </div>
+        <ErrorBoundary>
+          <>
+            <div className="progress" aria-hidden="true">
+              <span style={{ transform: `scaleX(${progress})` }} />
+            </div>
 
-          <Nav activeSection={activeSection} />
+            <Nav activeSection={activeSection} />
 
-          <main>
-            <Hero />
-            <About />
-            <ContributionGraph />
-            <Skills />
-            <Projects />
-            <Experience />
-            <Education />
-            <AIExperiments />
-            <Certifications />
-            <Contact />
-          </main>
+            <main>
+              <Hero />
+              <About />
+              <ContributionGraph />
+              <Skills />
+              <Projects />
+              <Experience />
+              <Education />
+              <AIExperiments />
+              <Certifications />
+              <Contact />
+            </main>
 
-          <Footer />
-        </>
+            <Footer />
+          </>
+        </ErrorBoundary>
       )}
     </>
   )

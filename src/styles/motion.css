@@ -167,6 +167,16 @@
   line-height: 1;
 }
 
+/* A multi-line headline needs each row to be its own wrapping block. */
+.splitText--chars,
+:where(.splitText__line) {
+  display: block;
+}
+
+.splitText__line {
+  display: block;
+}
+
 .splitText__unit {
   display: inline-block;
   opacity: 0;

@@ -12,7 +12,5 @@ import './styles/hero.css'
 import './styles/contribution.css'
 
 createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 )

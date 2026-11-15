@@ -66,12 +66,14 @@ portfolio/
 │  ├─ components/ EyeProtractor, BootScreen, ParticleField, SplitText,
 │  │              Nav, Hero, About, Skills, Projects, Experience,
 │  │              Education, AIExperiments, Contact, Footer
-│  ├─ data/       profile.js, skills.js, projects.js, experience.js, ai.js
+│  ├─ data/       profile.js, skills.js, projects.js, experience.js, ai.js,
+│  │              contributions.js (generated — do not edit by hand)
 │  └─ styles/     tokens.css, base.css, nav.css, protractor.css,
-│                 sections.css, motion.css
+│                 sections.css, motion.css, contribution.css
 ├─ tools/                      # asset scripts (run once, not part of the site)
 │  ├─ make_eyes.py             # rebuilds the 36 gaze frames from portrait.png
-│  └─ slice_assets.py          # cuts the product sheet into card visuals
+│  ├─ slice_assets.py          # cuts the product sheet into card visuals
+│  └─ fetch-contributions.mjs  # refreshes the real GitHub activity data
 ```
 
 **Edit content, not components.** Name, email, resume path and tagline are in
@@ -108,7 +110,34 @@ position with no animation.
 
 ---
 
-## 5. Motion system
+## 5. Activity grid — real GitHub data
+
+The "Code Contributions" card shows **your real GitHub contributions**, not a decorative
+pattern. The data is a generated snapshot in `src/data/contributions.js`.
+
+Refresh it whenever you want the card to catch up with your profile:
+
+```bash
+cd portfolio
+node tools/fetch-contributions.mjs
+```
+
+What it does: reads your public contribution calendar (the same one your profile shows), keeps
+the trailing 53 weeks, and writes the day-by-day totals plus the month labels. The card's total,
+active-day count and busiest day all come from that file — nothing is estimated.
+
+Where the numbers come from: GitHub's calendar exposes per-day **levels** (0–4) and the counts
+behind its own tooltips. The script cross-checked them against your profile page — 1,895
+contributions over 50 active days in the current window.
+
+A note on the empty months: your graph is concentrated between August and November because the
+private QwerNFC repositories do not report contributions to the public calendar unless you turn
+that on (**Profile → Contribution settings → "Include private contributions on my profile"**).
+Until you enable that, the public card only shows what GitHub can attribute.
+
+---
+
+## 6. Motion system
 
 | Layer | Where | What it does |
 |-------|-------|--------------|
@@ -126,7 +155,7 @@ the angle mapping is never disturbed.
 
 ---
 
-## 6. Accuracy rules baked into the content
+## 7. Accuracy rules baked into the content
 
 - **No invented features, dates, job titles or certificates.** Where something is unconfirmed the
   copy says so instead of guessing.
@@ -140,7 +169,7 @@ the angle mapping is never disturbed.
 - **No repository, deployment or social links that are not real.** Nexora links to its public
   repository at `github.com/KeiShirogane1/Nexora`; QwerNFC repos stay private and unlinked.
 
-## 7. Accessibility
+## 8. Accessibility
 
 - Reveals are skipped under `prefers-reduced-motion: reduce`.
 - The dial announces its current gaze direction.
@@ -149,7 +178,7 @@ the angle mapping is never disturbed.
 - A skip link is the first focusable element.
 - Form fields use real labels, `aria-invalid` and `aria-describedby`.
 
-## 8. Still missing from you
+## 9. Still missing from you
 
 See **`MISSING-ASSETS.md`** for the exact files needed, and **`TESTING-REPORT.md`** for what was
 checked and what is still open.

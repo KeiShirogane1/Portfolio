@@ -205,15 +205,20 @@ ol {
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  padding: 0.92rem 1.55rem;
+  /* A set height plus horizontal-only padding: every button on the page is
+     exactly one size, whether it reads "Explore my work" or "About". */
+  height: var(--btn-h);
+  padding: 0 1.55rem;
   border: 1px solid var(--line-strong);
   border-radius: var(--r-xs);
   background: var(--btn-bg);
   font-family: var(--font-mono);
   font-size: 0.74rem;
   font-weight: 500;
+  line-height: 1;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--white);
   cursor: pointer;
   overflow: hidden;
@@ -325,4 +330,13 @@ ol {
 
 .skipLink:focus-visible {
   transform: none;
+}
+
+/* ---------- Phones: buttons go full width so nothing is clipped ---------- */
+
+@media (max-width: 620px) {
+  .btn {
+    --btn-h: 2.85rem;
+    width: 100%;
+  }
 }

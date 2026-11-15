@@ -52,6 +52,22 @@
       This portfolio is an interactive React experience. Please enable JavaScript to view it.
     </noscript>
     <div id="root"></div>
+    <!--
+      These handlers only report. They must never touch #root: clearing React's
+      own DOM from outside makes React throw 'removeChild' on its next update,
+      which hides the original error behind a second, unrelated crash.
+      The in-app ErrorBoundary renders the readable message instead.
+    -->
+    <script>
+      window.addEventListener('error', function (event) {
+        /* A ResizeObserver warning fires on every resize and is not a crash. */
+        if (event.message && event.message.indexOf('ResizeObserver loop') === 0) return
+        console.error('[portfolio] uncaught error:', event.error || event.message)
+      })
+      window.addEventListener('unhandledrejection', function (event) {
+        console.error('[portfolio] unhandled rejection:', event.reason)
+      })
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

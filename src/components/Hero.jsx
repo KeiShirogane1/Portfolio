@@ -1,63 +1,89 @@
-import React from 'react';
-import SplitText from './SplitText';
-import ParticleField from './ParticleField';
-import EyeProtractor from './EyeProtractor';
-import useMagnetic from '../hooks/useMagnetic';
+import SplitText from './SplitText.jsx'
+import ParticleField from './ParticleField.jsx'
+import EyeProtractor from './EyeProtractor.jsx'
+import { profile } from '../data/profile.js'
 
+/**
+ * Hero.
+ *
+ * One straight line of navigation comes from the fixed <Nav> in App — this
+ * section deliberately holds no navigation of its own, so there is no second
+ * bar to wrap or overlap the real one.
+ *
+ * Layout: copy on the left, the eye-tracking ring on the right. Below 980px
+ * the two columns stack and the ring sits first, because the portrait is the
+ * reason people stop scrolling.
+ */
 export default function Hero() {
-  const resumeRef = useMagnetic();
-
   return (
-    <section ref={resumeRef} className="hero" aria-label="Hero section">
-      <div className="hero__grid" aria-hidden="true" />
-      <div className="hero__glow" aria-hidden="true" />
+    <section className="hero" id="home" aria-labelledby="hero-title">
+      <div className="hero__mesh" aria-hidden="true" />
+      <div className="hero__aurora" aria-hidden="true" />
 
-      <ParticleField density={48} className="hero__particles" tint="#548cff" />
+      <div className="hero__atmosphere" aria-hidden="true">
+        <ParticleField density={42} className="hero__particles" tint="#548cff" />
+      </div>
 
-      <div className="hero__inner">
-        <nav className="hero__nav">
-          <div className="hero__logo">M<span className="logo__accent">J</span></div>
-          <div className="hero__nav-links">
-            <a href="#about" className="nav__link">About</a>
-            <a href="#projects" className="nav__link">Projects</a>
-            <a href="#skills" className="nav__link">Skills</a>
-            <a href="#contact" className="nav__link">Contact</a>
-          </div>
-          <a href="mailto:markjohnreymanaay@gmail.com" className="btn btn--glass" data-magnetic>
-            Resume
-          </a>
-        </nav>
+      <div className="hero__inner shell">
+        <div className="hero__stage">
+          <EyeProtractor />
+          <p className="hero__hint">
+            <span aria-hidden="true">◆</span> Move your cursor — the eyes follow.
+          </p>
+        </div>
 
-        <div className="hero__content">
-          <div className="hero__badge">01 — Introduction</div>
+        <div className="hero__copy">
+          <p className="hero__eyebrow hero__eyebrow--live">
+            <span className="hero__dot" aria-hidden="true" />
+            Open to OJT, internship and freelance work
+          </p>
 
           <SplitText
-            tag="h1"
+            as="h1"
+            id="hero-title"
             className="hero__title"
+            mode="chars"
+            step={22}
             lines={[
-              { text: "Building ideas into", delay: 0 },
-              { text: "digital experiences.", delay: 0.15 },
+              { text: 'Building ideas into', accent: false },
+              { text: 'digital experiences.', accent: true }
             ]}
           />
 
           <p className="hero__subhead">
-            I develop software solutions, explore modern technologies, and turn ideas into functional digital experiences.
+            I'm {profile.name}, a software developer and fourth-year Information
+            Technology student. I build web, mobile and AI-assisted software that
+            people can actually use.
           </p>
 
-          <div className="hero__cta-group">
-            <a href="#projects" className="btn btn--primary" data-magnetic>
-              Explore My Work
+          <div className="hero__actions">
+            <a className="btn btn--primary" href="#projects">
+              Explore my work
             </a>
-            <a href="#about" className="btn btn--outline" data-magnetic>
-              About Me
+            <a className="btn btn--outline" href="./resume/mark-john-rey-mana-ay-resume.pdf" download>
+              Download resume
+            </a>
+            <a className="hero__textLink" href="#contact">
+              Contact me <span aria-hidden="true">→</span>
             </a>
           </div>
 
-          <div className="hero__portrait-wrap">
-            <EyeProtractor />
-          </div>
+          <dl className="hero__facts">
+            <div>
+              <dt>Program</dt>
+              <dd>BS Information Technology</dd>
+            </div>
+            <div>
+              <dt>OJT</dt>
+              <dd>486 hours required</dd>
+            </div>
+            <div>
+              <dt>Based in</dt>
+              <dd>{profile.location}</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>
-  );
+  )
 }

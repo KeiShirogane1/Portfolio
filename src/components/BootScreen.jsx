@@ -19,12 +19,24 @@ export default function BootScreen({ onReady }) {
     const reduced = prefersReducedMotion()
     const started = performance.now()
 
+    // Safety timeout: never leave the user stuck on the boot screen forever.
+    const safetyTimer = window.setTimeout(() => {
+      if (cancelled) return
+      setPhase('leaving')
+      window.setTimeout(() => {
+        if (cancelled) return
+        setPhase('gone')
+        onReady?.()
+      }, reduced ? 60 : 780)
+    }, reduced ? 1500 : 5000)
+
     preloadAssets(buildManifest(), (value, info) => {
       if (cancelled) return
       setProgress(value)
       if (info) setFailed(info.failed)
     }).then((result) => {
       if (cancelled) return
+      window.clearTimeout(safetyTimer)
       setFailed(result?.failed ?? 0)
       setProgress(1)
 
@@ -46,6 +58,7 @@ export default function BootScreen({ onReady }) {
 
     return () => {
       cancelled = true
+      window.clearTimeout(safetyTimer)
     }
   }, [onReady])
 

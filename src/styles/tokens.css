@@ -94,6 +94,12 @@
      menu, so no two buttons can differ in size. */
   --nav-ctrl-h: 2.25rem;
 
+  /* One fixed height for content buttons (hero, contact, dialog). Height is
+     set, not inferred from padding, so a long label can never make a taller
+     button than a short one next to it. */
+  --btn-h: 2.7rem;
+  --btn-h-sm: 2.25rem;
+
   /* Durations */
   --dur: 320ms;
   --dur-fast: 200ms;

@@ -570,15 +570,26 @@
   }
 }
 
-@media (max-width: 560px) {
+/* At this width the bar can no longer hold brand + share + Hire / Intern +
+   toggle on one line, and an unshrinkable row would clip the toggle off the
+   right edge. The CTA steps out here; it is still in the mobile menu and in
+   the contact section, so nothing is lost. */
+@media (max-width: 620px) {
   .nav__inner {
     gap: 0.6rem;
   }
 
+  .nav__actions {
+    gap: 0.45rem;
+  }
+
   .nav__cta {
-    padding-inline: 0.7rem;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
+    display: none;
+  }
+
+  .nav__share {
+    height: var(--nav-ctrl-h);
+    padding-inline: 0.65rem;
   }
 
   .nav__brandText strong {
@@ -588,6 +599,18 @@
   .nav__brandText small {
     font-size: 0.52rem;
     letter-spacing: 0.14em;
+  }
+}
+
+/* Narrower still: the wordmark under the name goes, so the brand is short
+   enough that the two buttons always fit. */
+@media (max-width: 420px) {
+  .nav__brand {
+    gap: 0.55rem;
+  }
+
+  .nav__brandText small {
+    display: none;
   }
 }
 
