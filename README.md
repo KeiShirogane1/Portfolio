@@ -120,15 +120,20 @@ The refresh script is:
 node tools/fetch-contributions.mjs
 ```
 
-It requires the `GITHUB_READ_USER_TOKEN` environment variable. Create a **classic GitHub Personal Access Token with only the `read:user` scope**, then add it to this repository under **Settings → Secrets and variables → Actions** with the exact name `GITHUB_READ_USER_TOKEN`.
+It requires two separate classic GitHub Personal Access Tokens, each with only the `read:user` scope:
 
-GitHub's GraphQL documentation states that private and internal repository contributions are included only with the optional `read:user` scope. Each account must also opt to share private contribution counts in its own profile settings. The calendar reports aggregated daily counts; it does not disclose private repository names.
+- `KEI_READ_USER_TOKEN`: create while signed in as `KeiShirogane1`.
+- `QWERNFC_READ_USER_TOKEN`: create while signed in as `TheNFCGuy`.
+
+Add both as repository Actions secrets in **KeiShirogane1/Portfolio** under **Settings → Secrets and variables → Actions**, using those exact names. GitHub does not allow custom Actions secret names beginning with `GITHUB_`.
+
+Each account's token authenticates the request for that same account. This is necessary to request private/internal contribution counts for both account owners; each account must also opt to share private contribution counts in its own GitHub profile settings. GitHub's GraphQL API returns aggregated daily counts, not private repository names.
 
 A scheduled GitHub Actions workflow refreshes the data daily and can also be run manually from the Actions tab:
 
 `.github/workflows/refresh-contributions.yml`
 
-The old third-party-mirror snapshot is intentionally not displayed as verified data. Once the token is configured and the workflow succeeds, the official daily calendar and all derived statistics appear automatically.
+The old third-party-mirror snapshot remains hidden. The generator changes the source marker to `github-graphql` only after both accounts' daily totals validate successfully.
 
 ## 6. Motion system
 
