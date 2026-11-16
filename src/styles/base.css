@@ -201,6 +201,7 @@ ol {
 .btn {
   --btn-bg: transparent;
   position: relative;
+  --breath-delay: 0s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -227,6 +228,30 @@ ol {
     color var(--dur-fast) var(--ease-soft),
     transform var(--dur-fast) var(--ease-soft),
     background-color var(--dur-fast) var(--ease-soft);
+}
+
+.btn.breath-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--r-xs);
+  z-index: -1;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--breath-blue),
+    var(--breath-violet),
+    var(--breath-cyan),
+    var(--breath-blue)
+  );
+  background-size: 200% 200%;
+  animation: borderBreath var(--breath-dur) ease-in-out infinite;
+  animation-delay: var(--breath-delay);
+  pointer-events: none;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
 }
 
 .btn:hover {

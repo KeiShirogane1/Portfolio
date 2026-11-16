@@ -57,13 +57,13 @@ export default function Hero() {
           </p>
 
           <div className="hero__actions">
-            <a className="btn btn--primary" href="#projects">
+            <a className="btn btn--primary breath-border" href="#projects" style={{ '--breath-delay': '0.08s' }}>
               Explore my work
             </a>
-            <a className="btn btn--outline" href="./resume/mark-john-rey-mana-ay-resume.pdf" download>
+            <a className="btn btn--outline breath-border" href="./resume/mark-john-rey-mana-ay-resume.pdf" download style={{ '--breath-delay': '0.22s' }}>
               Download resume
             </a>
-            <a className="hero__textLink" href="#contact">
+            <a className="hero__textLink breath-border" href="#contact" style={{ '--breath-delay': '0.36s' }}>
               Contact me <span aria-hidden="true">→</span>
             </a>
           </div>

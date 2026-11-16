@@ -102,7 +102,8 @@ export default function Skills() {
                 aria-selected={cat.key === active}
                 aria-controls={`panel-${cat.key}`}
                 tabIndex={cat.key === active ? 0 : -1}
-                className="skills__tab"
+                className="skills__tab breath-border"
+                style={{ '--breath-delay': `${cat.index.charCodeAt(0) * 0.13}s` }}
                 onClick={() => setActive(cat.key)}
                 onKeyDown={onKeyDown}
               >
@@ -127,7 +128,7 @@ export default function Skills() {
 
             <ul className="skills__chips">
               {current.tools.map((tool, i) => (
-                <li key={tool.name} style={{ '--i': i }} className="skills__chip breath-border">
+                <li key={tool.name} style={{ '--i': i, '--breath-delay': `${i * 0.17}s` }} className="skills__chip breath-border">
                   <span className="skills__chipIcon" aria-hidden="true">
                     {iconFor(tool.icon)}
                   </span>

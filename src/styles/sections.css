@@ -338,13 +338,14 @@
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(84, 140, 255, 0.35),
-    rgba(155, 112, 255, 0.25),
-    rgba(95, 205, 255, 0.2),
-    rgba(84, 140, 255, 0.35)
+    var(--breath-blue),
+    var(--breath-violet),
+    var(--breath-cyan),
+    var(--breath-blue)
   );
   background-size: 200% 200%;
   animation: borderBreath var(--breath-dur) ease-in-out infinite;
+  animation-delay: var(--breath-delay, 0s);
   pointer-events: none;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;

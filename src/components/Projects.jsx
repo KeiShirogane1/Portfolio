@@ -23,12 +23,13 @@ function ProjectCard({ project, order, onOpen }) {
 
   return (
     <article
-      className="projectCard emerge"
+      className="projectCard emerge breath-border"
       ref={cardRef}
       style={{
         '--emerge-delay': `${order * 90}ms`,
         '--media-ratio': project.mediaRatio || '4 / 3',
-        '--accent': project.accent
+        '--accent': project.accent,
+        '--breath-delay': `${order * 0.14}s`
       }}
     >
       <div className="cardLight" aria-hidden="true" />

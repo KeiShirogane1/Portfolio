@@ -117,4 +117,5 @@
   --breath-violet: rgba(155, 112, 255, 0.16);
   --breath-cyan: rgba(95, 205, 255, 0.14);
   --breath-dur: 5.5s;
+  --breath-delay: 0s;
 }
