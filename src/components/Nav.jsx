@@ -63,7 +63,7 @@ export default function Nav({ activeSection }) {
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className="nav__link breath-border"
+                className="nav__link"
                 data-current={activeSection === link.id}
                 style={{ '--breath-delay': `${i * 0.19}s` }}
               >
