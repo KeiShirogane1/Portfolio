@@ -118,4 +118,7 @@
   --breath-cyan: rgba(95, 205, 255, 0.14);
   --breath-dur: 5.5s;
   --breath-delay: 0s;
+
+  /* Slow ambient breath for the page background — subtle, non-shiny */
+  --breath-bg-dur: 10s;
 }

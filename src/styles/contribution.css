@@ -16,7 +16,6 @@
 .contrib {
   position: relative;
   padding: var(--section-y) var(--gutter);
-  background: var(--bg);
   color: var(--white);
   isolation: isolate;
 }

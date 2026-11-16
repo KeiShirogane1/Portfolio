@@ -221,7 +221,6 @@
   display: none;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
   flex: 0 0 auto;
   width: var(--nav-ctrl-h);
   height: var(--nav-ctrl-h);

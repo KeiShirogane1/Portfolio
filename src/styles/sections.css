@@ -365,6 +365,46 @@
 }
 
 /* ============================================================
+   Slow ambient breath on the html background
+   ============================================================ */
+
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(84, 140, 255, 0.10),
+    rgba(155, 112, 255, 0.08),
+    rgba(95, 205, 255, 0.08),
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: htmlBreath var(--breath-bg-dur) ease-in-out infinite;
+}
+
+@keyframes htmlBreath {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::before {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
    Projects
    ============================================================ */
 
