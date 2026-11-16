@@ -26,10 +26,13 @@
   transition: background-color var(--dur) var(--ease-soft), border-color var(--dur) var(--ease-soft);
 }
 
+/* Keep the header visually transparent like the original portfolio nav.
+   Only the Share and Hire / Intern actions retain their own outlines. */
 .nav[data-scrolled='true'] {
-  background: rgba(8, 11, 18, 0.72);
-  backdrop-filter: blur(16px) saturate(1.2);
-  border-bottom-color: var(--line);
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+  box-shadow: none;
 }
 
 .nav[data-open='true'] {
@@ -116,6 +119,11 @@
   flex-wrap: nowrap;
   gap: 0;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .nav__link {
@@ -131,10 +139,12 @@
   /* Keep the index and label together on one line at every desktop width. */
   white-space: nowrap;
   color: var(--muted);
+  appearance: none;
   border: 0;
   border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none;
   transition: color var(--dur-fast) var(--ease-soft);
 }
 
