@@ -48,30 +48,14 @@ function isoDate(date) {
   return date.toISOString().slice(0, 10)
 }
 
-// Manila is UTC+8. GitHub contribution calendars are computed in each
-// account's local timezone, so the date range must be anchored to Manila
-// midnight, not UTC midnight. Otherwise the boundary can cut off the same
-// calendar day in Manila time (e.g. end = today 00:00 UTC = today 08:00
-// Manila, dropping the first 8 hours of the Manila day).
+// GitHub profile contribution dates use UTC calendar days. Keep the query window
+// aligned to UTC midnight so the returned daily buckets match GitHub's profile graph.
 function dateRange() {
-  const manilaOffsetMs = 8 * 60 * 60 * 1000
-  const now = new Date()
-  const manilaNow = new Date(now.getTime() + manilaOffsetMs)
-
-  // End boundary = start of tomorrow in Manila time, expressed as a UTC
-  // instant. Using tomorrow (exclusive) guarantees the full Manila day is
-  // covered, including early-morning hours that fall on the previous UTC date.
-  const tomorrowManilaUtc =
-    Date.UTC(
-      manilaNow.getUTCFullYear(),
-      manilaNow.getUTCMonth(),
-      manilaNow.getUTCDate() + 1
-    ) - manilaOffsetMs
-
-  const end = isoDate(new Date(tomorrowManilaUtc))
-  const start = new Date(tomorrowManilaUtc - 364 * 24 * 60 * 60 * 1000)
-
-  return { start: isoDate(start), end }
+  const end = new Date()
+  end.setUTCHours(0, 0, 0, 0)
+  const start = new Date(end)
+  start.setUTCDate(start.getUTCDate() - 364)
+  return { start: isoDate(start), end: isoDate(end) }
 }
 
 async function fetchAccount(login, from, to) {
