@@ -146,7 +146,7 @@
   font-weight: 600;
 }
 
-/* Live-connection status line under the totals box. */
+/* Last successful contribution snapshot status under the totals box. */
 .contrib__live {
   margin: var(--space-3) var(--space-5) 0;
   display: inline-flex;
@@ -161,15 +161,14 @@
 .contrib__live-dot {
   width: 6px;
   height: 6px;
+  flex: 0 0 6px;
   border-radius: 50%;
-  background: var(--electric-blue);
-  box-shadow: 0 0 6px var(--electric-blue);
-  animation: contrib-pulse 2s infinite;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
 }
 
-@keyframes contrib-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+.contrib__live[data-sync-state='stale'] {
+  color: #ffbe3c;
 }
 
 /* ---------- busiest days ---------- */
