@@ -53,6 +53,20 @@ function formatDate(iso) {
   })
 }
 
+function formatManila(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleString('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Asia/Manila'
+  })
+}
+
+function syncAgeHours(iso) {
+  if (!iso) return Infinity
+  return (Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60)
+}
+
 function dayTitle(day) {
   if (day.offGithub) {
     return `IM ACTIVE IM DOING THIS ${day.offGithubNote} ${formatDate(day.date)}`
@@ -107,8 +121,31 @@ export default function ContributionGraph() {
                 </ul>
               </div>
               <p className="contrib__live">
-                <span className="contrib__live-dot" aria-hidden="true">●</span>
-                Live connection — KeiShirogane1 + TheNFCGuy (QwerNFC), refreshed daily at midnight (Manila time).
+                <span
+                  className="contrib__live-dot"
+                  aria-hidden="true"
+                  style={{
+                    background:
+                      syncAgeHours(contributions.generatedAt) <= 48
+                        ? 'var(--electric-blue)'
+                        : 'var(--muted)',
+                    boxShadow:
+                      syncAgeHours(contributions.generatedAt) <= 48
+                        ? '0 0 6px var(--electric-blue)'
+                        : '0 0 6px var(--muted)'
+                  }}
+                />
+                {syncAgeHours(contributions.generatedAt) <= 48 ? (
+                  <>
+                    Live connection — KeiShirogane1 + TheNFCGuy (QwerNFC).{' '}
+                    Last synced {formatManila(contributions.generatedAt)} Manila time.
+                  </>
+                ) : (
+                  <>
+                    Sync stale — KeiShirogane1 + TheNFCGuy (QwerNFC).{' '}
+                    Last synced {formatManila(contributions.generatedAt)} Manila time. Refresh may have failed.
+                  </>
+                )}
               </p>
             </>
           ) : (
