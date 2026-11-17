@@ -2,6 +2,11 @@ name: Refresh GitHub contribution graph
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - bbmain
+    paths-ignore:
+      - src/data/contributions.js
   schedule:
     - cron: "1 16 * * *"
 
