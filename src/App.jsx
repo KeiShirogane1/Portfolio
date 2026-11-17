@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Nav from './components/Nav.jsx'
+import IDEShell from './components/IDEShell.jsx'
 import Hero from './components/Hero.jsx'
 import About from './components/About.jsx'
 import ContributionGraph from './components/ContributionGraph.jsx'
@@ -10,19 +10,21 @@ import Education from './components/Education.jsx'
 import AIExperiments from './components/AIExperiments.jsx'
 import Certifications from './components/Certifications.jsx'
 import Contact from './components/Contact.jsx'
-import Footer from './components/Footer.jsx'
 import BootScreen from './components/BootScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
-import { navLinks } from './data/profile.js'
+import { sections } from './data/sections.js'
 
 export default function App() {
   const [ready, setReady] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [progress, setProgress] = useState(0)
 
-  /* Track the current section for the nav, plus scroll progress. */
+  /* Track the current section for the explorer, plus scroll progress.
+     Both observe the editor pane, because that is what scrolls now — the
+     window itself never moves. */
   useEffect(() => {
-    const sections = navLinks
+    const pane = document.querySelector('.ide__viewport')
+    const sectionEls = sections
       .map((link) => document.getElementById(link.id))
       .filter(Boolean)
 
@@ -33,25 +35,39 @@ export default function App() {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
         if (visible) setActiveSection(visible.target.id)
       },
-      { rootMargin: '-38% 0px -52% 0px', threshold: [0.05, 0.25, 0.5] }
+      {
+        root: pane || null,
+        rootMargin: '-30% 0px -45% 0px',
+        threshold: [0.05, 0.25, 0.5]
+      }
     )
 
-    sections.forEach((section) => observer.observe(section))
+    sectionEls.forEach((section) => observer.observe(section))
 
     let frame = 0
     const onScroll = () => {
       if (frame) return
       frame = window.requestAnimationFrame(() => {
         frame = 0
-        const max = document.documentElement.scrollHeight - window.innerHeight
-        setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0)
+        // The page content now scrolls inside the editor pane, so progress
+        // has to be read from that element, not from the window.
+        const pane = document.querySelector('.ide__viewport')
+        if (!pane) {
+          setProgress(0)
+          return
+        }
+        const max = pane.scrollHeight - pane.clientHeight
+        setProgress(max > 0 ? Math.min(1, pane.scrollTop / max) : 0)
       })
     }
     onScroll()
+
+    if (pane) pane.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('scroll', onScroll, { passive: true })
 
     return () => {
       observer.disconnect()
+      if (pane) pane.removeEventListener('scroll', onScroll)
       window.removeEventListener('scroll', onScroll)
       if (frame) window.cancelAnimationFrame(frame)
     }
@@ -68,22 +84,18 @@ export default function App() {
               <span style={{ transform: `scaleX(${progress})` }} />
             </div>
 
-            <Nav activeSection={activeSection} />
-
-            <main>
+            <IDEShell activeSection={activeSection}>
               <Hero />
               <About />
               <ContributionGraph />
-              <Skills />
               <Projects />
+              <Skills />
               <Experience />
-              <Education />
               <AIExperiments />
+              <Education />
               <Certifications />
               <Contact />
-            </main>
-
-            <Footer />
+            </IDEShell>
           </>
         </ErrorBoundary>
       )}

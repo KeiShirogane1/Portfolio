@@ -1,5 +1,5 @@
 export const experience = {
-  eyebrow: '05 — Experience',
+  eyebrow: '06 \u2014 Experience',
   role: 'Customer-facing service role',
   workplace: 'Big Brew Milkteashop',
   duration: '3 years',
@@ -35,7 +35,7 @@ export const internshipWork = {
 }
 
 export const education = {
-  eyebrow: '06 — Education',
+  eyebrow: '08 \u2014 Education',
   degree: 'Bachelor of Science in Information Technology',
   school: 'Arellano University – Andres Bonifacio Campus',
   standing: 'Fourth-year student',

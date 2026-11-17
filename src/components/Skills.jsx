@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { skillCategories } from '../data/skills.js'
 import SplitText from './SplitText.jsx'
 import useRevealGroup from '../hooks/useRevealGroup.js'
+import { eyebrow } from '../data/sections.js'
 
 export default function Skills() {
   const ref = useRevealGroup()
@@ -26,7 +27,7 @@ export default function Skills() {
     <section id="skills" className="section" aria-labelledby="skills-title" ref={ref}>
       <div className="shell">
         <div className="sectionHead reveal">
-          <span className="eyebrow">03 — Technical Skills</span>
+          <span className="eyebrow">{eyebrow('skills')}</span>
           <h2 id="skills-title" className="splitText reveal" style={{ '--reveal-delay': '60ms' }}>
             <SplitText text="The stack I build with." mode="chars" step="34ms" />
           </h2>

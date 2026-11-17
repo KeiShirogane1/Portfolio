@@ -9,6 +9,7 @@ import './styles/sections.css'
 import './styles/motion.css'
 import './styles/share.css'
 import './styles/hero.css'
+import './styles/ide.css'
 import './styles/contribution.css'
 
 createRoot(document.getElementById('root')).render(

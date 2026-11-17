@@ -1,0 +1,606 @@
+/* ============================================================
+   IDE SHELL — VS Code style chrome for the whole portfolio
+   ------------------------------------------------------------
+   Structure:  activity bar | explorer | editor (tabs, crumbs,
+   scrolling viewport, status bar).  The page content scrolls
+   inside .ide__viewport; the chrome never moves.
+   ============================================================ */
+
+:root {
+  --id-editor: #080b12;
+  --id-panel: #0a0e16;
+  --id-bar: #06090f;
+  --id-tabbar: #0b1018;
+  --id-line: rgba(244, 246, 250, 0.075);
+  --id-line-2: rgba(244, 246, 250, 0.14);
+  --id-text: #f4f6fa;
+  --id-muted: #929bad;
+  --id-accent: #548cff;
+  --id-accent-2: #9b70ff;
+  --id-yellow: #e2c08d;
+  --id-orange: #e08a5a;
+  --id-blue: #6aa6ff;
+  --id-hover: rgba(84, 140, 255, 0.08);
+  --id-current: rgba(84, 140, 255, 0.14);
+  --id-chrome-h: 2.25rem;
+  --id-status-h: 1.5rem;
+}
+
+/* ---------- Frame ---------- */
+
+.ide {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 48px 250px minmax(0, 1fr);
+  background: var(--id-editor);
+  overflow: hidden;
+  font-feature-settings: 'liga' 0;
+}
+
+.ide__scrim {
+  display: none;
+}
+
+/* ---------- Activity bar ---------- */
+
+.ide__activity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding-block: 0.4rem 0.6rem;
+  background: var(--id-bar);
+  border-right: 1px solid var(--id-line);
+}
+
+.ide__activityBtn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  border-radius: var(--r-xs);
+  color: var(--id-muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.ide__activityBtn:hover {
+  color: var(--id-text);
+  background: var(--id-hover);
+}
+
+.ide__activityBtn[data-active='true'] {
+  color: var(--id-text);
+  background: var(--id-current);
+}
+
+/* The thin blue rail that marks the active activity, like VS Code's. */
+.ide__activityBtn[data-active='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 40px;
+  background: var(--id-accent);
+}
+
+.ide__activitySpacer {
+  flex: 1;
+}
+
+/* ---------- Explorer ---------- */
+
+.ide__explorer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--id-panel);
+  border-right: 1px solid var(--id-line);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--id-muted);
+}
+
+.ide__explorerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--id-chrome-h);
+  padding-inline: 0.85rem 0.5rem;
+  border-bottom: 1px solid var(--id-line);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  color: var(--id-muted);
+}
+
+.ide__explorerTitle {
+  opacity: 0.85;
+}
+
+.ide__drawerClose {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--id-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+}
+
+.ide__panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-block: 0.35rem;
+}
+
+.ide__panelHead {
+  padding-inline: 0.7rem;
+}
+
+.ide__panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--id-text);
+  font-weight: 500;
+}
+
+.ide__treeToggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ide__chevron {
+  color: var(--id-muted);
+  transition: transform var(--dur-fast) var(--ease);
+  flex: none;
+}
+
+.ide__chevron[data-open='true'] {
+  transform: rotate(90deg);
+}
+
+.ide__tree {
+  overflow: hidden;
+  transition: max-height var(--dur) var(--ease);
+}
+
+.ide__tree[data-open='false'] {
+  max-height: 0;
+}
+
+.ide__treeGroup {
+  padding-left: 0.55rem;
+}
+
+.ide__treeGroupHead {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  color: var(--id-text);
+}
+
+.ide__fileList {
+  padding-left: 0.95rem;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  transition: max-height var(--dur) var(--ease);
+}
+
+.ide__fileList[data-open='false'] {
+  max-height: 0;
+  padding-block: 0;
+}
+
+.ide__file {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.32rem 0.5rem 0.32rem 0.45rem;
+  background: none;
+  border: 0;
+  border-left: 2px solid transparent;
+  color: var(--id-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.ide__file:hover {
+  background: var(--id-hover);
+  color: var(--id-text);
+}
+
+.ide__file[data-current='true'] {
+  background: var(--id-current);
+  border-left-color: var(--id-accent);
+  color: var(--id-text);
+}
+
+.ide__fileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ide__fileDot {
+  margin-left: auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--id-accent);
+  box-shadow: 0 0 8px rgba(84, 140, 255, 0.8);
+  flex: none;
+}
+
+.ide__fileIcon {
+  flex: none;
+  width: 13px;
+  height: 13px;
+}
+
+.ide__treeLeaf {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.5rem 0.32rem 1.45rem;
+  color: var(--id-muted);
+  opacity: 0.75;
+}
+
+.ide__explorerFoot {
+  border-top: 1px solid var(--id-line);
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ide__sideBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--r-sm);
+  color: var(--id-text);
+  background: rgba(84, 140, 255, 0.14);
+  border: 1px solid rgba(84, 140, 255, 0.35);
+  font-size: 0.72rem;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.ide__sideBtn:hover {
+  background: rgba(84, 140, 255, 0.24);
+  border-color: rgba(84, 140, 255, 0.6);
+}
+
+.ide__sideBtn--ghost {
+  background: transparent;
+  border-color: var(--id-line-2);
+  color: var(--id-muted);
+  font-size: 0.68rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* ---------- Editor column ---------- */
+
+.ide__editor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--id-editor);
+}
+
+.ide__tabs {
+  display: flex;
+  align-items: stretch;
+  height: var(--id-chrome-h);
+  background: var(--id-tabbar);
+  border-bottom: 1px solid var(--id-line);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  overflow: hidden;
+}
+
+.ide__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-inline: 0.85rem 0.7rem;
+  color: var(--id-text);
+  background: var(--id-editor);
+  border-right: 1px solid var(--id-line);
+  border-top: 1px solid var(--id-accent);
+  white-space: nowrap;
+}
+
+.ide__tabName {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ide__tabMark {
+  margin-left: 0.4rem;
+  color: var(--id-muted);
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.ide__tabFade {
+  flex: 1;
+  background: var(--id-tabbar);
+}
+
+/* Menu button that opens the explorer drawer. Hidden on wide screens, where
+   the explorer is already docked open. */
+.ide__tabsToggle {
+  display: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 100%;
+  flex: none;
+  background: none;
+  border: 0;
+  border-right: 1px solid var(--id-line);
+  color: var(--id-text);
+  cursor: pointer;
+}
+
+.ide__tabsToggle:hover {
+  background: var(--id-hover);
+}
+
+/* The old full-page scroll bar is now a hairline at the very top of the
+   editor pane, under the tab row, never across the chrome. */
+.progress {
+  position: absolute;
+  inset: var(--id-chrome-h) 0 auto 0;
+  z-index: 20;
+  height: 2px;
+}
+
+.ide__crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 1.85rem;
+  padding-inline: 0.9rem;
+  border-bottom: 1px solid var(--id-line);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--id-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ide__crumbFile {
+  color: var(--id-text);
+}
+
+.ide__crumbSep {
+  opacity: 0.5;
+}
+
+.ide__crumbSymbol {
+  color: var(--id-yellow);
+}
+
+/* The scrolling pane. This is the only thing that moves. */
+.ide__viewport {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scrollbar-color: rgba(84, 140, 255, 0.45) transparent;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+.ide__viewport::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ide__viewport::-webkit-scrollbar-thumb {
+  background: rgba(84, 140, 255, 0.35);
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Content spacing inside the editor: the old 8rem section padding is far too
+   tall once the chrome eats the top of the screen. */
+.ide__viewport .section {
+  padding-block: clamp(2.75rem, 5vw, 4.5rem);
+  scroll-margin-top: 0.5rem;
+}
+
+.ide__viewport .section::before {
+  inset-inline: 0;
+}
+
+/* The hero used to be a full 100svh page. Inside the editor pane, which is
+   shorter than the window by the chrome height, that pushed its lower half
+   out of the first screen, so it now hugs its own content. */
+.ide__viewport .hero {
+  min-height: auto;
+  padding-block: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+/* ---------- Status bar ---------- */
+
+.ide__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: var(--id-status-h);
+  padding-inline: 0.5rem 0.75rem;
+  background: #0a1220;
+  border-top: 1px solid rgba(84, 140, 255, 0.32);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--id-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ide__statusLeft,
+.ide__statusRight {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.ide__statusItem {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ide__statusBranch {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--id-accent);
+}
+
+.ide__statusBtn {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.25rem;
+  background: none;
+  border: 0;
+  color: var(--id-muted);
+  cursor: pointer;
+  border-radius: var(--r-xs);
+}
+
+.ide__statusBtn:hover {
+  color: var(--id-text);
+  background: var(--id-hover);
+}
+
+.ide__statusBell {
+  color: var(--id-accent-2);
+}
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1100px) {
+  .ide {
+    grid-template-columns: 44px 220px minmax(0, 1fr);
+  }
+
+  .ide__statusHide {
+    display: none;
+  }
+}
+
+/* ---------- Phone: explorer becomes a drawer ---------- */
+
+@media (max-width: 900px) {
+  .ide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ide__activity {
+    display: none;
+  }
+
+  .ide__explorer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(290px, 86vw);
+    z-index: 40;
+    transform: translateX(-102%);
+    transition: transform 260ms var(--ease);
+    border-right: 1px solid var(--id-line-2);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .ide[data-explorer='true'] .ide__explorer {
+    transform: none;
+  }
+
+  .ide__drawerClose {
+    display: block;
+  }
+
+  .ide__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(4, 6, 10, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms var(--ease);
+  }
+
+  .ide[data-explorer='true'] .ide__scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .ide__status {
+    height: 2rem;
+    font-size: 0.66rem;
+  }
+
+  .ide__statusBtn {
+    width: 2.75rem;
+    height: 2rem;
+  }
+
+  /* A visible menu affordance inside the tab row, so the drawer is discoverable
+     without hunting for the status button. */
+  .ide__tabsToggle {
+    display: grid;
+  }
+
+  .ide__tabName {
+    max-width: 52vw;
+  }
+
+  .ide__crumbs {
+    display: none;
+  }
+
+  .ide__viewport .section {
+    padding-block: 2.25rem;
+  }
+}
+
+@media (min-width: 901px) {
+  .ide__tabsToggle {
+    display: none;
+  }
+}
+
+/* The drawer must never trap scroll behind it. */
+.ide[data-explorer='true']::after {
+  content: '';
+}

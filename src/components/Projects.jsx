@@ -4,6 +4,7 @@ import SplitText from './SplitText.jsx'
 import useCardDepth from '../hooks/useCardDepth.js'
 import useMagnetic from '../hooks/useMagnetic.js'
 import useRevealGroup from '../hooks/useRevealGroup.js'
+import { eyebrow } from '../data/sections.js'
 
 /* ---------------------------------------------------------------- card --- */
 
@@ -348,7 +349,7 @@ export default function Projects() {
     <section id="projects" className="section" aria-labelledby="projects-title" ref={ref}>
       <div className="shell">
         <div className="sectionHead reveal">
-          <span className="eyebrow">04 — Selected Work</span>
+          <span className="eyebrow">{eyebrow('projects')}</span>
           <h2 id="projects-title" className="splitText reveal">
             <SplitText text="Products, experiments, and software I've helped build." mode="words" step="40ms" />
           </h2>

@@ -16,7 +16,6 @@
 .contrib {
   position: relative;
   padding: var(--section-y) var(--gutter);
-  background: var(--bg);
   color: var(--white);
   isolation: isolate;
 }
@@ -254,6 +253,15 @@
   white-space: nowrap;
 }
 
+/* Narrow screens squeeze the week columns until neighbouring month labels
+   touch and read as one word ("NOVDEC"). Alternating labels are hidden there
+   so the remaining ones stay readable. */
+@media (max-width: 720px) {
+  .contrib__month--alt {
+    display: none;
+  }
+}
+
 .contrib__body {
   display: grid;
   grid-template-columns: var(--contrib-gutter, 1.85rem) minmax(0, 1fr);
@@ -302,9 +310,6 @@
   min-width: 0;
   height: var(--contrib-cell, 12px);
   border-radius: 2px;
-  border: 1px solid transparent;
-  transition: transform var(--dur-fast) var(--ease),
-    filter var(--dur-fast) var(--ease);
 }
 
 .contrib__cell.is-empty {
@@ -312,31 +317,23 @@
 }
 
 .contrib__cell.is-0 {
-  background: #161d2c;
-  box-shadow: inset 0 0 0 1px rgba(244, 246, 250, 0.05);
+  background: #1b2233;
 }
 
 .contrib__cell.is-1 {
-  background: rgba(84, 140, 255, 0.24);
+  background: #2e4a86;
 }
 
 .contrib__cell.is-2 {
-  background: rgba(84, 140, 255, 0.46);
+  background: #4a6fd4;
 }
 
 .contrib__cell.is-3 {
-  background: rgba(120, 118, 255, 0.72);
+  background: #7a5ce0;
 }
 
 .contrib__cell.is-4 {
   background: var(--violet);
-  box-shadow: 0 0 8px rgba(155, 112, 255, 0.5);
-}
-
-.contrib__cell:hover {
-  transform: scale(1.06);
-  filter: brightness(1.18);
-  z-index: 2;
 }
 
 /* ---------- footer ---------- */
@@ -368,6 +365,33 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.contrib__legend-separator {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+/* Off-GitHub work days — same cell size, different fill, so they never read
+   as a GitHub contribution count. */
+.contrib__legend-label--off {
+  color: rgba(255, 190, 60, 0.85);
+}
+
+.contrib__cell--off-github {
+  background: rgba(255, 190, 60, 0.28);
+  border: 1px solid rgba(255, 190, 60, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 190, 60, 0.35);
+}
+
+.contrib__cell--off-github:hover {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+  border-color: rgba(255, 210, 120, 0.75);
 }
 
 .contrib__meta {
@@ -479,4 +503,65 @@
   .contrib__cell {
     transition: none;
   }
+}
+
+
+/* ---------- contribution data refresh status ---------- */
+.contrib__status {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: var(--space-6);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  border: 1px solid rgba(84, 140, 255, 0.24);
+  border-radius: var(--r-md);
+  background:
+    radial-gradient(circle at 95% 5%, rgba(155, 112, 255, 0.10), transparent 42%),
+    var(--bg-2);
+  color: var(--white);
+}
+
+.contrib__status-kicker {
+  color: var(--electric-blue);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.contrib__status strong {
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
+.contrib__status p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.contrib__status a {
+  width: fit-content;
+  color: var(--electric-blue);
+  text-decoration: none;
+}
+
+.contrib__status a:hover {
+  text-decoration: underline;
+}
+
+.contrib__totals--pending {
+  min-width: 15rem;
+}
+
+.contrib__pending-value {
+  font-size: clamp(1.8rem, 3.5vw, 2.35rem);
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.contrib__account-privacy {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  color: var(--muted);
+  white-space: nowrap;
 }

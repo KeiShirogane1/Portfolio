@@ -3,7 +3,7 @@
  * a trained or developed model.
  */
 export const aiIntro = {
-  eyebrow: '07 — AI & Experiments',
+  eyebrow: '07 \u2014 AI & Experiments',
   heading: 'Using AI as a tool, not a claim.',
   body:
     'I explore how AI fits into real development work: connecting language-model APIs into applications, directing AI coding agents through a build, and writing prompts that produce something usable. This is practice and experimentation, not model development — I have not trained or published an AI model.'

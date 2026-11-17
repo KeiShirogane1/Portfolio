@@ -1,0 +1,59 @@
+name: Refresh GitHub contribution graph
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 2 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-contribution-graph
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out portfolio
+        uses: actions/checkout@v4
+        with:
+          ref: bbmain
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify both account tokens are configured
+        env:
+          KEI_READ_USER_TOKEN: ${{ secrets.KEI_READ_USER_TOKEN }}
+          QWERNFC_READ_USER_TOKEN: ${{ secrets.QWERNFC_READ_USER_TOKEN }}
+        run: |
+          if [ -z "$KEI_READ_USER_TOKEN" ]; then
+            echo "::error::Add KEI_READ_USER_TOKEN in Settings > Secrets and variables > Actions. It must be a classic PAT created by KeiShirogane1 with read:user scope."
+            exit 1
+          fi
+          if [ -z "$QWERNFC_READ_USER_TOKEN" ]; then
+            echo "::error::Add QWERNFC_READ_USER_TOKEN in Settings > Secrets and variables > Actions. It must be a classic PAT created by TheNFCGuy with read:user scope."
+            exit 1
+          fi
+
+      - name: Fetch official daily contribution calendars
+        env:
+          KEI_READ_USER_TOKEN: ${{ secrets.KEI_READ_USER_TOKEN }}
+          QWERNFC_READ_USER_TOKEN: ${{ secrets.QWERNFC_READ_USER_TOKEN }}
+        run: node tools/fetch-contributions.mjs
+
+      - name: Commit refreshed calendar
+        run: |
+          if git diff --quiet -- src/data/contributions.js; then
+            echo "Contribution data is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/contributions.js
+          git commit -m "chore: refresh GitHub contribution calendar"
+          git push origin HEAD:bbmain

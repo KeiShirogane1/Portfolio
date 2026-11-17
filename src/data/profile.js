@@ -39,7 +39,7 @@ export const navLinks = [
 ]
 
 export const about = {
-  eyebrow: '02 — Identity',
+  eyebrow: '02 \u2014 Identity',
   heading: 'A fourth-year IT student who builds things that run.',
   intro:
     'I am Mark John Rey F. Mana-ay, a fourth-year Bachelor of Science in Information Technology student at Arellano University – Andres Bonifacio Campus, and an aspiring software developer. I like the part of the work where an unclear problem slowly becomes a clear, working system.',
