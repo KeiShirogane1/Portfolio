@@ -59,12 +59,13 @@ export default function Nav({ activeSection }) {
           </a>
 
           <nav className="nav__links" aria-label="Primary">
-            {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
               <a
                 key={link.id}
                 href={`#${link.id}`}
                 className="nav__link"
                 data-current={activeSection === link.id}
+                style={{ '--breath-delay': `${i * 0.19}s` }}
               >
                 <span className="nav__linkIndex">{link.index}</span>
                 <span>{link.label}</span>
@@ -75,11 +76,12 @@ export default function Nav({ activeSection }) {
           <div className="nav__actions">
             <button
               type="button"
-              className="nav__share"
+              className="nav__share breath-border"
               onClick={() => setShareOpen(true)}
               aria-label="Share this portfolio"
               aria-haspopup="dialog"
               title="Share this portfolio"
+              style={{ '--breath-delay': '0.42s' }}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none">
                 <path
@@ -92,7 +94,7 @@ export default function Nav({ activeSection }) {
               </svg>
               <span className="nav__shareText">Share</span>
             </button>
-            <a className="nav__cta" href="#contact">
+            <a className="nav__cta breath-border" href="#contact" style={{ '--breath-delay': '0.5s' }}>
               Hire / Intern
             </a>
             <button

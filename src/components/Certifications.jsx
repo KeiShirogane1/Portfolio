@@ -74,8 +74,8 @@ export default function Certifications() {
           {certifications.map((cert, i) => (
             <article
               key={cert.index}
-              className="certs__card panel reveal"
-              style={{ '--reveal-delay': `${i * 80}ms` }}
+              className="certs__card panel breath-border reveal"
+              style={{ '--reveal-delay': `${i * 80}ms`, '--breath-delay': `${i * 0.16}s` }}
             >
               <button
                 type="button"

@@ -9,8 +9,8 @@ export const GITHUB_ACCOUNTS = [
   {
     "login": "KeiShirogane1",
     "label": "Main",
-    "total": 2285,
-    "activeDays": 52,
+    "total": 2327,
+    "activeDays": 53,
     "privateContributionCountsShared": false,
     "restrictedContributionsCount": 0
   },
@@ -28,12 +28,12 @@ export const GITHUB_USER = "KeiShirogane1"
 
 export const contributions = {
   "source": "github-graphql",
-  "generatedAt": "2026-11-15T21:17:37.916Z",
-  "windowStart": "2025-11-16",
-  "windowEnd": "2026-11-15",
-  "total": 3399,
-  "activeDays": 67,
-  "emptyDays": 298,
+  "generatedAt": "2026-11-17T10:40:35.789Z",
+  "windowStart": "2025-11-18",
+  "windowEnd": "2026-11-17",
+  "total": 3441,
+  "activeDays": 68,
+  "emptyDays": 297,
   "bestDay": {
     "date": "2026-10-11",
     "count": 237
@@ -127,8 +127,8 @@ export const contributions = {
     {
       "login": "KeiShirogane1",
       "label": "Main",
-      "total": 2285,
-      "activeDays": 52,
+      "total": 2327,
+      "activeDays": 53,
       "privateContributionCountsShared": false,
       "restrictedContributionsCount": 0
     },
@@ -142,18 +142,6 @@ export const contributions = {
     }
   ],
   "days": [
-    {
-      "date": "2025-11-16",
-      "weekday": 0,
-      "count": 0,
-      "level": 0
-    },
-    {
-      "date": "2025-11-17",
-      "weekday": 1,
-      "count": 0,
-      "level": 0
-    },
     {
       "date": "2025-11-18",
       "weekday": 2,
@@ -1880,7 +1868,7 @@ export const contributions = {
       "date": "2026-09-01",
       "weekday": 2,
       "count": 14,
-      "level": 2
+      "level": 1
     },
     {
       "date": "2026-09-02",
@@ -1994,7 +1982,7 @@ export const contributions = {
       "date": "2026-09-20",
       "weekday": 0,
       "count": 41,
-      "level": 3
+      "level": 2
     },
     {
       "date": "2026-09-21",
@@ -2252,9 +2240,7 @@ export const contributions = {
       "date": "2026-11-02",
       "weekday": 1,
       "count": 0,
-      "level": 0,
-      "offGithub": true,
-      "offGithubNote": "TimeCapsule analysis, QwerNFC comparison, Agent spec search",
+      "level": 0
     },
     {
       "date": "2026-11-03",
@@ -2278,9 +2264,7 @@ export const contributions = {
       "date": "2026-11-06",
       "weekday": 5,
       "count": 0,
-      "level": 0,
-      "offGithub": true,
-      "offGithubNote": "OmniRoute CLI installation check, version 3.8.50 verification, environment-variable/config diagnostics",
+      "level": 0
     },
     {
       "date": "2026-11-07",
@@ -2335,6 +2319,18 @@ export const contributions = {
       "weekday": 0,
       "count": 1,
       "level": 1
+    },
+    {
+      "date": "2026-11-16",
+      "weekday": 1,
+      "count": 42,
+      "level": 3
+    },
+    {
+      "date": "2026-11-17",
+      "weekday": 2,
+      "count": 0,
+      "level": 0
     }
   ]
 }

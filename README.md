@@ -110,32 +110,30 @@ position with no animation.
 
 ---
 
-## 5. Activity grid — real GitHub data
+## 5. Activity grid — official GitHub GraphQL data
 
-The "Code Contributions" card shows **your real GitHub contributions**, not a decorative
-pattern. The data is a generated snapshot in `src/data/contributions.js`.
+The "Code Contributions" section is generated from GitHub's official GraphQL contribution calendars for **KeiShirogane1** and **TheNFCGuy**. Daily counts are merged by date, and all visible totals (combined total, account totals, active days and busiest days) are calculated from the same daily data.
 
-Refresh it whenever you want the card to catch up with your profile:
+The refresh script is:
 
 ```bash
-cd portfolio
 node tools/fetch-contributions.mjs
 ```
 
-What it does: reads your public contribution calendar (the same one your profile shows), keeps
-the trailing 53 weeks, and writes the day-by-day totals plus the month labels. The card's total,
-active-day count and busiest day all come from that file — nothing is estimated.
+It requires two separate classic GitHub Personal Access Tokens, each with only the `read:user` scope:
 
-Where the numbers come from: GitHub's calendar exposes per-day **levels** (0–4) and the counts
-behind its own tooltips. The script cross-checked them against your profile page — 1,895
-contributions over 50 active days in the current window.
+- `KEI_READ_USER_TOKEN`: create while signed in as `KeiShirogane1`.
+- `QWERNFC_READ_USER_TOKEN`: create while signed in as `TheNFCGuy`.
 
-A note on the empty months: your graph is concentrated between August and November because the
-private QwerNFC repositories do not report contributions to the public calendar unless you turn
-that on (**Profile → Contribution settings → "Include private contributions on my profile"**).
-Until you enable that, the public card only shows what GitHub can attribute.
+Add both as repository Actions secrets in **KeiShirogane1/Portfolio** under **Settings → Secrets and variables → Actions**, using those exact names. GitHub does not allow custom Actions secret names beginning with `GITHUB_`.
 
----
+Each account's token authenticates the request for that same account. This is necessary to request private/internal contribution counts for both account owners; each account must also opt to share private contribution counts in its own GitHub profile settings. GitHub's GraphQL API returns aggregated daily counts, not private repository names.
+
+A scheduled GitHub Actions workflow refreshes the data daily and can also be run manually from the Actions tab:
+
+`.github/workflows/refresh-contributions.yml`
+
+The old third-party-mirror snapshot remains hidden. The generator changes the source marker to `github-graphql` only after both accounts' daily totals validate successfully.
 
 ## 6. Motion system
 

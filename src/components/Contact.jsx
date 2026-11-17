@@ -104,7 +104,7 @@ export default function Contact() {
 
         <div className="contact__grid">
           <div className="contact__info">
-            <div className="contact__card panel reveal">
+            <div className="contact__card panel breath-border reveal" style={{ '--breath-delay': '0.05s' }}>
               <span className="mono">Direct email</span>
               <button type="button" className="contact__email" onClick={copyEmail} aria-live="polite">
                 {profile.email}
@@ -124,10 +124,10 @@ export default function Contact() {
               </a>
             </div>
 
-            <div className="contact__card panel reveal" style={{ '--reveal-delay': '90ms' }}>
+            <div className="contact__card panel breath-border reveal" style={{ '--reveal-delay': '90ms', '--breath-delay': '0.18s' }}>
               <span className="mono">Resume</span>
               <p>One page, listing the same projects and skills shown here. Updated {profile.resumeUpdated}.</p>
-              <a className="btn btn--ghost contact__resume" href={profile.resumeHref} download={profile.resumeFileName}>
+              <a className="btn btn--ghost contact__resume breath-border" href={profile.resumeHref} download={profile.resumeFileName} style={{ '--breath-delay': '0.28s' }}>
                 Download Resume
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
                   <path d="M6 2v7M3 6.5L6 9.5l3-3M2 11h8" fill="none" stroke="currentColor" strokeWidth="1.3" />
@@ -135,7 +135,7 @@ export default function Contact() {
               </a>
             </div>
 
-            <div className="contact__card panel reveal" style={{ '--reveal-delay': '140ms' }}>
+            <div className="contact__card panel breath-border reveal" style={{ '--reveal-delay': '140ms', '--breath-delay': '0.31s' }}>
               <span className="mono">Elsewhere</span>
               <ul className="contact__socials">
                 <li>
@@ -246,7 +246,7 @@ export default function Contact() {
             </div>
 
             <div className="contact__formFoot">
-              <button type="submit" className="btn btn--primary">
+              <button type="submit" className="btn btn--primary breath-border" style={{ '--breath-delay': '0.05s' }}>
                 Send Message
                 <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
                   <path d="M2 10L10 2M4 2h6v6" fill="none" stroke="currentColor" strokeWidth="1.4" />
@@ -260,21 +260,22 @@ export default function Contact() {
             {composed && (
               <div className="contact__fallback">
                 <span className="mono">Not on Gmail, or the tab did not open?</span>
-                <div className="contact__fallbackActions">
-                  <a
-                    className="contact__fallbackBtn"
-                    href={gmailHrefFor(composed.subject, composed.body)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    Open Gmail again
-                  </a>
-                  <button type="button" className="contact__fallbackBtn" onClick={copyMessage}>
-                    Copy the message
-                  </button>
-                  <a className="contact__fallbackBtn" href={mailtoHrefFor(composed.subject, composed.body)}>
-                    Use your mail app
-                  </a>
+                  <div className="contact__fallbackActions">
+                    <a
+                      className="contact__fallbackBtn breath-border"
+                      href={gmailHrefFor(composed.subject, composed.body)}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      style={{ '--breath-delay': '0.42s' }}
+                    >
+                      Open Gmail again
+                    </a>
+                    <button type="button" className="contact__fallbackBtn breath-border" onClick={copyMessage} style={{ '--breath-delay': '0.5s' }}>
+                      Copy the message
+                    </button>
+                    <a className="contact__fallbackBtn breath-border" href={mailtoHrefFor(composed.subject, composed.body)} style={{ '--breath-delay': '0.58s' }}>
+                      Use your mail app
+                    </a>
                 </div>
               </div>
             )}

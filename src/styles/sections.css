@@ -149,18 +149,7 @@
   position: relative;
 }
 
-.skills__tab::before {
-  content: attr(data-key);
-  position: absolute;
-  left: -0.55rem;
-  top: 50%;
-  transform: translatey(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: rgba(244, 246, 250, 0.14);
-  letter-spacing: 0.14em;
-}
+/* Category index is rendered once in JSX; no pseudo-element duplicate. */
 
 .skills__tab:hover {
   border-color: var(--stroke-hover);
@@ -168,10 +157,13 @@
 }
 
 .skills__tabIndex {
+  display: inline-block;
+  min-width: 2.1rem;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  color: rgba(146, 155, 173, 0.65);
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  color: rgba(146, 155, 173, 0.72);
   transition: color var(--dur-fast) var(--ease-soft);
 }
 
@@ -244,22 +236,45 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.55rem 0.85rem;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
   border: 1px solid var(--ink);
   border-radius: var(--radius-full);
-  background: rgba(244, 246, 250, 0.02);
-  font-size: 0.85rem;
+  background: rgba(16, 21, 34, 0.55);
+  backdrop-filter: blur(6px);
+  font-size: 0.8rem;
+  font-weight: 500;
   color: rgba(244, 246, 250, 0.9);
   animation: chipIn 400ms var(--ease) both;
   animation-delay: calc(var(--i) * 40ms);
   transition: border-color var(--dur-fast) var(--ease-soft),
-    background-color var(--dur-fast) var(--ease-soft);
+    background-color var(--dur-fast) var(--ease-soft),
+    box-shadow var(--dur-fast) var(--ease-soft);
 }
 
 .skills__chips li:hover {
   border-color: var(--stroke-hover);
-  background: rgba(84, 140, 255, 0.06);
+  background: rgba(84, 140, 255, 0.08);
+  box-shadow: 0 0 12px rgba(84, 140, 255, 0.15);
+}
+
+.skills__chipIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.skills__chipIcon img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.skills__chipLabel {
+  font-weight: 500;
 }
 
 .skills__chipBar {
@@ -302,6 +317,90 @@
 @media (max-width: 760px) {
   .skills__grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================
+   Breathing border glow — reusable across bordered surfaces
+   ============================================================ */
+
+.breath-border {
+  position: relative;
+  z-index: 1;
+}
+
+.breath-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  z-index: -1;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    var(--breath-blue),
+    var(--breath-violet),
+    var(--breath-cyan),
+    var(--breath-blue)
+  );
+  background-size: 200% 200%;
+  animation: borderBreath var(--breath-dur) ease-in-out infinite;
+  animation-delay: var(--breath-delay, 0s);
+  pointer-events: none;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
+}
+
+.breath-border:hover {
+  animation-duration: 3.5s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breath-border::before {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
+/* ============================================================
+   Slow ambient breath on the html background
+   ============================================================ */
+
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(84, 140, 255, 0.10),
+    rgba(155, 112, 255, 0.08),
+    rgba(95, 205, 255, 0.08),
+    transparent 70%
+  );
+  background-size: 200% 200%;
+  animation: htmlBreath var(--breath-bg-dur) ease-in-out infinite;
+}
+
+@keyframes htmlBreath {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::before {
+    animation: none;
+    opacity: 0.4;
   }
 }
 
