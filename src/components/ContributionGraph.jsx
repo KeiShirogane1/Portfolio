@@ -88,23 +88,29 @@ export default function ContributionGraph() {
           </div>
 
 {isOfficialSnapshot ? (
-            <div className="contrib__totals">
-              <span className="contrib__total-value">{total.toLocaleString('en-US')}</span>
-              <span className="contrib__total-label">contributions in the last year</span>
-              <ul className="contrib__accounts">
-                {GITHUB_ACCOUNTS.map((account) => (
-                  <li key={account.login} className="contrib__account">
-                    <a href={`https://github.com/${account.login}`} target="_blank" rel="noopener noreferrer" className="contrib__account-link">
-                      {account.login}
-                      <span className="contrib__account-count">{account.total.toLocaleString('en-US')}</span>
-                    </a>
-                    <span className="contrib__account-privacy">
-                      {account.privateContributionCountsShared ? 'private included' : 'private counts not reported'}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <>
+              <div className="contrib__totals">
+                <span className="contrib__total-value">{total.toLocaleString('en-US')}</span>
+                <span className="contrib__total-label">contributions in the last year</span>
+                <ul className="contrib__accounts">
+                  {GITHUB_ACCOUNTS.map((account) => (
+                    <li key={account.login} className="contrib__account">
+                      <a href={`https://github.com/${account.login}`} target="_blank" rel="noopener noreferrer" className="contrib__account-link">
+                        {account.login}
+                        <span className="contrib__account-count">{account.total.toLocaleString('en-US')}</span>
+                      </a>
+                      <span className="contrib__account-privacy">
+                        {account.privateContributionCountsShared ? 'private included' : 'private counts not reported'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <p className="contrib__live">
+                <span className="contrib__live-dot" aria-hidden="true">●</span>
+                Live connection — KeiShirogane1 + TheNFCGuy (QwerNFC), refreshed daily at midnight (Manila time).
+              </p>
+            </>
           ) : (
             <div className="contrib__totals contrib__totals--pending">
               <span className="contrib__total-label">official refresh required</span>
@@ -112,7 +118,7 @@ export default function ContributionGraph() {
               <span className="contrib__total-label">waiting for verified GitHub data</span>
             </div>
           )}
-        </div>
+        </header>
 
         {isOfficialSnapshot ? (
           <div

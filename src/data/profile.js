@@ -20,9 +20,9 @@ export const profile = {
   // irises on their own transparent layer that slides with the cursor.
   portraitBase: '/portrait-base.png',
   portraitIris: '/portrait-iris.png',
-  // Latest resume: public/resume/Mark-John-Rey-F-Mana-ay-Resume.pdf
-  resumeHref: '/resume/Mark-John-Rey-F-Mana-ay-Resume.pdf',
-  resumeFileName: 'Mark-John-Rey-F-Mana-ay-Resume.pdf',
+  // Latest resume: public/resume/mark-john-rey-mana-ay-resume.pdf
+  resumeHref: '/resume/mark-john-rey-mana-ay-resume.pdf',
+  resumeFileName: 'mark-john-rey-mana-ay-resume.pdf',
   resumeUpdated: 'November 13, 2026'
 }
 

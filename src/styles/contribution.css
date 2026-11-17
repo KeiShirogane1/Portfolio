@@ -146,6 +146,32 @@
   font-weight: 600;
 }
 
+/* Live-connection status line under the totals box. */
+.contrib__live {
+  margin: var(--space-3) var(--space-5) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  color: var(--electric-blue);
+}
+
+.contrib__live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--electric-blue);
+  box-shadow: 0 0 6px var(--electric-blue);
+  animation: contrib-pulse 2s infinite;
+}
+
+@keyframes contrib-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 /* ---------- busiest days ---------- */
 
 .contrib__peaks {
