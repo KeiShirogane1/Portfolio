@@ -80,6 +80,8 @@ export default function ContributionGraph() {
   const { total, activeDays, emptyDays, bestDay, busiestDays } = contributions
   const allDays = activeDays + emptyDays
   const isOfficialSnapshot = contributions.source === 'github-graphql'
+  const syncAge = syncAgeHours(contributions.generatedAt)
+  const syncIsStale = !Number.isFinite(syncAge) || syncAge > 36
 
   // `rendered` collects the labels that actually get printed, so two months
   // assigned to the same week column never print on top of each other.
@@ -120,30 +122,15 @@ export default function ContributionGraph() {
                   ))}
                 </ul>
               </div>
-              <p className="contrib__live">
-                <span
-                  className="contrib__live-dot"
-                  aria-hidden="true"
-                  style={{
-                    background:
-                      syncAgeHours(contributions.generatedAt) <= 48
-                        ? 'var(--electric-blue)'
-                        : 'var(--muted)',
-                    boxShadow:
-                      syncAgeHours(contributions.generatedAt) <= 48
-                        ? '0 0 6px var(--electric-blue)'
-                        : '0 0 6px var(--muted)'
-                  }}
-                />
-                {syncAgeHours(contributions.generatedAt) <= 48 ? (
+              <p className="contrib__live" data-sync-state={syncIsStale ? 'stale' : 'current'}>
+                <span className="contrib__live-dot" aria-hidden="true" />
+                {syncIsStale ? (
                   <>
-                    Live connection — KeiShirogane1 + TheNFCGuy (QwerNFC).{' '}
-                    Last synced {formatManila(contributions.generatedAt)} Manila time.
+                    Sync stale — last successful refresh {formatManila(contributions.generatedAt)} Manila time. Automatic refresh may have failed.
                   </>
                 ) : (
                   <>
-                    Sync stale — KeiShirogane1 + TheNFCGuy (QwerNFC).{' '}
-                    Last synced {formatManila(contributions.generatedAt)} Manila time. Refresh may have failed.
+                    GitHub auto-sync — last successful refresh {formatManila(contributions.generatedAt)} Manila time. Refreshes after portfolio pushes and daily at 12:01 AM Manila.
                   </>
                 )}
               </p>
@@ -263,7 +250,7 @@ export default function ContributionGraph() {
 
         {isOfficialSnapshot && (
           <p className="contrib__note">
-            Official GitHub GraphQL snapshot refreshed {new Date(contributions.generatedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}.
+            Official GitHub GraphQL snapshot refreshed {formatManila(contributions.generatedAt)} Manila time. GitHub profile contribution dates are UTC-based, and qualifying activity can take up to 24 hours to appear; the daily refresh re-fetches the rolling year to backfill delayed counts.
             Private and internal contribution totals are included only when GitHub returns them for the account; each profile must enable private contribution counts and the refresh token must have the read:user scope.
           </p>
         )}
