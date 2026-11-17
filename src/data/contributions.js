@@ -28,9 +28,9 @@ export const GITHUB_USER = "KeiShirogane1"
 
 export const contributions = {
   "source": "github-graphql",
-  "generatedAt": "2026-11-16T09:35:08.739Z",
-  "windowStart": "2025-11-17",
-  "windowEnd": "2026-11-16",
+  "generatedAt": "2026-11-17T10:40:35.789Z",
+  "windowStart": "2025-11-18",
+  "windowEnd": "2026-11-17",
   "total": 3441,
   "activeDays": 68,
   "emptyDays": 297,
@@ -142,12 +142,6 @@ export const contributions = {
     }
   ],
   "days": [
-    {
-      "date": "2025-11-17",
-      "weekday": 1,
-      "count": 0,
-      "level": 0
-    },
     {
       "date": "2025-11-18",
       "weekday": 2,
@@ -2331,6 +2325,12 @@ export const contributions = {
       "weekday": 1,
       "count": 42,
       "level": 3
+    },
+    {
+      "date": "2026-11-17",
+      "weekday": 2,
+      "count": 0,
+      "level": 0
     }
   ]
 }
