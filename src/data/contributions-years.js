@@ -15,10 +15,10 @@ export const CONTRIBUTION_WINDOWS = [
     "hint": "every year from first to latest commit, both accounts",
     "windowStart": "2023-09-03",
     "windowEnd": "2026-11-19",
-    "total": 3474,
-    "activeDays": 76,
-    "offGithubDays": 8,
-    "emptyDays": 1098,
+    "total": 3475,
+    "activeDays": 77,
+    "offGithubDays": 0,
+    "emptyDays": 1097,
     "bestDay": {
       "date": "2026-10-11",
       "count": 237
@@ -27,7 +27,7 @@ export const CONTRIBUTION_WINDOWS = [
       {
         "login": "KeiShirogane1",
         "label": "Main",
-        "total": 2360
+        "total": 2361
       },
       {
         "login": "TheNFCGuy",
@@ -285,7 +285,7 @@ export const CONTRIBUTION_WINDOWS = [
         "date": "2026-08-22",
         "weekday": 6,
         "count": 7,
-        "level": 1
+        "level": 2
       },
       {
         "date": "2026-08-29",
@@ -555,7 +555,7 @@ export const CONTRIBUTION_WINDOWS = [
         "date": "2026-10-14",
         "weekday": 3,
         "count": 64,
-        "level": 3
+        "level": 4
       },
       {
         "date": "2026-10-15",
@@ -591,7 +591,7 @@ export const CONTRIBUTION_WINDOWS = [
         "date": "2026-10-20",
         "weekday": 2,
         "count": 34,
-        "level": 2
+        "level": 3
       },
       {
         "date": "2026-10-21",
@@ -618,80 +618,16 @@ export const CONTRIBUTION_WINDOWS = [
         "level": 2
       },
       {
-        "date": "2026-10-25",
-        "weekday": 0,
-        "count": 0,
-        "offGithub": true,
-        "note": "55 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
         "date": "2026-10-26",
         "weekday": 1,
         "count": 1,
         "level": 1
       },
       {
-        "date": "2026-10-27",
-        "weekday": 2,
-        "count": 0,
-        "offGithub": true,
-        "note": "12 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
-        "date": "2026-10-28",
-        "weekday": 3,
-        "count": 0,
-        "offGithub": true,
-        "note": "56 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
-        "date": "2026-10-29",
-        "weekday": 4,
-        "count": 0,
-        "offGithub": true,
-        "note": "121 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
-        "date": "2026-10-30",
-        "weekday": 5,
-        "count": 0,
-        "offGithub": true,
-        "note": "50 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
         "date": "2026-10-31",
         "weekday": 6,
         "count": 2,
         "level": 1
-      },
-      {
-        "date": "2026-11-02",
-        "weekday": 1,
-        "count": 0,
-        "offGithub": true,
-        "note": "TimeCapsule analysis, QwerNFC comparison, Agent spec search",
-        "level": 0
-      },
-      {
-        "date": "2026-11-03",
-        "weekday": 2,
-        "count": 0,
-        "offGithub": true,
-        "note": "5 local commits in your own repositories, not pushed to GitHub",
-        "level": 0
-      },
-      {
-        "date": "2026-11-06",
-        "weekday": 5,
-        "count": 0,
-        "offGithub": true,
-        "note": "OmniRoute CLI installation check, version 3.8.50 verification, environment-variable/config diagnostics",
-        "level": 0
       },
       {
         "date": "2026-11-07",
@@ -752,13 +688,19 @@ export const CONTRIBUTION_WINDOWS = [
         "weekday": 3,
         "count": 3,
         "level": 1
+      },
+      {
+        "date": "2026-11-19",
+        "weekday": 4,
+        "count": 1,
+        "level": 1
       }
     ]
   }
 ]
 
 export const CONTRIBUTION_META = {
-  "generatedAt": "2026-11-19T13:18:45.052Z",
+  "generatedAt": "2026-11-19T13:59:42.034Z",
   "weekdayLabels": [
     "Sun",
     "Mon",
