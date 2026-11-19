@@ -23,6 +23,11 @@ export default function App() {
      Both observe the editor pane, because that is what scrolls now — the
      window itself never moves. */
   useEffect(() => {
+    /* The editor pane only exists once the boot screen is gone. Running this
+       before that makes the observer fall back to the window, which never
+       scrolls here, so the active file would stay on home forever. */
+    if (!ready) return
+
     const pane = document.querySelector('.ide__viewport')
     const sectionEls = sections
       .map((link) => document.getElementById(link.id))
@@ -71,7 +76,7 @@ export default function App() {
       window.removeEventListener('scroll', onScroll)
       if (frame) window.cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [ready])
 
   return (
     <>
@@ -80,11 +85,14 @@ export default function App() {
       ) : (
         <ErrorBoundary>
           <>
-            <div className="progress" aria-hidden="true">
-              <span style={{ transform: `scaleX(${progress})` }} />
-            </div>
-
-            <IDEShell activeSection={activeSection}>
+            <IDEShell
+              activeSection={activeSection}
+              progressBar={
+                <div className="progress" aria-hidden="true">
+                  <span style={{ transform: `scaleX(${progress})` }} />
+                </div>
+              }
+            >
               <Hero />
               <About />
               <ContributionGraph />

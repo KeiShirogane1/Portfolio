@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { profile } from '../data/profile.js'
 import SplitText from './SplitText.jsx'
 import useRevealGroup from '../hooks/useRevealGroup.js'
-import { eyebrow } from '../data/sections.js'
 
 const EMPTY_FORM = { name: '', email: '', subject: '', message: '' }
 
@@ -92,7 +91,7 @@ export default function Contact() {
     <section id="contact" className="section" aria-labelledby="contact-title" ref={ref}>
       <div className="shell">
         <div className="sectionHead reveal">
-          <span className="eyebrow">{eyebrow('contact')}</span>
+          <span className="eyebrow">10 — Contact</span>
           <h2 id="contact-title" className="splitText reveal" style={{ '--reveal-delay': '80ms' }}>
             <SplitText text="Let&rsquo;s build something worth showing." mode="chars" step="30ms" />
           </h2>

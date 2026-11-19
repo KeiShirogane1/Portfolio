@@ -51,14 +51,20 @@ jobs:
           QWERNFC_READ_USER_TOKEN: ${{ secrets.QWERNFC_READ_USER_TOKEN }}
         run: node tools/fetch-contributions.mjs
 
-      - name: Commit refreshed calendar
+      - name: Rebuild the all-time year graph the page actually reads
+        env:
+          KEI_READ_USER_TOKEN: ${{ secrets.KEI_READ_USER_TOKEN }}
+          QWERNFC_READ_USER_TOKEN: ${{ secrets.QWERNFC_READ_USER_TOKEN }}
+        run: node tools/build-contributions-years.mjs
+
+      - name: Commit refreshed calendars
         run: |
-          if git diff --quiet -- src/data/contributions.js; then
+          if git diff --quiet -- src/data/contributions.js src/data/contributions-years.js; then
             echo "Contribution data is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/contributions.js
+          git add src/data/contributions.js src/data/contributions-years.js
           git commit -m "chore: refresh GitHub contribution calendar"
           git push origin HEAD:bbmain

@@ -702,8 +702,39 @@ html::before {
   gap: 0.6rem;
 }
 
+.projectModal__gallery.isWide .projectModal__shot {
+  aspect-ratio: 16 / 9;
+}
+
+.projectModal__gallery.isPhone .projectModal__shot {
+  aspect-ratio: auto;
+  justify-self: center;
+  width: min(100%, 300px);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.42);
+}
+
+.projectModal__gallery.isPhone .projectModal__shot img {
+  display: block;
+  height: auto;
+  max-height: min(62vh, 620px);
+  object-fit: scale-down;
+}
+
+.projectModal__gallery.isPhone .projectModal__thumb {
+  aspect-ratio: 9 / 19.5;
+  width: 56px;
+}
+
+@media (max-width: 720px) {
+  .projectModal__gallery.isPhone .projectModal__shot {
+    width: min(100%, 260px);
+  }
+}
+
 .projectModal__shot {
   aspect-ratio: 4 / 3;
+  max-height: min(66vh, 700px);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   overflow: hidden;
@@ -716,12 +747,44 @@ html::before {
   object-fit: contain;
 }
 
+.projectModal__shotCaption {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.projectModal__shotCaption .mono {
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+}
+
 .projectModal__thumbs {
   display: flex;
   gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(84, 140, 255, 0.45) transparent;
+}
+
+.projectModal__thumbs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.projectModal__thumbs::-webkit-scrollbar-thumb {
+  background: rgba(84, 140, 255, 0.45);
+  border-radius: 2px;
 }
 
 .projectModal__thumb {
+  flex: 0 0 auto;
   width: 84px;
   aspect-ratio: 16 / 9;
   padding: 0;
@@ -731,6 +794,7 @@ html::before {
   overflow: hidden;
   cursor: pointer;
   opacity: 0.55;
+  scroll-snap-align: start;
   transition: opacity var(--dur-fast) var(--ease-soft), border-color var(--dur-fast) var(--ease-soft);
 }
 

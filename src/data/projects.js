@@ -126,7 +126,27 @@ export const projects = [
       'This is the most far along of the QwerNFC products and it is shown first in the story, but it is not finished — the status is Almost Done, not Complete.',
       'Deeper workflow documentation is still being finalised, so the feature list above stops where confirmed behaviour stops.'
     ],
-    images: ['/projects/greview/greview-card.jpg?v=2'],
+    images: [
+      '/projects/greview/greview-locations.jpg',
+      '/projects/greview/greview-codes.jpg',
+      '/projects/greview/greview-recover.jpg',
+      '/projects/greview/greview-tools.jpg',
+      '/projects/greview/greview-storage.jpg',
+      '/projects/greview/greview-security.jpg',
+      '/projects/greview/greview-profile.jpg'
+    ],
+    imageCaptions: [
+      'Business locations on the map, with managed QR and NFC counts',
+      'QR code dashboard: pending, active and disabled codes',
+      'Recover QR — secure and restore a code that stopped scanning',
+      'Tools screen: pick the QR or NFC working mode',
+      'Private storage: live Firebase database and backups',
+      'Security and account: 6-digit PIN, biometrics, auto-lock',
+      'Profile and business details behind the scanned identity'
+    ],
+    screensNote: 'Real screenshots from the GReview app.',
+    screensArePortrait: true,
+    cardImage: '/projects/greview/greview-card.jpg?v=2',
     mediaRatio: '16 / 9',
     accent: '#548CFF'
   },
@@ -204,9 +224,29 @@ export const projects = [
     detail: [
       'Roughly 70% complete by my own estimate. Integrations exist in the build and are still being hardened — nothing here is presented as production-ready.',
       'The percentage is a development judgement, not a test-coverage figure.',
-      'The visual shown is the TimeCapsule product card supplied for this portfolio.'
+      'The card artwork is the supplied TimeCapsule product panel; the detail gallery holds real app screenshots.'
     ],
-    images: ['/projects/timecapsule/timecapsule-card.jpg?v=2'],
+    images: [
+      '/projects/timecapsule/timecapsule-landing.jpg',
+      '/projects/timecapsule/timecapsule-home.jpg',
+      '/projects/timecapsule/timecapsule-events.jpg',
+      '/projects/timecapsule/timecapsule-tools.jpg',
+      '/projects/timecapsule/timecapsule-storage.jpg',
+      '/projects/timecapsule/timecapsule-settings.jpg',
+      '/projects/timecapsule/timecapsule-capture.jpg'
+    ],
+    imageCaptions: [
+      'Launch screen — the camera starts on the back lens',
+      'Home: total events, current events and cloud sync state',
+      'Events: create an event and browse the recorded ones',
+      'Tools: QR tools, NFC tools and QR tracking status',
+      'Storage: Google Drive integration and automatic cloud sync',
+      'Settings: administrator account and Google Drive state',
+      'A photo taken through the app\u2019s own camera'
+    ],
+    screensNote: 'Real screenshots from the TimeCapsule app.',
+    screensArePortrait: true,
+    cardImage: '/projects/timecapsule/timecapsule-card.jpg?v=2',
     mediaRatio: '16 / 9',
     accent: '#548CFF'
   },
@@ -303,8 +343,7 @@ export const projects = [
       stack: ['scikit-learn', 'TF-IDF vectoriser', 'Naive Bayes', 'Optional SVM comparison', 'Joblib', 'NumPy']
     },
     images: ['/projects/nexora/nexora-1.svg', '/projects/nexora/nexora-2.svg'],
-    illustrationNote:
-      'These are illustrative layouts built from the application structure, not real screenshots — labelled as such until repository captures are supplied.',
+    screensNote: 'Illustrative layouts built from the application structure — not real screenshots.',
     accent: '#548CFF'
   }
 ]

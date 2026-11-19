@@ -1,94 +1,231 @@
-import { contributions, GITHUB_ACCOUNTS } from '../data/contributions.js'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { CONTRIBUTION_WINDOWS, CONTRIBUTION_META } from '../data/contributions-years.js'
 import { eyebrow } from '../data/sections.js'
 
 /**
- * "Code Contributions" — the real GitHub activity of BOTH accounts that belong
- * to Mark (KeiShirogane1 and TheNFCGuy), added together per day.
+ * "Code Contributions" — real GitHub activity from BOTH accounts Mark owns
+ * (KeiShirogane1 and TheNFCGuy), one square per day.
  *
- * The data is a generated snapshot (src/data/contributions.js) produced by
- * `node tools/fetch-contributions.mjs` from GitHub's own contribution
- * calendars. Nothing is invented here: the totals, the active days, the busiest
- * days and the empty days all come from that file.
+ * Every number here is measured, never invented:
+ *  - public counts come from GitHub's own contribution calendars,
+ *  - the official snapshot wins wherever it holds a per-day verdict,
+ *  - an amber square means local git history proves you committed that day
+ *    while GitHub shows nothing public for it.
  *
- * Days with no contributions render as flat empty squares on purpose, and the
- * count of them is printed under the grid — the year is shown as it really is.
- *
- * Plain DOM elements rather than a canvas, so the grid scales at any width,
- * keeps readable tooltips, and cannot fail mid-paint.
+ * The grid is drawn as one block per year. A block starts on its first week
+ * that has work, so no empty squares sit to the left, and only the year is
+ * printed on top of it. A gap two rows and four squares wide separates one
+ * year from the next, so 2023, 2024, 2025 and 2026 read as four clear runs on
+ * one sideways-scrolling strip without ever touching.
  */
 
 const LEVEL_CLASS = ['is-0', 'is-1', 'is-2', 'is-3', 'is-4']
-const WEEKDAY_ROWS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEKDAY_ROWS = CONTRIBUTION_META.weekdayLabels
+const DAY_MS = 86400000
 
-/** Split the flat day list into week columns, Sunday first. */
-function toWeeks(days) {
-  const weeks = []
-  let current = null
-
-  days.forEach((day) => {
-    if (day.weekday === 0 || !current) {
-      current = []
-      weeks.push(current)
-    }
-    current.push(day)
-  })
-
-  // Pad the first week so every column has seven rows lined up with the labels.
-  if (weeks.length && weeks[0].length < 7 && weeks[0][0]) {
-    const pad = weeks[0][0].weekday
-    weeks[0] = Array.from({ length: pad }, () => null).concat(weeks[0])
-  }
-
-  return weeks
+function parseISO(iso) {
+  return new Date(`${iso}T00:00:00Z`)
 }
 
-function formatDate(iso) {
+function formatLongDate(iso) {
   if (!iso) return ''
-  const date = new Date(`${iso}T00:00:00Z`)
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
+  return parseISO(iso).toLocaleDateString('en-US', {
+    month: 'long',
     day: 'numeric',
     year: 'numeric',
-    timeZone: 'Asia/Manila'
+    timeZone: 'UTC'
   })
-}
-
-function formatManila(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleString('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'Asia/Manila'
-  })
-}
-
-function syncAgeHours(iso) {
-  if (!iso) return Infinity
-  return (Date.now() - new Date(iso).getTime()) / (1000 * 60 * 60)
 }
 
 function dayTitle(day) {
   if (day.offGithub) {
-    return `IM ACTIVE IM DOING THIS ${day.offGithubNote} ${formatDate(day.date)}`
+    return `Worked on ${formatLongDate(day.date)} — ${day.note}. GitHub shows no public contributions that day.`
   }
-  if (!day.count) return `Nothing on ${formatDate(day.date)} — no commits on either account`
-  return `${day.count} contribution${day.count === 1 ? '' : 's'} on ${formatDate(day.date)} (both accounts combined)`
+  return `${day.count} contribution${day.count === 1 ? '' : 's'} on ${formatLongDate(day.date)}`
+}
+
+/** Split one window into year blocks, each already trimmed at its edges. */
+function buildBlocks(window) {
+  const counts = new Map()
+  const levels = new Map()
+  const notes = new Map()
+  for (const day of window.active) {
+    counts.set(day.date, day.count)
+    levels.set(day.date, day.level || 0)
+    if (day.offGithub) notes.set(day.date, day.note)
+  }
+
+  const windowStart = parseISO(window.windowStart)
+  const windowEnd = parseISO(window.windowEnd)
+  const lastYear = windowEnd.getUTCFullYear()
+
+  const blocks = []
+  for (let year = windowStart.getUTCFullYear(); year <= lastYear; year += 1) {
+    const yearStart = new Date(Date.UTC(year, 0, 1))
+    const yearEnd = new Date(Date.UTC(year, 11, 31))
+    const from = yearStart < windowStart ? windowStart : yearStart
+    const to = yearEnd > windowEnd ? windowEnd : yearEnd
+
+    // Every day of this year, split into Sunday-start week columns.
+    const weeks = []
+    let week = null
+    for (let d = new Date(from); d <= to; d = new Date(d.getTime() + DAY_MS)) {
+      const iso = d.toISOString().slice(0, 10)
+      const weekday = d.getUTCDay()
+      if (!week || weekday === 0) {
+        week = { start: iso, days: Array(7).fill(null) }
+        weeks.push(week)
+      }
+      week.days[weekday] = {
+        date: iso,
+        count: counts.get(iso) || 0,
+        level: levels.get(iso) || 0,
+        offGithub: notes.has(iso),
+        note: notes.get(iso)
+      }
+    }
+    if (!weeks.length) continue
+
+    // Trim empty weeks on both edges: the block opens on the first week with
+    // work, and the current year keeps its remaining days on the right.
+    const hasWork = (w) => w.days.some((day) => day && (day.count > 0 || day.offGithub))
+    let first = weeks.findIndex(hasWork)
+    if (first < 0) first = 0
+    let last = weeks.length - 1
+    if (year !== lastYear) {
+      while (last > first && !hasWork(weeks[last])) last -= 1
+    }
+
+    const kept = weeks.slice(first, last + 1)
+
+    // Month label per column, printed where the month changes.
+    const months = []
+    let previousMonth = ''
+    kept.forEach((w, column) => {
+      const firstDay = w.days.find(Boolean)
+      if (!firstDay) return
+      const monthKey = firstDay.date.slice(0, 7)
+      if (monthKey === previousMonth) return
+      previousMonth = monthKey
+      months.push({
+        label: parseISO(firstDay.date).toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }),
+        column
+      })
+    })
+
+    let yearTotal = 0
+    let activeDays = 0
+    let offGithubDays = 0
+    for (const w of kept) {
+      for (const day of w.days) {
+        if (!day) continue
+        if (day.count > 0 || day.offGithub) activeDays += 1
+        if (day.offGithub) offGithubDays += 1
+        yearTotal += day.count
+      }
+    }
+
+    blocks.push({ year, weeks: kept, months, yearTotal, activeDays, offGithubDays })
+  }
+
+  return blocks
 }
 
 export default function ContributionGraph() {
-  const weeks = toWeeks(contributions.days)
-  const { total, activeDays, emptyDays, bestDay, busiestDays } = contributions
-  const allDays = activeDays + emptyDays
-  const isOfficialSnapshot = contributions.source === 'github-graphql'
-  const syncAge = syncAgeHours(contributions.generatedAt)
-  const syncIsStale = !Number.isFinite(syncAge) || syncAge > 36
+  const sectionRef = useRef(null)
+  const blocksRef = useRef(null)
+  const [inView, setInView] = useState(false)
 
-  // `rendered` collects the labels that actually get printed, so two months
-  // assigned to the same week column never print on top of each other.
-  const rendered = []
+  /* The strip only starts its motion once it is really on screen. The timer is
+     a safety net: a missed observation can never leave the grid invisible. */
+  useEffect(() => {
+    const node = sectionRef.current
+    if (!node) return undefined
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInView(true)
+      return undefined
+    }
+
+    let unlocked = false
+    const unlock = () => {
+      if (unlocked) return
+      unlocked = true
+      setInView(true)
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          unlock()
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+    )
+    observer.observe(node)
+
+    const fallback = window.setTimeout(unlock, 2600)
+
+    return () => {
+      observer.disconnect()
+      window.clearTimeout(fallback)
+    }
+  }, [])
+
+  /* GitHub-style cross highlight. Written straight onto the container so
+     sweeping the pointer over a thousand cells never re-renders React. */
+  const markRow = (event) => {
+    const holder = blocksRef.current
+    if (!holder) return
+    const cell = event.target instanceof Element ? event.target.closest('.contrib__cell') : null
+    const row = cell ? cell.getAttribute('data-row') : null
+    if (row === null) {
+      holder.removeAttribute('data-hover-row')
+      return
+    }
+    if (holder.getAttribute('data-hover-row') !== row) holder.setAttribute('data-hover-row', row)
+  }
+
+  const clearRow = () => {
+    const holder = blocksRef.current
+    if (holder) holder.removeAttribute('data-hover-row')
+  }
+
+  // One combined window: every year from the first commit to today.
+  const activeWindow = CONTRIBUTION_WINDOWS[0]
+
+  const blocks = useMemo(() => buildBlocks(activeWindow), [activeWindow])
+
+  const peaks = activeWindow.active
+    .filter((day) => day.count > 0)
+    .slice()
+    .sort((a, b) => b.count - a.count || a.date.localeCompare(b.date))
+    .slice(0, 5)
+
+  // One row per year: that year's own total, so nobody has to add the squares up.
+  const yearSummaries = blocks.map((block) => ({
+    year: block.year,
+    total: block.yearTotal,
+    activeDays: block.activeDays,
+    offGithubDays: block.offGithubDays
+  }))
+  const busiestYear = yearSummaries.reduce((max, item) => Math.max(max, item.total), 1)
+
+  // A year with even one contribution keeps a lit dot, so a quiet year (2023
+  // has a single contribution) never looks like it had no activity at all.
+  function yearDots(total) {
+    if (total <= 0) return 0
+    return Math.max(1, Math.round((total / busiestYear) * 10))
+  }
 
   return (
-    <section className="contrib" id="activity" aria-labelledby="activity-title">
+    <section
+      className={`contrib${inView ? ' is-in' : ''}`}
+      id="activity"
+      aria-labelledby="activity-title"
+      ref={sectionRef}
+    >
       <div className="contrib__inner">
         <header className="contrib__header">
           <div className="contrib__heading">
@@ -97,163 +234,201 @@ export default function ContributionGraph() {
               Code <em className="contrib__title-em">Contributions</em>
             </h2>
             <p className="contrib__sub">
-              My real GitHub activity across both accounts, added together, so one
-              square is the work I did on any account that day. Squares with no
-              commits are left empty rather than hidden.
+              Both of my GitHub accounts added together, so one square is the work
+              that landed on either account that day. Amber squares are days I was
+              coding locally while GitHub shows nothing public for them.
             </p>
           </div>
 
-{isOfficialSnapshot ? (
-            <>
-              <div className="contrib__totals">
-                <span className="contrib__total-value">{total.toLocaleString('en-US')}</span>
-                <span className="contrib__total-label">contributions in the last year</span>
-                <ul className="contrib__accounts">
-                  {GITHUB_ACCOUNTS.map((account) => (
-                    <li key={account.login} className="contrib__account">
-                      <a href={`https://github.com/${account.login}`} target="_blank" rel="noopener noreferrer" className="contrib__account-link">
-                        {account.login}
-                        <span className="contrib__account-count">{account.total.toLocaleString('en-US')}</span>
-                      </a>
-                      <span className="contrib__account-privacy">
-                        {account.privateContributionCountsShared ? 'private included' : 'private counts not reported'}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <p className="contrib__live" data-sync-state={syncIsStale ? 'stale' : 'current'}>
-                <span className="contrib__live-dot" aria-hidden="true" />
-                {syncIsStale ? (
-                  <>
-                    Sync stale — last successful refresh {formatManila(contributions.generatedAt)} Manila time. Automatic refresh may have failed.
-                  </>
-                ) : (
-                  <>
-                    GitHub auto-sync — last successful refresh {formatManila(contributions.generatedAt)} Manila time. Refreshes after portfolio pushes and daily at 12:01 AM Manila.
-                  </>
-                )}
-              </p>
-            </>
-          ) : (
-            <div className="contrib__totals contrib__totals--pending">
-              <span className="contrib__total-label">official refresh required</span>
-              <span className="contrib__pending-value">—</span>
-              <span className="contrib__total-label">waiting for verified GitHub data</span>
-            </div>
-          )}
+          <div className="contrib__totals">
+            <span className="contrib__total-value">{activeWindow.total.toLocaleString('en-US')}</span>
+            <span className="contrib__total-label">
+              contributions · all time, {activeWindow.windowStart.slice(0, 4)}–
+              {activeWindow.windowEnd.slice(0, 4)}
+            </span>
+            <ul className="contrib__accounts">
+              {activeWindow.accounts.map((account) => (
+                <li key={account.login} className="contrib__account">
+                  <a
+                    href={`https://github.com/${account.login}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contrib__account-link"
+                  >
+                    {account.label}
+                    <span className="contrib__account-count">{account.total.toLocaleString('en-US')}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </header>
 
-        {isOfficialSnapshot ? (
+        <div className="contrib__label">
+          <span className="contrib__label-year">
+            {activeWindow.windowStart.slice(0, 4)}–{activeWindow.windowEnd.slice(0, 4)}
+          </span>
+          <span className="contrib__label-dates">
+            {formatLongDate(activeWindow.windowStart)} → {formatLongDate(activeWindow.windowEnd)}
+          </span>
+          <span className="contrib__label-hint">{activeWindow.hint}</span>
+          <span className="contrib__label-scroll">scroll →</span>
+        </div>
+
+        <div
+          className="contrib__graph"
+          role="img"
+          aria-label={`${activeWindow.total} contributions on ${activeWindow.activeDays} active days between ${formatLongDate(activeWindow.windowStart)} and ${formatLongDate(activeWindow.windowEnd)}`}
+        >
           <div
-            className="contrib__graph"
-            style={{ '--contrib-cols': weeks.length }}
-            role="img"
-            aria-label={`${total} contributions on ${activeDays} of ${allDays} days between ${formatDate(contributions.windowStart)} and ${formatDate(contributions.windowEnd)}`}
+            className="contrib__blocks"
+            ref={blocksRef}
+            onPointerOver={markRow}
+            onPointerLeave={clearRow}
           >
-            <div className="contrib__months">
-              {contributions.months.map((month) => (
-                <span
-                  key={`${month.label}-${month.index}`}
-                  className="contrib__month"
-                  style={{ gridColumn: Math.floor(month.index / 7) + 2 }}
+            {blocks.map((block, blockIndex) => (
+              <div
+                className="contrib__block"
+                key={block.year}
+                style={{ '--block-i': blockIndex }}
+              >
+                <div className="contrib__block-head">
+                  <span className="contrib__block-year">{block.year}</span>
+                </div>
+
+                <div
+                  className="contrib__block-months"
+                  style={{ '--block-cols': block.weeks.length }}
                 >
-                  {month.label}
-                </span>
-              ))}
-            </div>
-  
-            <div className="contrib__body">
-              <div className="contrib__weekdays" aria-hidden="true">
-                {WEEKDAY_ROWS.map((label) => (
-                  <span key={label} className="contrib__weekday">
-                    {label}
-                  </span>
-                ))}
-              </div>
-  
-              <div className="contrib__grid">
-                {weeks.map((week, columnIndex) => (
-                  <div className="contrib__week" key={columnIndex}>
-                    {week.map((day, rowIndex) =>
-                      day ? (
-                        <span
-                          key={day.date}
-                          className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}${
-                            day.offGithub ? ' contrib__cell--off-github' : ''
-                          }`}
-                          title={dayTitle(day)}
-                        >
-                          <span className="sr-only">{dayTitle(day)}</span>
-                        </span>
-                      ) : (
-                        <span key={`pad-${rowIndex}`} className="contrib__cell is-empty" />
-                      )
-                    )}
+                  {block.months.map((month) => (
+                    <span
+                      key={`${block.year}-${month.label}-${month.column}`}
+                      className="contrib__month"
+                      style={{ gridColumn: month.column + 2 }}
+                    >
+                      {month.label}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="contrib__block-body">
+                  <div className="contrib__weekdays" aria-hidden="true">
+                    {WEEKDAY_ROWS.map((label) => (
+                      <span key={label} className="contrib__weekday">
+                        {label}
+                      </span>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="contrib__status" role="status">
-            <span className="contrib__status-kicker">DATA SOURCE UPGRADE</span>
-            <strong>The previous contribution snapshot did not match your GitHub profiles.</strong>
-            <p>The old calendar has been hidden rather than showing misleading totals. The repository now uses GitHub's official daily GraphQL calendars and a scheduled refresh. Add the <code>GITHUB_READ_USER_TOKEN</code> Actions secret to activate it.</p>
-            <a href="https://github.com/KeiShirogane1/Portfolio/actions/workflows/refresh-contributions.yml" target="_blank" rel="noopener noreferrer">Open contribution refresh workflow ↗</a>
-          </div>
-        )}
 
-        {isOfficialSnapshot && (
-          <>
-            <div className="contrib__footer">
-              <div className="contrib__legend" aria-hidden="true">
-                <span className="contrib__legend-label">Less</span>
-                {LEVEL_CLASS.map((level) => (
-                  <span key={level} className={`contrib__cell ${level}`} />
-                ))}
-                <span className="contrib__legend-label">More</span>
-                <span className="contrib__legend-separator">│</span>
-                <span className="contrib__legend-label" style={{ color: 'rgba(255, 190, 60, 0.8)' }}>
-                  Off-GitHub Activity
+                  <div className="contrib__grid">
+                    {block.weeks.map((week, columnIndex) => (
+                      <div
+                        className="contrib__week"
+                        key={columnIndex}
+                        style={{ '--col-i': columnIndex }}
+                      >
+                        {week.days.map((day, rowIndex) =>
+                          day ? (
+                            <span
+                              key={day.date}
+                              data-row={rowIndex}
+                              className={`contrib__cell ${LEVEL_CLASS[day.level] || 'is-0'}${
+                                day.offGithub ? ' contrib__cell--off-github' : ''
+                              }`}
+                              title={dayTitle(day)}
+                              aria-label={dayTitle(day)}
+                            />
+                          ) : (
+                            <span key={`pad-${rowIndex}`} className="contrib__cell is-empty" />
+                          )
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="contrib__footer">
+          <div className="contrib__legend" aria-hidden="true">
+            <span className="contrib__legend-label">Less</span>
+            {LEVEL_CLASS.map((level) => (
+              <span key={level} className={`contrib__cell ${level}`} />
+            ))}
+            <span className="contrib__legend-label">More</span>
+            <span className="contrib__legend-separator">│</span>
+            <span className="contrib__legend-label contrib__legend-label--off">Off-GitHub Activity</span>
+            <span
+              className="contrib__cell contrib__cell--off-github"
+              title="Off-GitHub development activity"
+            />
+          </div>
+
+          <p className="contrib__meta">
+            <strong className="contrib__meta-strong">{activeWindow.activeDays} days had work</strong>
+            {activeWindow.offGithubDays ? ` · ${activeWindow.offGithubDays} off-GitHub` : ''} · busiest
+            day {activeWindow.bestDay.count} on {formatLongDate(activeWindow.bestDay.date)}
+          </p>
+        </div>
+
+        {yearSummaries.length ? (
+          <ul className="contrib__years" aria-label="Contributions for each year">
+            {yearSummaries.map((summary) => (
+              <li key={summary.year} className="contrib__year-row">
+                <span className="contrib__year-name">{summary.year}</span>
+                <span className="contrib__year-spark" aria-hidden="true">
+                  {Array.from({ length: 10 }).map((_, index) => (
+                    <span
+                      key={index}
+                      style={{ '--dot-i': index }}
+                      className={`contrib__year-dot ${
+                        index < yearDots(summary.total) ? 'is-on' : ''
+                      }`}
+                    />
+                  ))}
                 </span>
-                <span className="contrib__cell contrib__cell--off-github" title="Off-GitHub Development Activity" />
-              </div>
+                <span className="contrib__year-total">{summary.total.toLocaleString('en-US')}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
-              <p className="contrib__meta">
-                <strong className="contrib__meta-strong">
-                  {activeDays} of {allDays} days had work
-                </strong>
-                {' '}&middot; {emptyDays} days empty &middot; busiest day{' '}
-                {bestDay.count} on {formatDate(bestDay.date)}
-              </p>
-            </div>
-
-            <ul className="contrib__peaks">
-              {busiestDays.map((peak) => (
+        {peaks.length ? (
+          <ul className="contrib__peaks">
+            {peaks.map((peak) => {
+              const bars = activeWindow.bestDay.count
+                ? Math.min(5, Math.ceil((peak.count / activeWindow.bestDay.count) * 5))
+                : 1
+              return (
                 <li key={peak.date} className="contrib__peak">
-                  <span className="contrib__peak-date">{formatDate(peak.date)}</span>
+                  <span className="contrib__peak-date">{formatLongDate(peak.date)}</span>
                   <span className="contrib__peak-bars" aria-hidden="true">
                     {Array.from({ length: 5 }).map((_, index) => (
                       <span
                         key={index}
-                        className={`contrib__peak-bar ${index < Math.min(5, Math.ceil(peak.count / bestDay.count * 5)) ? 'is-on' : ''}`}
+                        style={{ '--bar-i': index }}
+                        className={`contrib__peak-bar ${index < bars ? 'is-on' : ''}`}
                       />
                     ))}
                   </span>
                   <span className="contrib__peak-count">{peak.count}</span>
                 </li>
-              ))}
-            </ul>
-          </>
-        )}
+              )
+            })}
+          </ul>
+        ) : null}
 
-        {isOfficialSnapshot && (
-          <p className="contrib__note">
-            Official GitHub GraphQL snapshot refreshed {formatManila(contributions.generatedAt)} Manila time. GitHub profile contribution dates are UTC-based, and qualifying activity can take up to 24 hours to appear; the daily refresh re-fetches the rolling year to backfill delayed counts.
-            Private and internal contribution totals are included only when GitHub returns them for the account; each profile must enable private contribution counts and the refresh token must have the read:user scope.
-          </p>
-        )}
+        <p className="contrib__note">
+          {CONTRIBUTION_META.accounts.map((account) => account.login).join(' and ')} · snapshot refreshed{' '}
+          {new Date(CONTRIBUTION_META.generatedAt).toLocaleString('en-US', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          })}
+          . Private and internal contributions appear only when each profile shares them on GitHub, so the
+          real total is likely higher.
+        </p>
       </div>
     </section>
   )

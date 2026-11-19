@@ -38,7 +38,7 @@ function ProjectCard({ project, order, onOpen }) {
       <div className={`projectCard__media${hasShots ? '' : ' isEmpty'}`}>
         {hasShots ? (
           <img
-            src={project.images[0]}
+            src={project.cardImage || project.images[0]}
             alt={`${project.title} preview`}
             loading="lazy"
             decoding="async"
@@ -190,12 +190,18 @@ function ProjectModal({ project, onClose }) {
 
         <div className="projectModal__scroll">
           {project.images.length > 0 ? (
-            <div className="projectModal__gallery">
+            <div className={`projectModal__gallery${project.screensArePortrait ? ' isPhone' : ' isWide'}`}>
               <div className="projectModal__shot">
                 <img key={shown} src={shown} alt={`${project.title} visual ${shot + 1}`} loading="lazy" />
               </div>
-              {project.illustrationNote && (
-                <p className="projectModal__caption mono">{project.illustrationNote}</p>
+              {project.imageCaptions && project.imageCaptions[shot] && (
+                <p className="projectModal__shotCaption">
+                  <span className="mono">{String(shot + 1).padStart(2, '0')} / {String(project.images.length).padStart(2, '0')}</span>
+                  {project.imageCaptions[shot]}
+                </p>
+              )}
+              {project.screensNote && (
+                <p className="projectModal__caption mono">{project.screensNote}</p>
               )}
               {project.images.length > 1 && (
                 <div className="projectModal__thumbs">
@@ -206,7 +212,8 @@ function ProjectModal({ project, onClose }) {
                       className="projectModal__thumb"
                       data-active={i === shot}
                       onClick={() => setShot(i)}
-                      aria-label={`Show visual ${i + 1}`}
+                      aria-label={`Show visual ${i + 1}${project.imageCaptions ? `: ${project.imageCaptions[i]}` : ''}`}
+                      aria-current={i === shot}
                       data-focusable
                     >
                       <img src={img} alt="" aria-hidden="true" loading="lazy" />

@@ -146,29 +146,58 @@
   font-weight: 600;
 }
 
-/* Last successful contribution snapshot status under the totals box. */
-.contrib__live {
-  margin: var(--space-3) var(--space-5) 0;
-  display: inline-flex;
+/* ---------- per-year totals ---------- */
+
+/* One line per year under the strip: the year, a small meter, and that year's
+   own count, so the totals are readable without adding the squares up. */
+.contrib__years {
+  display: grid;
+  gap: 0;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contrib__year-row {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--line);
+}
+
+.contrib__year-name {
+  font-family: var(--font-display, var(--font-mono));
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.contrib__year-spark {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.contrib__year-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: rgba(244, 246, 250, 0.09);
+}
+
+.contrib__year-dot.is-on {
+  background: linear-gradient(180deg, var(--electric-blue), var(--violet));
+}
+
+.contrib__year-total {
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: 0.06em;
-  color: var(--electric-blue);
-}
-
-.contrib__live-dot {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 6px currentColor;
-}
-
-.contrib__live[data-sync-state='stale'] {
-  color: #ffbe3c;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--white);
+  min-width: 4ch;
+  text-align: right;
 }
 
 /* ---------- busiest days ---------- */
@@ -247,24 +276,166 @@
   font-weight: 600;
 }
 
+/* ---------- period switcher ---------- */
+
+.contrib__years {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-5);
+}
+
+.contrib__year {
+  appearance: none;
+  padding: 0.34rem 0.72rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs, 2px);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-fast, 120ms) var(--ease, ease),
+    border-color var(--dur-fast, 120ms) var(--ease, ease),
+    background var(--dur-fast, 120ms) var(--ease, ease);
+}
+
+.contrib__year:hover {
+  color: var(--white);
+  border-color: rgba(84, 140, 255, 0.45);
+}
+
+.contrib__year[data-active='true'] {
+  color: var(--white);
+  border-color: var(--electric-blue);
+  background: rgba(84, 140, 255, 0.12);
+}
+
+.contrib__year:focus-visible {
+  outline: 2px solid var(--electric-blue);
+  outline-offset: 2px;
+}
+
+.contrib__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-5) 0 0;
+}
+
+/* The year (or "last 12 months") leads the row — the reader should know which
+   period they are looking at before the dates. */
+.contrib__label-year {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.contrib__label-dates {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+
+.contrib__label-hint {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+/* Only shows when the grid is wider than the card. */
+.contrib__label-scroll {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--electric-blue);
+}
+
+.contrib__month-year {
+  color: var(--white);
+  opacity: 0.85;
+}
+
 /* ---------- graph ---------- */
 
 .contrib__graph {
+  --contrib-cell: 13px;
+  --contrib-gap: 3px;
+  --contrib-gutter: 1.85rem;
   margin-top: var(--space-6);
   padding: var(--space-5) var(--space-5) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   background: var(--bg-2);
-  overflow: hidden;
+  /* Cells keep a readable size; when the columns do not fit, the card scrolls
+     sideways inside itself instead of squashing them into slivers. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(84, 140, 255, 0.4) transparent;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Month labels line up with their week column. The label row has the same
-   column count as the grid, offset by the weekday gutter. */
-.contrib__months {
+/* One run per year, laid side by side on a strip that scrolls sideways.
+   Each gap is two rows tall and four squares wide, so 2023 | 2024 | 2025 | 2026
+   read as four separate years and never touch. */
+.contrib__blocks {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--contrib-cell, 13px) * 4 + var(--contrib-gap, 3px) * 4);
+  width: max-content;
+  min-width: 100%;
+}
+
+.contrib__block {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+/* Year and its own count sit on top of that year's squares. */
+.contrib__block-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  white-space: nowrap;
+}
+
+.contrib__block-year {
+  font-family: var(--font-display, var(--font-mono));
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--white);
+}
+
+.contrib__block-meta {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Month labels line up with their week column inside that year's rung. */
+.contrib__block-months {
   display: grid;
-  grid-template-columns: var(--contrib-gutter, 1.85rem) repeat(var(--contrib-cols, 53), minmax(0, 1fr));
-  gap: 0;
-  margin-left: 0;
+  grid-template-columns: var(--contrib-gutter, 1.85rem) repeat(var(--block-cols, 13), var(--contrib-cell, 13px));
+  gap: var(--contrib-gap, 3px);
   margin-bottom: var(--space-2);
   font-family: var(--font-mono);
   font-size: 0.62rem;
@@ -273,26 +444,22 @@
   color: var(--muted);
 }
 
+.contrib__block-body {
+  display: grid;
+  grid-template-columns: var(--contrib-gutter, 1.85rem) max-content;
+  gap: var(--contrib-gap, 3px);
+  align-items: start;
+}
+
+/* Contributors can see which year each month belongs to, so the label only
+   prints the month name — the year is in the row above the grid. */
 .contrib__month {
   grid-row: 1;
   white-space: nowrap;
 }
 
-/* Narrow screens squeeze the week columns until neighbouring month labels
-   touch and read as one word ("NOVDEC"). Alternating labels are hidden there
-   so the remaining ones stay readable. */
-@media (max-width: 720px) {
-  .contrib__month--alt {
-    display: none;
-  }
-}
-
-.contrib__body {
-  display: grid;
-  grid-template-columns: var(--contrib-gutter, 1.85rem) minmax(0, 1fr);
-  gap: var(--space-2);
-  align-items: start;
-}
+/* Columns are a fixed width now, so neighbouring labels never touch and
+   every month name stays readable. */
 
 .contrib__weekdays {
   display: grid;
@@ -317,7 +484,7 @@
 .contrib__grid {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-columns: var(--contrib-cell, 13px);
   gap: var(--contrib-gap, 3px);
   min-width: 0;
 }
@@ -359,26 +526,6 @@
 
 .contrib__cell.is-4 {
   background: var(--violet);
-  box-shadow: 0 0 8px rgba(155, 112, 255, 0.5);
-}
-
-/* Off-GitHub Development Activity — distinct visual treatment from GitHub contributions.
-   Same cell size/shape, different fill so it never reads as a real contribution count. */
-.contrib__cell--off-github {
-  background: rgba(255, 190, 60, 0.28);
-  border: 1px solid rgba(255, 190, 60, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(255, 190, 60, 0.35);
-}
-.contrib__cell--off-github:hover {
-  transform: scale(1.06);
-  filter: brightness(1.12);
-  border-color: rgba(255, 210, 120, 0.75);
-}
-
-.contrib__cell:hover {
-  transform: scale(1.06);
-  filter: brightness(1.18);
-  z-index: 2;
 }
 
 /* ---------- footer ---------- */
@@ -421,6 +568,24 @@
   opacity: 0.5;
 }
 
+/* Off-GitHub work days — same cell size, different fill, so they never read
+   as a GitHub contribution count. */
+.contrib__legend-label--off {
+  color: rgba(255, 190, 60, 0.85);
+}
+
+.contrib__cell--off-github {
+  background: rgba(255, 190, 60, 0.28);
+  border: 1px solid rgba(255, 190, 60, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 190, 60, 0.35);
+}
+
+.contrib__cell--off-github:hover {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+  border-color: rgba(255, 210, 120, 0.75);
+}
+
 .contrib__meta {
   margin: 0;
   font-size: var(--text-sm);
@@ -439,11 +604,11 @@
 
 @media (max-width: 899px) {
   .contrib__graph {
-    --contrib-cell: 10px;
+    --contrib-cell: 12px;
     --contrib-gap: 2px;
     padding: var(--space-4);
   }
-  .contrib__months {
+  .contrib__block-months {
     font-size: 0.55rem;
   }
 }
@@ -470,17 +635,21 @@
   .contrib__total-label {
     white-space: normal;
   }
+  /* The grid is wider than the card here, so tell the reader it moves. */
+  .contrib__label-scroll {
+    display: inline;
+  }
 }
 
 @media (max-width: 560px) {
   .contrib__graph {
-    --contrib-cell: 8px;
+    --contrib-cell: 11px;
     --contrib-gap: 2px;
     --contrib-gutter: 1.6rem;
     padding: var(--space-3);
   }
   .contrib__weekdays,
-  .contrib__months {
+  .contrib__block-months {
     font-size: 0.5rem;
   }
   .contrib__meta {
@@ -488,47 +657,307 @@
   }
 }
 
-/* The 53 weeks would get too thin to read on a phone, so the card scrolls
-   horizontally *inside itself* — the page itself never gains a scrollbar. */
+/* On a phone the weeks are wider than the card, so it scrolls sideways
+   inside itself and the page itself never gains a scrollbar. */
 @media (max-width: 430px) {
   .contrib__graph {
     --contrib-cell: 11px;
     --contrib-gap: 3px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-    /* Fades the right edge so it is obvious the row continues. */
-    background-image: linear-gradient(
-      to right,
-      transparent calc(100% - 34px),
-      var(--bg-2)
-    );
-    background-attachment: local, local;
   }
   .contrib__graph::-webkit-scrollbar {
     display: none;
   }
-  .contrib__body,
-  .contrib__months {
-    width: max-content;
-    min-width: 100%;
-  }
-  .contrib__months {
-    grid-template-columns: var(--contrib-gutter, 1.85rem) repeat(var(--contrib-cols, 53), var(--contrib-cell));
-  }
-  .contrib__grid {
-    grid-auto-columns: var(--contrib-cell);
-  }
-  .contrib__week {
-    grid-template-rows: repeat(7, var(--contrib-cell));
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contrib__cell {
+  .contrib__cell,
+  .contrib__block,
+  .contrib__week,
+  .contrib__year-row,
+  .contrib__peak,
+  .contrib__year-dot,
+  .contrib__peak-bar {
     transition: none;
+    transform: none;
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ---------- motion: the strip arrives from depth, then stays alive ---------- */
+
+/* Everything below is driven by `.is-in`, which the component sets once the
+   card is really on screen. Nothing animates off screen, and every property
+   is a transform or an opacity, so the browser composites on the GPU. */
+.contrib {
+  perspective: 1600px;
+}
+
+.contrib__label,
+.contrib__totals {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition: opacity 520ms var(--ease-soft, ease), transform 620ms var(--ease, ease);
+}
+
+.contrib.is-in .contrib__label,
+.contrib.is-in .contrib__totals {
+  opacity: 1;
+  transform: none;
+}
+
+/* The whole grid tips back a couple of degrees, as if it were a pane of glass
+   being laid flat in front of the reader. */
+.contrib__graph {
+  opacity: 0;
+  transform: rotateX(4deg) translate3d(0, 22px, -40px);
+  transform-origin: 50% 0;
+  transition:
+    opacity 620ms var(--ease-soft, ease),
+    transform 780ms var(--ease, ease);
+}
+
+.contrib.is-in .contrib__graph {
+  opacity: 1;
+  transform: none;
+}
+
+/* One run per year, each a beat behind the year before it. */
+.contrib__block {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0) scale(0.985);
+  transition:
+    opacity 560ms var(--ease-soft, ease),
+    transform 680ms var(--ease, ease);
+  transition-delay: calc(var(--block-i, 0) * 150ms + 90ms);
+}
+
+.contrib.is-in .contrib__block {
+  opacity: 1;
+  transform: none;
+}
+
+/* The squares rise column by column, like a printer drawing the chart from
+   left to right. The delay is capped so a year with 53 weeks finishes in
+   under half a second after its block lands. `will-change` is deliberately
+   left off: an animated transform and opacity are already composited, and
+   keeping a promise hint on a thousand cells would reserve every layer. */
+.contrib__week {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+.contrib.is-in .contrib__week {
+  animation: contribColumnIn 520ms var(--ease, ease) both;
+  animation-delay: calc(min(var(--col-i, 0) * 7ms, 420ms) + var(--block-i, 0) * 150ms + 260ms);
+}
+
+@keyframes contribColumnIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* One pass of light across the finished chart, then nothing. The sweep is a
+   background position, not a transform, so a thousand cells never gain an
+   extra scrollable area while it runs. */
+.contrib__graph {
+  position: relative;
+}
+
+.contrib.is-in .contrib__graph::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(84, 140, 255, 0.16) 48%,
+    rgba(155, 112, 255, 0.12) 52%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: contribSheen 1500ms ease-out 700ms 1 both;
+}
+
+@keyframes contribSheen {
+  from {
+    opacity: 0;
+    background-position: 130% 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    background-position: -30% 0;
+  }
+}
+
+/* Year totals sit down after the grid, each on its own beat. */
+.contrib__year-row {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 420ms var(--ease-soft, ease),
+    transform 520ms var(--ease, ease);
+}
+
+.contrib.is-in .contrib__year-row {
+  opacity: 1;
+  transform: none;
+}
+
+.contrib.is-in .contrib__year-row:nth-child(1) { transition-delay: 760ms; }
+.contrib.is-in .contrib__year-row:nth-child(2) { transition-delay: 830ms; }
+.contrib.is-in .contrib__year-row:nth-child(3) { transition-delay: 900ms; }
+.contrib.is-in .contrib__year-row:nth-child(4) { transition-delay: 970ms; }
+.contrib.is-in .contrib__year-row:nth-child(5) { transition-delay: 1040ms; }
+
+/* The busy-day list follows, and its bars fill one after another. */
+.contrib__peak {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition:
+    opacity 380ms var(--ease-soft, ease),
+    transform 460ms var(--ease, ease);
+}
+
+.contrib.is-in .contrib__peak {
+  opacity: 1;
+  transform: none;
+}
+
+.contrib.is-in .contrib__peak:nth-child(1) { transition-delay: 1080ms; }
+.contrib.is-in .contrib__peak:nth-child(2) { transition-delay: 1140ms; }
+.contrib.is-in .contrib__peak:nth-child(3) { transition-delay: 1200ms; }
+.contrib.is-in .contrib__peak:nth-child(4) { transition-delay: 1260ms; }
+.contrib.is-in .contrib__peak:nth-child(5) { transition-delay: 1320ms; }
+
+.contrib__peak-bar {
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+}
+
+.contrib.is-in .contrib__peak-bar {
+  animation: contribBarIn 320ms var(--ease, ease) both;
+  animation-delay: calc(var(--bar-i, 0) * 40ms + 1200ms);
+}
+
+@keyframes contribBarIn {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+/* Per-year meter dots light up from left to right. */
+.contrib__year-dot {
+  transition: background-color 260ms var(--ease-soft, ease), transform 260ms var(--ease, ease);
+}
+
+.contrib.is-in .contrib__year-dot.is-on {
+  animation: contribDotIn 340ms var(--ease, ease) both;
+  animation-delay: calc(var(--dot-i, 0) * 45ms + 900ms);
+}
+
+@keyframes contribDotIn {
+  from { transform: scale(0.3); opacity: 0.2; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- pointer motion ---------- */
+
+.contrib__cell {
+  transition:
+    transform 180ms var(--ease, ease),
+    filter 180ms var(--ease-soft, ease),
+    box-shadow 180ms var(--ease-soft, ease);
+}
+
+/* A hovered square lifts a hair and takes a light. */
+.contrib__cell:hover {
+  transform: scale(1.28);
+  filter: brightness(1.45);
+  box-shadow: 0 0 0 1px rgba(244, 246, 250, 0.55), 0 6px 14px rgba(8, 11, 18, 0.55);
+  position: relative;
+  z-index: 2;
+}
+
+/* Sweeping across the grid lights the whole weekday, the way GitHub's own
+   calendar does. The row is read off the cell the pointer is over, so no
+   per-cell event handlers are needed. */
+.contrib__blocks[data-hover-row='0'] .contrib__cell[data-row='0'],
+.contrib__blocks[data-hover-row='1'] .contrib__cell[data-row='1'],
+.contrib__blocks[data-hover-row='2'] .contrib__cell[data-row='2'],
+.contrib__blocks[data-hover-row='3'] .contrib__cell[data-row='3'],
+.contrib__blocks[data-hover-row='4'] .contrib__cell[data-row='4'],
+.contrib__blocks[data-hover-row='5'] .contrib__cell[data-row='5'],
+.contrib__blocks[data-hover-row='6'] .contrib__cell[data-row='6'] {
+  filter: brightness(1.3);
+}
+
+/* Off-GitHub squares are coding the public calendar never recorded, so they
+   breathe gently instead of sitting perfectly still. */
+@keyframes contribOffBreathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 176, 92, 0); }
+  50% { box-shadow: 0 0 0 3px rgba(255, 176, 92, 0.22); }
+}
+
+.contrib.is-in .contrib__cell--off-github {
+  animation: contribOffBreathe 2600ms ease-in-out infinite;
+}
+
+/* The total climbs into place when the card lands. */
+.contrib__total-value {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  transition: opacity 480ms var(--ease-soft, ease), transform 560ms var(--ease, ease);
+  transition-delay: 120ms;
+}
+
+.contrib.is-in .contrib__total-value {
+  opacity: 1;
+  transform: none;
+}
+
+/* Month labels fade in slightly after their own block. */
+.contrib__month {
+  opacity: 0;
+  transition: opacity 420ms var(--ease-soft, ease);
+  transition-delay: calc(var(--block-i, 0) * 150ms + 420ms);
+}
+
+.contrib.is-in .contrib__month {
+  opacity: 1;
+}
+
+/* Users who ask for less motion get the finished chart immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .contrib__label,
+  .contrib__graph,
+  .contrib__block,
+  .contrib__month,
+  .contrib__total-value,
+  .contrib__peak,
+  .contrib__year-row,
+  .contrib__week {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+  .contrib__graph::after {
+    display: none;
+  }
+  .contrib__cell:hover {
+    transform: none;
   }
 }
 

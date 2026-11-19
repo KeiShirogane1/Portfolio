@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { navLinks, profile } from '../data/profile.js'
 import { sections } from '../data/sections.js'
 import ShareSheet from './ShareSheet.jsx'
@@ -21,6 +21,10 @@ import ShareSheet from './ShareSheet.jsx'
 
 /* One page per nav link. The extension is part of the fiction: .jsx for the
    interactive sections, .md for prose, .json for structured data. */
+/* Line numbers for the editor gutter. The page is long, so the list is a
+   fixed run of numbers that rides with the scroll — a VS Code style margin. */
+const LINE_NUMBERS = Array.from({ length: 600 }, (_, index) => index + 1)
+
 const FILES = {
   home: { name: 'home.jsx', kind: 'jsx' },
   about: { name: 'about.md', kind: 'md' },
@@ -126,10 +130,23 @@ function ActivityIcon({ name }) {
   )
 }
 
-export default function IDEShell({ activeSection, children }) {
+export default function IDEShell({ activeSection, progressBar, children }) {
   const [explorerOpen, setExplorerOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const [treeOpen, setTreeOpen] = useState({ src: true, pages: true })
+  const [scrollTop, setScrollTop] = useState(0)
+  const viewportRef = useRef(null)
+  const frameRef = useRef(0)
+  /* Line numbers ride along with the content: the gutter is fixed, only its
+     inner list moves. rAF keeps it to one write per frame. */
+  const onScroll = useCallback((event) => {
+    const top = event.currentTarget.scrollTop
+    if (frameRef.current) return
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = 0
+      setScrollTop(top)
+    })
+  }, [])
 
   const active = sections.find((link) => link.id === activeSection) || sections[0]
   const activeFile = FILES[active.id] || FILES.home
@@ -347,6 +364,10 @@ export default function IDEShell({ activeSection, children }) {
           <div className="ide__tabFade" aria-hidden="true" />
         </div>
 
+        {/* Scroll hairline, inside the editor column so it never reaches the
+            explorer or the activity bar. */}
+        {progressBar}
+
         <div className="ide__crumbs" aria-hidden="true">
           <span>portfolio</span>
           <span className="ide__crumbSep">›</span>
@@ -357,7 +378,21 @@ export default function IDEShell({ activeSection, children }) {
           <span className="ide__crumbSymbol">{active.label.replace(/\s+/g, '')}</span>
         </div>
 
-        <div className="ide__viewport">{children}</div>
+        <div className="ide__code">
+          <div className="ide__gutter" aria-hidden="true">
+            <div className="ide__gutterInner" style={{ transform: `translateY(${-scrollTop}px)` }}>
+              {LINE_NUMBERS.map((line) => (
+                <span key={line} className="ide__lineNo">
+                  {line}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="ide__viewport" ref={viewportRef} onScroll={onScroll}>
+            {children}
+          </div>
+        </div>
 
         {/* ---------- Status bar ---------- */}
         <div className="ide__status" role="contentinfo">
