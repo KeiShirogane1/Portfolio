@@ -238,6 +238,28 @@ function ProjectModal({ project, onClose }) {
             </div>
           )}
 
+          {project.flow && (
+            <div className="projectModal__flow">
+              <h4>{project.flow.title}</h4>
+              <ol className="flowList">
+                {project.flow.steps.map(([label, body], i) => (
+                  <li key={label} className="flowList__step">
+                    <span className="flowList__index mono" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div className="flowList__text">
+                      <h5>{label}</h5>
+                      <p>{body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              {project.flow.note && (
+                <p className="mono projectModal__flowNote">{project.flow.note}</p>
+              )}
+            </div>
+          )}
+
           {typeof project.progress === 'number' && (
             <div className="projectModal__progress">
               <div className="projectModal__progressHead">

@@ -60,7 +60,18 @@ export const projects = [
     ],
     images: ['/projects/live-memories/live-memories-card.jpg?v=2'],
     mediaRatio: '16 / 9',
-    accent: '#548CFF'
+    accent: '#548CFF',
+    flow: {
+      title: 'How a memory is reached',
+      steps: [
+        ['Scan the keepsake', 'The NFC tag or QR on the physical object is read by the phone.'],
+        ['Read the identity', 'The scan resolves to the identity stored with that keepsake.'],
+        ['Open its space', 'The matching memory space loads for that identity.'],
+        ['Show the memories', 'The photos attached to the keepsake are presented.'],
+        ['Nothing found', 'An unknown or unlinked tag shows a clear message instead of an empty screen.']
+      ],
+      note: 'Planned flow, drawn from the product concept. It describes intended behaviour, not shipped software.'
+    }
   },
   {
     id: 'qyorfoundme',
@@ -94,7 +105,18 @@ export const projects = [
     ],
     images: ['/projects/qyorfoundme/qyorfoundme-card.jpg?v=2'],
     mediaRatio: '16 / 9',
-    accent: '#9B70FF'
+    accent: '#9B70FF',
+    flow: {
+      title: 'How a lost item finds its way back',
+      steps: [
+        ['Scan the tag', 'The finder scans the QR tag on the belonging.'],
+        ['Read the identity', 'The tag points to the owning identity, not to personal details printed on it.'],
+        ['Reach the owner', 'The finder is given a way to contact the owner or report the item.'],
+        ['Owner responds', 'The owner can confirm the item and arrange its return.'],
+        ['Offline limit', 'Anything that needs a live lookup fails honestly rather than pretending the item was found.']
+      ],
+      note: 'Planned flow, drawn from the product concept. The offline/online boundary is a real design constraint, not a claim that the whole product works offline.'
+    }
   },
   {
     id: 'greview',
@@ -148,7 +170,18 @@ export const projects = [
     screensArePortrait: true,
     cardImage: '/projects/greview/greview-card.jpg?v=2',
     mediaRatio: '16 / 9',
-    accent: '#548CFF'
+    accent: '#548CFF',
+    flow: {
+      title: 'How a review is collected',
+      steps: [
+        ['Scan the code', 'A customer scans the QR or taps the NFC tag on the product.'],
+        ['Open the review', 'The scanned identity opens the review screen for that product.'],
+        ['Rate and write', 'A star rating and a short written note are entered.'],
+        ['Attach the feedback', 'The review is stored against the product it belongs to.'],
+        ['Read it back', 'The review screen shows the feedback so it can be acted on.']
+      ],
+      note: 'Drawn from the review screens shown above and the app\u2019s own code and QR/NFC tools. Still Almost Done, not finished.'
+    }
   },
   {
     id: 'qwernfc-music',
@@ -179,7 +212,18 @@ export const projects = [
     ],
     images: ['/projects/qwernfc-music/qwernfc-music-card.jpg?v=2'],
     mediaRatio: '16 / 9',
-    accent: '#9B70FF'
+    accent: '#9B70FF',
+    flow: {
+      title: 'How the music experience is meant to work',
+      steps: [
+        ['Reach the app', 'The user arrives through the QwerNFC identity, not a separate account system.'],
+        ['Open the music interface', 'The product\u2019s own music interface is the entry point.'],
+        ['Pick what to play', 'The interface presents the music choices to the user.'],
+        ['Same identity', 'The identity used here is shared with the rest of the ecosystem.'],
+        ['Coming soon', 'Streaming, licensing and offline playback are not claimed until the build proves them.']
+      ],
+      note: 'Planned direction for an upcoming product. No finished playback system is claimed.'
+    }
   },
   {
     id: 'timecapsule',
@@ -248,7 +292,19 @@ export const projects = [
     screensArePortrait: true,
     cardImage: '/projects/timecapsule/timecapsule-card.jpg?v=2',
     mediaRatio: '16 / 9',
-    accent: '#548CFF'
+    accent: '#548CFF',
+    flow: {
+      title: 'How a memory is stored',
+      steps: [
+        ['Identify', 'A QR code or NFC tag identifies the person opening the app.'],
+        ['Unlock', 'A PIN protects the space before anything is shown.'],
+        ['Capture', 'The in-app camera takes the photo, tied to an event.'],
+        ['Galley it', 'The shot lands in the gallery for that event.'],
+        ['Sync', 'Google Drive backs the space up so it survives a new device.'],
+        ['Failure path', 'A failed sync or wrong PIN is reported clearly and never silently drops a photo.']
+      ],
+      note: 'Drawn from the real screens shown above and the app structure. Integrations still being hardened — nothing here is presented as production-ready.'
+    }
   },
 
   /* ─────────────────────────── INTERNSHIP PROJECT ─────────────────────────── */
@@ -344,7 +400,19 @@ export const projects = [
     },
     images: ['/projects/nexora/nexora-1.svg', '/projects/nexora/nexora-2.svg'],
     screensNote: 'Illustrative layouts built from the application structure — not real screenshots.',
-    accent: '#548CFF'
+    accent: '#548CFF',
+    flow: {
+      title: 'How a performance report is produced',
+      steps: [
+        ['Sign in', 'Authentication resolves the account to one of three roles: student, supervisor or administrator.'],
+        ['Record work', 'A student files daily logbook entries with photo evidence and tracks OJT hours.'],
+        ['Review', 'A supervisor reviews logbooks, manages classwork and grades submissions.'],
+        ['Administer', 'An administrator manages accounts, classrooms and approvals.'],
+        ['Analyse', 'A Naive Bayes classifier predicts a performance category from the written feedback.'],
+        ['Report', 'Performance, progress and evaluation reports are produced from what was recorded.']
+      ],
+      note: 'Based on the verified repository structure: role-gated blueprints, the ML predictor, and the system_validation suite.'
+    }
   }
 ]
 

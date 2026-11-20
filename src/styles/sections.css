@@ -1830,6 +1830,7 @@ html::before {
 }
 
 .projectModal__purpose,
+.projectModal__flow,
 .projectModal__roles,
 .projectModal__ml,
 .projectModal__detail,
@@ -1841,6 +1842,7 @@ html::before {
 }
 
 .projectModal__purpose h4,
+.projectModal__flow h4,
 .projectModal__roles h4,
 .projectModal__ml h4,
 .projectModal__detail h4 {
@@ -1858,6 +1860,110 @@ html::before {
   font-size: 0.92rem;
   line-height: 1.7;
   color: rgba(146, 155, 173, 0.95);
+}
+
+/* ── product flow: how the thing actually works, step by step ── */
+.flowList {
+  position: relative;
+  display: grid;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flowList__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.1rem 1fr;
+  align-items: start;
+  gap: 0.9rem;
+  padding: 0 0 1.1rem;
+}
+
+/* the spine that joins one step to the next */
+.flowList__step::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.05rem;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(84, 140, 255, 0.34),
+    rgba(155, 112, 255, 0.2)
+  );
+}
+
+.flowList__step:first-child::before {
+  top: 0.62rem;
+}
+
+.flowList__step:last-child::before {
+  bottom: calc(100% - 0.62rem);
+}
+
+.flowList__step:last-child {
+  padding-bottom: 0;
+}
+
+.flowList__index {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  justify-self: center;
+  border-radius: 50%;
+  border: 1px solid rgba(84, 140, 255, 0.45);
+  background: rgba(8, 11, 18, 0.96);
+  color: var(--blue);
+  font-size: 0.55rem;
+  letter-spacing: 0;
+}
+
+.flowList__text {
+  display: grid;
+  gap: 0.22rem;
+  padding-top: 0.18rem;
+}
+
+.flowList__text h5 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.flowList__text p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.62;
+  color: rgba(146, 155, 173, 0.92);
+}
+
+.projectModal__flowNote {
+  margin-top: 0.35rem;
+  font-size: 0.62rem;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: rgba(146, 155, 173, 0.7);
+}
+
+@media (max-width: 560px) {
+  .flowList__step {
+    grid-template-columns: 1.7rem 1fr;
+    gap: 0.7rem;
+  }
+
+  .flowList__step::before {
+    left: 0.85rem;
+  }
 }
 
 .projectModal__progressHead {
