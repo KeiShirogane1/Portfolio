@@ -17,7 +17,7 @@ export const CONTRIBUTION_WINDOWS = [
     "windowEnd": "2026-11-20",
     "total": 3477,
     "activeDays": 78,
-    "offGithubDays": 0,
+    "offGithubDays": 8,
     "emptyDays": 1097,
     "bestDay": {
       "date": "2026-10-11",
@@ -618,16 +618,80 @@ export const CONTRIBUTION_WINDOWS = [
         "level": 2
       },
       {
+        "date": "2026-10-25",
+        "weekday": 0,
+        "count": 0,
+        "offGithub": true,
+        "note": "55 local commits in your own repositories, not pushed to GitHub",
+        "level": 0
+      },
+      {
         "date": "2026-10-26",
         "weekday": 1,
         "count": 1,
         "level": 1
       },
       {
+        "date": "2026-10-27",
+        "weekday": 2,
+        "count": 0,
+        "offGithub": true,
+        "note": "12 local commits in your own repositories, not pushed to GitHub",
+        "level": 0
+      },
+      {
+        "date": "2026-10-28",
+        "weekday": 3,
+        "count": 0,
+        "offGithub": true,
+        "note": "56 local commits in your own repositories, not pushed to GitHub",
+        "level": 0
+      },
+      {
+        "date": "2026-10-29",
+        "weekday": 4,
+        "count": 0,
+        "offGithub": true,
+        "note": "121 local commits in your own repositories, not pushed to GitHub",
+        "level": 0
+      },
+      {
+        "date": "2026-10-30",
+        "weekday": 5,
+        "count": 0,
+        "offGithub": true,
+        "note": "50 local commits in your own repositories, not pushed to GitHub",
+        "level": 0
+      },
+      {
         "date": "2026-10-31",
         "weekday": 6,
         "count": 2,
         "level": 1
+      },
+      {
+        "date": "2026-11-02",
+        "weekday": 1,
+        "count": 0,
+        "offGithub": true,
+        "note": "Local QwerNFC development, no commit pushed that day",
+        "level": 0
+      },
+      {
+        "date": "2026-11-03",
+        "weekday": 2,
+        "count": 0,
+        "offGithub": true,
+        "note": "Local QwerNFC development, no commit pushed that day",
+        "level": 0
+      },
+      {
+        "date": "2026-11-06",
+        "weekday": 5,
+        "count": 0,
+        "offGithub": true,
+        "note": "Local QwerNFC development, no commit pushed that day",
+        "level": 0
       },
       {
         "date": "2026-11-07",
@@ -706,7 +770,7 @@ export const CONTRIBUTION_WINDOWS = [
 ]
 
 export const CONTRIBUTION_META = {
-  "generatedAt": "2026-11-20T03:56:42.117Z",
+  "generatedAt": "2026-11-20T16:52:23.127Z",
   "weekdayLabels": [
     "Sun",
     "Mon",

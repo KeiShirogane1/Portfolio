@@ -6,6 +6,7 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 
 const exec = promisify(execFile)
+import { MANUAL_OFF_GITHUB_NOTES } from '../src/data/off-github-notes.js'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(HERE, '..')
 const OUT = join(ROOT, 'src', 'data', 'contributions-years.js')
@@ -244,6 +245,16 @@ async function main() {
   }
 
   if (snapshot) for (const [date, note] of snapshot.notes) offGithub.set(date, note)
+
+  // Hand-written days from src/data/off-github-notes.js. They live in their
+  // own committed file because the generated snapshot is rewritten by the
+  // nightly refresh, which used to erase every amber square.
+  for (const item of MANUAL_OFF_GITHUB_NOTES) {
+    if (!item || !item.date) continue
+    const onGitHub = fetched.reduce((sum, acc) => sum + (acc.map.get(item.date) || 0), 0)
+    if (onGitHub > 0) continue
+    offGithub.set(item.date, item.note || 'Off-GitHub development activity')
+  }
 
   // One combined day map for every year Mark has ever worked: both accounts
   // added together, with the official snapshot winning wherever it has a
