@@ -9,8 +9,8 @@ export const GITHUB_ACCOUNTS = [
   {
     "login": "KeiShirogane1",
     "label": "Main",
-    "total": 2335,
-    "activeDays": 57,
+    "total": 2336,
+    "activeDays": 58,
     "privateContributionCountsShared": false,
     "restrictedContributionsCount": 0
   },
@@ -28,12 +28,12 @@ export const GITHUB_USER = "KeiShirogane1"
 
 export const contributions = {
   "source": "github-graphql",
-  "generatedAt": "2026-11-20T22:31:43.698Z",
-  "windowStart": "2025-11-21",
-  "windowEnd": "2026-11-20",
-  "total": 3449,
-  "activeDays": 72,
-  "emptyDays": 293,
+  "generatedAt": "2026-11-21T21:28:55.351Z",
+  "windowStart": "2025-11-22",
+  "windowEnd": "2026-11-21",
+  "total": 3450,
+  "activeDays": 73,
+  "emptyDays": 292,
   "bestDay": {
     "date": "2026-10-11",
     "count": 237
@@ -127,8 +127,8 @@ export const contributions = {
     {
       "login": "KeiShirogane1",
       "label": "Main",
-      "total": 2335,
-      "activeDays": 57,
+      "total": 2336,
+      "activeDays": 58,
       "privateContributionCountsShared": false,
       "restrictedContributionsCount": 0
     },
@@ -142,12 +142,6 @@ export const contributions = {
     }
   ],
   "days": [
-    {
-      "date": "2025-11-21",
-      "weekday": 5,
-      "count": 0,
-      "level": 0
-    },
     {
       "date": "2025-11-22",
       "weekday": 6,
@@ -2132,7 +2126,7 @@ export const contributions = {
       "date": "2026-10-18",
       "weekday": 0,
       "count": 12,
-      "level": 1
+      "level": 2
     },
     {
       "date": "2026-10-19",
@@ -2329,6 +2323,12 @@ export const contributions = {
     {
       "date": "2026-11-20",
       "weekday": 5,
+      "count": 1,
+      "level": 1
+    },
+    {
+      "date": "2026-11-21",
+      "weekday": 6,
       "count": 1,
       "level": 1
     }

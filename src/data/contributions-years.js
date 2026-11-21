@@ -14,9 +14,9 @@ export const CONTRIBUTION_WINDOWS = [
     "label": "All time",
     "hint": "every year from first to latest commit, both accounts",
     "windowStart": "2023-09-03",
-    "windowEnd": "2026-11-20",
-    "total": 3477,
-    "activeDays": 78,
+    "windowEnd": "2026-11-21",
+    "total": 3478,
+    "activeDays": 79,
     "offGithubDays": 3,
     "emptyDays": 1097,
     "bestDay": {
@@ -357,7 +357,7 @@ export const CONTRIBUTION_WINDOWS = [
         "date": "2026-09-11",
         "weekday": 5,
         "count": 33,
-        "level": 2
+        "level": 3
       },
       {
         "date": "2026-09-12",
@@ -724,13 +724,19 @@ export const CONTRIBUTION_WINDOWS = [
         "weekday": 5,
         "count": 1,
         "level": 1
+      },
+      {
+        "date": "2026-11-21",
+        "weekday": 6,
+        "count": 1,
+        "level": 1
       }
     ]
   }
 ]
 
 export const CONTRIBUTION_META = {
-  "generatedAt": "2026-11-20T22:31:45.876Z",
+  "generatedAt": "2026-11-21T21:28:57.117Z",
   "weekdayLabels": [
     "Sun",
     "Mon",
