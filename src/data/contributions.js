@@ -9,8 +9,8 @@ export const GITHUB_ACCOUNTS = [
   {
     "login": "KeiShirogane1",
     "label": "Main",
-    "total": 2336,
-    "activeDays": 58,
+    "total": 2337,
+    "activeDays": 59,
     "privateContributionCountsShared": false,
     "restrictedContributionsCount": 0
   },
@@ -28,12 +28,12 @@ export const GITHUB_USER = "KeiShirogane1"
 
 export const contributions = {
   "source": "github-graphql",
-  "generatedAt": "2026-11-21T21:28:55.351Z",
-  "windowStart": "2025-11-22",
-  "windowEnd": "2026-11-21",
-  "total": 3450,
-  "activeDays": 73,
-  "emptyDays": 292,
+  "generatedAt": "2026-11-22T02:45:17.340Z",
+  "windowStart": "2025-11-23",
+  "windowEnd": "2026-11-22",
+  "total": 3451,
+  "activeDays": 74,
+  "emptyDays": 291,
   "bestDay": {
     "date": "2026-10-11",
     "count": 237
@@ -75,51 +75,51 @@ export const contributions = {
       "label": "Nov"
     },
     {
-      "index": 14,
+      "index": 7,
       "label": "Dec"
     },
     {
-      "index": 42,
+      "index": 35,
       "label": "Jan"
     },
     {
-      "index": 77,
+      "index": 70,
       "label": "Feb"
     },
     {
-      "index": 105,
+      "index": 98,
       "label": "Mar"
     },
     {
-      "index": 133,
+      "index": 126,
       "label": "Apr"
     },
     {
-      "index": 161,
+      "index": 154,
       "label": "May"
     },
     {
-      "index": 196,
+      "index": 189,
       "label": "Jun"
     },
     {
-      "index": 224,
+      "index": 217,
       "label": "Jul"
     },
     {
-      "index": 252,
+      "index": 245,
       "label": "Aug"
     },
     {
-      "index": 287,
+      "index": 280,
       "label": "Sep"
     },
     {
-      "index": 315,
+      "index": 308,
       "label": "Oct"
     },
     {
-      "index": 350,
+      "index": 343,
       "label": "Nov"
     }
   ],
@@ -127,8 +127,8 @@ export const contributions = {
     {
       "login": "KeiShirogane1",
       "label": "Main",
-      "total": 2336,
-      "activeDays": 58,
+      "total": 2337,
+      "activeDays": 59,
       "privateContributionCountsShared": false,
       "restrictedContributionsCount": 0
     },
@@ -142,12 +142,6 @@ export const contributions = {
     }
   ],
   "days": [
-    {
-      "date": "2025-11-22",
-      "weekday": 6,
-      "count": 0,
-      "level": 0
-    },
     {
       "date": "2025-11-23",
       "weekday": 0,
@@ -1778,7 +1772,7 @@ export const contributions = {
       "date": "2026-08-21",
       "weekday": 5,
       "count": 8,
-      "level": 1
+      "level": 2
     },
     {
       "date": "2026-08-22",
@@ -2329,6 +2323,12 @@ export const contributions = {
     {
       "date": "2026-11-21",
       "weekday": 6,
+      "count": 1,
+      "level": 1
+    },
+    {
+      "date": "2026-11-22",
+      "weekday": 0,
       "count": 1,
       "level": 1
     }
