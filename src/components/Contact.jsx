@@ -91,7 +91,7 @@ export default function Contact() {
     <section id="contact" className="section" aria-labelledby="contact-title" ref={ref}>
       <div className="shell">
         <div className="sectionHead reveal">
-          <span className="eyebrow">10 — Contact</span>
+          <span className="eyebrow">11 — Contact</span>
           <h2 id="contact-title" className="splitText reveal" style={{ '--reveal-delay': '80ms' }}>
             <SplitText text="Let&rsquo;s build something worth showing." mode="chars" step="30ms" />
           </h2>

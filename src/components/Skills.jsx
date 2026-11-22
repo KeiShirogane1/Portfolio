@@ -80,7 +80,7 @@ export default function Skills() {
     <section id="skills" className="section" aria-labelledby="skills-title" ref={ref}>
       <div className="shell">
         <div className="sectionHead reveal">
-          <span className="eyebrow">05 — Technical Skills</span>
+          <span className="eyebrow">06 — Technical Skills</span>
           <h2 id="skills-title" className="splitText reveal" style={{ '--reveal-delay': '60ms' }}>
             <SplitText text="The stack I build with." mode="chars" step="34ms" />
           </h2>

@@ -5,6 +5,7 @@ import About from './components/About.jsx'
 import ContributionGraph from './components/ContributionGraph.jsx'
 import Skills from './components/Skills.jsx'
 import Projects from './components/Projects.jsx'
+import SystemFlow from './components/SystemFlow.jsx'
 import Experience from './components/Experience.jsx'
 import Education from './components/Education.jsx'
 import AIExperiments from './components/AIExperiments.jsx'
@@ -97,6 +98,7 @@ export default function App() {
               <About />
               <ContributionGraph />
               <Projects />
+              <SystemFlow />
               <Skills />
               <Experience />
               <AIExperiments />

@@ -4,7 +4,7 @@
  * certificate states and nothing is invented.
  */
 export const certsIntro = {
-  eyebrow: '09 — Certifications & Professional Development',
+  eyebrow: '10 — Certifications & Professional Development',
   heading: 'Credentials that back the craft.',
   body:
     'Certificates of completion and attendance from hands-on training and school programs. Each one is backed by the hours or the event behind it, not just the title.'

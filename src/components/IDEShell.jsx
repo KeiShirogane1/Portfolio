@@ -30,6 +30,7 @@ const FILES = {
   about: { name: 'about.md', kind: 'md' },
   activity: { name: 'activity.json', kind: 'json' },
   projects: { name: 'projects.jsx', kind: 'jsx' },
+  system: { name: 'system-flow.jsx', kind: 'jsx' },
   skills: { name: 'skills.json', kind: 'json' },
   experience: { name: 'experience.md', kind: 'md' },
   education: { name: 'education.md', kind: 'md' },

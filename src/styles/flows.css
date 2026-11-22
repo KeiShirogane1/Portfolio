@@ -1,0 +1,283 @@
+/* ============================================================================
+   SYSTEM FLOW — matches the reference diagram exactly.
+   No `border` anywhere: plates read as lifted surfaces through fill, radius
+   and shadow only.
+   ============================================================================ */
+
+.flowSection {
+  padding-block: var(--section-y);
+}
+
+.flow {
+  margin: 0;
+  padding: 1.6rem 1.8rem 1.4rem;
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(130% 150% at 15% 0%, rgba(84, 140, 255, 0.10), transparent 60%),
+    linear-gradient(180deg, #0b1019 0%, #080c13 100%);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.flow__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.flow__labelTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+.flow__labelNote {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* --- run ------------------------------------------------------------------ */
+
+.flowRun {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: max-content;
+}
+
+.flowRun > .flowNode:first-child { margin-left: 0.5rem; }
+
+.flowOutcomes {
+  margin-left: 0.5rem;
+}
+
+/* --- plates -------------------------------------------------------------- */
+
+.flowPlate {
+  display: grid;
+  place-items: center;
+  background: #12161f;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(244, 246, 250, 0.04);
+}
+
+.flowPlate--md {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.8rem;
+}
+
+.flowPlate--big {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 1rem;
+}
+
+.flowPlate--sm {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+}
+
+.flowPlate--chain { background: #14181f; }
+
+.flowPlate--trigger { background: #10141c; }
+
+.flowPlate--ok { background: #12151d; }
+
+.flowPlate--fail { background: #12151d; }
+
+.flowGlyph {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+.flowPlate--sm .flowGlyph { width: 17px; height: 17px; }
+
+.flowGlyph--code {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--electric-blue);
+  letter-spacing: -0.02em;
+}
+
+/* --- nodes --------------------------------------------------------------- */
+
+.flowNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.flowNode--trigger { flex-shrink: 0; }
+
+.flowNode__label {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.flowNode__note {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+/* --- connectors ---------------------------------------------------------- */
+
+.flowLinkCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 2.4rem;
+}
+
+.flowLinkWord {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: rgba(146, 155, 173, 0.72);
+  text-transform: lowercase;
+}
+
+.flowLink {
+  width: 100%;
+  height: 1px;
+  background: rgba(146, 155, 173, 0.38);
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+/* --- branch -------------------------------------------------------------- */
+
+.flowBranch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 4.2rem;
+}
+
+.flowBranchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-top: 0.2rem;
+}
+
+.flowBranchWord {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  color: rgba(146, 155, 173, 0.72);
+  text-transform: lowercase;
+  flex: 0 0 auto;
+}
+
+.flowBranchRow .flowLink {
+  flex: 1 1 auto;
+  width: auto;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* --- outcomes ------------------------------------------------------------ */
+
+.flowOutcomes {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.flowOutcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- resources ----------------------------------------------------------- */
+
+.flowResources {
+  margin-top: 3.2rem;
+  display: flex;
+  justify-content: space-between;
+  width: max-content;
+}
+
+.flowResource {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 5.6rem;
+}
+
+.flowDrop {
+  width: 1px;
+  height: 2.6rem;
+  background-image: linear-gradient(
+    180deg,
+    rgba(124, 156, 255, 0.55) 0 6px,
+    transparent 6px 12px
+  );
+  background-size: 1px 12px;
+  background-repeat: repeat-y;
+  margin-bottom: 0.45rem;
+}
+
+/* --- caption ------------------------------------------------------------- */
+
+.flow__caption {
+  margin-top: 1.2rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+}
+
+.flow__captionFile {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: rgba(84, 140, 255, 0.9);
+}
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 1020px) {
+  .flowRun { gap: 1.1rem; }
+  .flowResources { width: auto; gap: 1rem; }
+  .flowResource { min-width: 4.8rem; }
+}
+
+@media (max-width: 720px) {
+  .flow { padding: 1.2rem 1rem 1.1rem; border-radius: var(--radius-lg); }
+  .flowRun { gap: 0.9rem; flex-wrap: wrap; justify-content: center; }
+  .flowResources { gap: 0.75rem; }
+  .flowResource { min-width: 4rem; }
+  .flowPlate--md { width: 2.8rem; height: 2.8rem; }
+  .flowPlate--big { width: 3.2rem; height: 3.2rem; }
+  .flowPlate--sm { width: 2.4rem; height: 2.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow, .flowNode { transition: none; animation: none; }
+}

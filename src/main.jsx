@@ -11,6 +11,7 @@ import './styles/share.css'
 import './styles/hero.css'
 import './styles/ide.css'
 import './styles/contribution.css'
+import './styles/flows.css'
 import './styles/ide.css'
 
 createRoot(document.getElementById('root')).render(
