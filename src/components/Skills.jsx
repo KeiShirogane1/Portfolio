@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { skillCategories } from '../data/skills.js'
 import SplitText from './SplitText.jsx'
 import useRevealGroup from '../hooks/useRevealGroup.js'

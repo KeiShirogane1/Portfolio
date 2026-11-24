@@ -326,3 +326,12 @@
   from { opacity: 1; transform: none; }
   to { opacity: 0; transform: translateY(16px) scale(0.98); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .projectModal__backdrop,
+  .projectModal,
+  .projectModal__backdrop.isClosing,
+  .projectModal__backdrop.isClosing .projectModal {
+    animation: none;
+  }
+}

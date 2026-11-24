@@ -22,6 +22,19 @@ import { eyebrow } from '../data/sections.js'
 const LEVEL_CLASS = ['is-0', 'is-1', 'is-2', 'is-3', 'is-4']
 const WEEKDAY_ROWS = CONTRIBUTION_META.weekdayLabels
 const DAY_MS = 86400000
+const SNAPSHOT_CACHE_KEY = 'portfolio:contributions:v1'
+const SNAPSHOT_CACHE_TTL_MS = 15 * 60 * 1000
+
+function isValidSnapshot(data) {
+  return Boolean(
+    data &&
+      Array.isArray(data.windows) &&
+      data.windows[0] &&
+      Array.isArray(data.windows[0].active) &&
+      data.windows[0].active.length > 0 &&
+      Number(data.windows[0].total) > 0
+  )
+}
 
 function parseISO(iso) {
   return new Date(`${iso}T00:00:00Z`)
@@ -192,8 +205,66 @@ export default function ContributionGraph() {
     if (holder) holder.removeAttribute('data-hover-row')
   }
 
-  // One combined window: every year from the first commit to today.
-  const activeWindow = CONTRIBUTION_WINDOWS[0]
+  const [activeWindow, setActiveWindow] = useState(CONTRIBUTION_WINDOWS[0])
+  const [meta, setMeta] = useState(CONTRIBUTION_META)
+
+  /* Hydrate from Cloudflare KV (/api/contributions) with a short session cache
+     and silent fallback to the bundled snapshot when running Vite-only dev or
+     offline. No GitHub token ever touches the browser. */
+  useEffect(() => {
+    let cancelled = false
+
+    const applySnapshot = (data) => {
+      if (cancelled || !isValidSnapshot(data)) return
+      setActiveWindow(data.windows[0])
+      if (data.meta) {
+        setMeta((prev) => ({ ...prev, ...data.meta }))
+      } else if (data.lastSuccessfulRefresh || data.refreshedAt) {
+        setMeta((prev) => ({
+          ...prev,
+          generatedAt: data.lastSuccessfulRefresh || data.refreshedAt,
+          lastSuccessfulRefresh: data.lastSuccessfulRefresh || data.refreshedAt
+        }))
+      }
+    }
+
+    try {
+      const cachedRaw = window.sessionStorage.getItem(SNAPSHOT_CACHE_KEY)
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw)
+        if (cached && Date.now() - Number(cached.cachedAt || 0) < SNAPSHOT_CACHE_TTL_MS && isValidSnapshot(cached.data)) {
+          applySnapshot(cached.data)
+          return () => {
+            cancelled = true
+          }
+        }
+      }
+    } catch {
+      // Ignore storage errors (private mode, quota, etc.)
+    }
+
+    fetch('/api/contributions', { headers: { accept: 'application/json' } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!isValidSnapshot(data)) return
+        applySnapshot(data)
+        try {
+          window.sessionStorage.setItem(
+            SNAPSHOT_CACHE_KEY,
+            JSON.stringify({ cachedAt: Date.now(), data })
+          )
+        } catch {
+          // Ignore storage errors
+        }
+      })
+      .catch(() => {
+        // Keep bundled fallback silently (e.g. local Vite dev without Worker).
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const blocks = useMemo(() => buildBlocks(activeWindow), [activeWindow])
 
@@ -235,7 +306,7 @@ export default function ContributionGraph() {
             </h2>
             <p className="contrib__sub">
               Both of my GitHub accounts added together, so one square is the work
-              that landed on either account that day. Amber squares are days I was
+              that landed on either account that day. Ochre squares are days I was
               coding locally while GitHub shows nothing public for them.
             </p>
           </div>
@@ -421,8 +492,8 @@ export default function ContributionGraph() {
         ) : null}
 
         <p className="contrib__note">
-          {CONTRIBUTION_META.accounts.map((account) => account.login).join(' and ')} · snapshot refreshed{' '}
-          {new Date(CONTRIBUTION_META.generatedAt).toLocaleString('en-US', {
+          {(meta.accounts || CONTRIBUTION_META.accounts).map((account) => account.login).join(' and ')} · snapshot refreshed{' '}
+          {new Date(meta.lastSuccessfulRefresh || meta.generatedAt).toLocaleString('en-US', {
             dateStyle: 'medium',
             timeStyle: 'short'
           })}

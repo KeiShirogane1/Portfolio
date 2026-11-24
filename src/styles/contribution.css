@@ -374,6 +374,7 @@
   --contrib-cell: 13px;
   --contrib-gap: 3px;
   --contrib-gutter: 1.85rem;
+  position: relative;
   margin-top: var(--space-6);
   padding: var(--space-5) var(--space-5) var(--space-4);
   border: 1px solid var(--line);
@@ -508,6 +509,15 @@
   background: transparent;
 }
 
+/* A day flagged off-GitHub always has count 0, so it also gets is-0. Repeating
+   both classes outranks is-0, and the single-class selector also colors the
+   legend swatch. Muted ochre (#98743D) keeps it distinct from blue/purple. */
+.contrib__cell.contrib__cell--off-github,
+.contrib__cell.is-0.contrib__cell--off-github {
+  background: rgba(152, 116, 61, 0.42);
+  box-shadow: inset 0 0 0 1px rgba(152, 116, 61, 0.78);
+}
+
 .contrib__cell.is-0 {
   background: #1b2233;
 }
@@ -568,22 +578,19 @@
   opacity: 0.5;
 }
 
-/* Off-GitHub work days — same cell size, different fill, so they never read
-   as a GitHub contribution count. */
+/* Off-GitHub work days — muted ochre (#98743D) tone for legend and hover. */
 .contrib__legend-label--off {
-  color: rgba(255, 190, 60, 0.85);
+  color: #b48f56;
 }
 
-.contrib__cell--off-github {
-  background: rgba(255, 190, 60, 0.28);
-  border: 1px solid rgba(255, 190, 60, 0.55);
-  box-shadow: inset 0 0 0 1px rgba(255, 190, 60, 0.35);
-}
-
-.contrib__cell--off-github:hover {
-  transform: scale(1.06);
-  filter: brightness(1.12);
-  border-color: rgba(255, 210, 120, 0.75);
+.contrib__cell.contrib__cell--off-github:hover,
+.contrib__cell.contrib__cell--off-github:focus-visible {
+  background: rgba(152, 116, 61, 0.62);
+  box-shadow:
+    inset 0 0 0 1px #b8945c,
+    0 4px 12px rgba(8, 11, 18, 0.5);
+  transform: scale(1.12);
+  filter: brightness(1.08);
 }
 
 .contrib__meta {
@@ -615,10 +622,8 @@
 
 /* The weekday gutter has to fit "Wed" at the mono size, otherwise the
    middle column gets clipped — that was the whole "why is it Mon Wed Fri"
-   confusion. 1.85rem holds all seven labels at the desktop size. */
-.contrib__graph {
-  --contrib-gutter: 1.85rem;
-}
+   confusion. 1.85rem holds all seven labels at the desktop size
+   (set on .contrib__graph above). */
 
 @media (max-width: 720px) {
   .contrib {
@@ -667,21 +672,6 @@
   }
   .contrib__graph::-webkit-scrollbar {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .contrib__cell,
-  .contrib__block,
-  .contrib__week,
-  .contrib__year-row,
-  .contrib__peak,
-  .contrib__year-dot,
-  .contrib__peak-bar {
-    transition: none;
-    transform: none;
-    animation: none;
-    opacity: 1;
   }
 }
 
@@ -767,10 +757,6 @@
 /* One pass of light across the finished chart, then nothing. The sweep is a
    background position, not a transform, so a thousand cells never gain an
    extra scrollable area while it runs. */
-.contrib__graph {
-  position: relative;
-}
-
 .contrib.is-in .contrib__graph::after {
   content: '';
   position: absolute;
@@ -906,8 +892,16 @@
 /* Off-GitHub squares are coding the public calendar never recorded, so they
    breathe gently instead of sitting perfectly still. */
 @keyframes contribOffBreathe {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 176, 92, 0); }
-  50% { box-shadow: 0 0 0 3px rgba(255, 176, 92, 0.22); }
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(152, 116, 61, 0.72),
+      0 0 0 0 rgba(152, 116, 61, 0);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px rgba(180, 143, 86, 0.9),
+      0 0 0 3px rgba(152, 116, 61, 0.24);
+  }
 }
 
 .contrib.is-in .contrib__cell--off-github {
@@ -947,7 +941,10 @@
   .contrib__total-value,
   .contrib__peak,
   .contrib__year-row,
-  .contrib__week {
+  .contrib__week,
+  .contrib__cell,
+  .contrib__year-dot,
+  .contrib__peak-bar {
     opacity: 1;
     transform: none;
     transition: none;

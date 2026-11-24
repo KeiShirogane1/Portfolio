@@ -59,8 +59,6 @@
   /* Borders & surfaces */
   --line: rgba(244, 246, 250, 0.10);
   --line-strong: rgba(244, 246, 250, 0.18);
-  --ink: rgba(244, 246, 250, 0.06);
-  --ink-strong: rgba(244, 246, 250, 0.14);
 
   /* Colour shorthands */
   --blue: var(--electric-blue);

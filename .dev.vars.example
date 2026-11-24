@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local Wrangler scheduled testing (never commit .dev.vars).
+# Both tokens require classic PAT `read:user` scope on their respective accounts.
+KEI_READ_USER_TOKEN=
+QWERNFC_READ_USER_TOKEN=

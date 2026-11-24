@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { navLinks, profile } from '../data/profile.js'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { profile } from '../data/profile.js'
 import { sections } from '../data/sections.js'
 import ShareSheet from './ShareSheet.jsx'
 
@@ -19,24 +19,17 @@ import ShareSheet from './ShareSheet.jsx'
  * activity bar, so the page content keeps the full width of the phone.
  */
 
-/* One page per nav link. The extension is part of the fiction: .jsx for the
-   interactive sections, .md for prose, .json for structured data. */
-/* Line numbers for the editor gutter. The page is long, so the list is a
-   fixed run of numbers that rides with the scroll — a VS Code style margin. */
-const LINE_NUMBERS = Array.from({ length: 600 }, (_, index) => index + 1)
+/* Line numbers for the editor gutter. Initialized to 600 and dynamically expanded
+   to match the viewport's full scrollHeight so numbers continue to the bottom. */
+const DEFAULT_LINE_COUNT = 600
 
-const FILES = {
-  home: { name: 'home.jsx', kind: 'jsx' },
-  about: { name: 'about.md', kind: 'md' },
-  activity: { name: 'activity.json', kind: 'json' },
-  projects: { name: 'projects.jsx', kind: 'jsx' },
-  system: { name: 'system-flow.jsx', kind: 'jsx' },
-  skills: { name: 'skills.json', kind: 'json' },
-  experience: { name: 'experience.md', kind: 'md' },
-  education: { name: 'education.md', kind: 'md' },
-  ai: { name: 'ai-experiments.jsx', kind: 'jsx' },
-  certs: { name: 'certifications.md', kind: 'md' },
-  contact: { name: 'contact.jsx', kind: 'contact' }
+/* File name and icon kind come straight from data/sections.js, so adding or
+   renaming a section never needs a second lookup table here. The extension is
+   part of the fiction: .jsx for interactive sections, .md for prose, .json for
+   structured data. */
+function fileFor(section) {
+  const kind = section.id === 'contact' ? 'contact' : section.file.split('.').pop()
+  return { name: section.file, kind: kind === 'md' || kind === 'json' || kind === 'contact' ? kind : 'jsx' }
 }
 
 const KIND_COLOR = {
@@ -136,8 +129,50 @@ export default function IDEShell({ activeSection, progressBar, children }) {
   const [shareOpen, setShareOpen] = useState(false)
   const [treeOpen, setTreeOpen] = useState({ src: true, pages: true })
   const [scrollTop, setScrollTop] = useState(0)
+  const [lineCount, setLineCount] = useState(DEFAULT_LINE_COUNT)
   const viewportRef = useRef(null)
+  const gutterInnerRef = useRef(null)
   const frameRef = useRef(0)
+
+  const lineNumbers = useMemo(
+    () => Array.from({ length: lineCount }, (_, index) => index + 1),
+    [lineCount]
+  )
+
+  useEffect(() => {
+    const pane = viewportRef.current
+    if (!pane) return
+
+    const updateLineCount = () => {
+      const lineEl = gutterInnerRef.current?.querySelector('.ide__lineNo')
+      const lineHeight = lineEl?.getBoundingClientRect().height || 15
+      const needed = Math.max(DEFAULT_LINE_COUNT, Math.ceil(pane.scrollHeight / lineHeight) + 20)
+      setLineCount((prev) => (prev === needed ? prev : needed))
+    }
+
+    updateLineCount()
+    window.addEventListener('resize', updateLineCount)
+
+    let resizeObserver
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(updateLineCount)
+      resizeObserver.observe(pane)
+      Array.from(pane.children).forEach((child) => resizeObserver.observe(child))
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateLineCount)
+      resizeObserver?.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
+  }, [])
   /* Line numbers ride along with the content: the gutter is fixed, only its
      inner list moves. rAF keeps it to one write per frame. */
   const onScroll = useCallback((event) => {
@@ -150,7 +185,7 @@ export default function IDEShell({ activeSection, progressBar, children }) {
   }, [])
 
   const active = sections.find((link) => link.id === activeSection) || sections[0]
-  const activeFile = FILES[active.id] || FILES.home
+  const activeFile = fileFor(active)
 
   /* Escape closes the drawer; the page underneath must not scroll behind it. */
   useEffect(() => {
@@ -278,7 +313,7 @@ export default function IDEShell({ activeSection, progressBar, children }) {
                 role="list"
               >
                 {pages.map((link) => {
-                  const file = FILES[link.id] || { name: link.id, kind: 'md' }
+                  const file = fileFor(link)
                   return (
                     <li key={link.id}>
                       <button
@@ -381,8 +416,12 @@ export default function IDEShell({ activeSection, progressBar, children }) {
 
         <div className="ide__code">
           <div className="ide__gutter" aria-hidden="true">
-            <div className="ide__gutterInner" style={{ transform: `translateY(${-scrollTop}px)` }}>
-              {LINE_NUMBERS.map((line) => (
+            <div
+              ref={gutterInnerRef}
+              className="ide__gutterInner"
+              style={{ transform: `translateY(${-scrollTop}px)` }}
+            >
+              {lineNumbers.map((line) => (
                 <span key={line} className="ide__lineNo">
                   {line}
                 </span>

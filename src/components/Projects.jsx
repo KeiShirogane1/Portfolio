@@ -105,31 +105,77 @@ function ProjectCard({ project, order, onOpen }) {
 /* --------------------------------------------------------------- modal --- */
 
 function ProjectModal({ project, onClose }) {
+  const modalRef = useRef(null)
   const closeRef = useRef(null)
+  const previousFocusRef = useRef(null)
+  const closeTimerRef = useRef(0)
+  const closingRef = useRef(false)
   const [shot, setShot] = useState(0)
   const [closing, setClosing] = useState(false)
+  const imageCount = project.images.length
 
   const requestClose = useCallback(() => {
-    if (closing) return
+    if (closingRef.current) return
+    closingRef.current = true
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onClose()
+      return
+    }
     setClosing(true)
-    window.setTimeout(onClose, 200)
-  }, [closing, onClose])
+    closeTimerRef.current = window.setTimeout(onClose, 200)
+  }, [onClose])
+
+  const showPrev = useCallback(() => {
+    if (imageCount < 2) return
+    setShot((index) => (index - 1 + imageCount) % imageCount)
+  }, [imageCount])
+
+  const showNext = useCallback(() => {
+    if (imageCount < 2) return
+    setShot((index) => (index + 1) % imageCount)
+  }, [imageCount])
 
   useEffect(() => {
+    previousFocusRef.current = document.activeElement
     closeRef.current?.focus()
-    const previous = document.body.style.overflow
+    const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
+    return () => {
+      window.clearTimeout(closeTimerRef.current)
+      document.body.style.overflow = previousOverflow
+      if (previousFocusRef.current instanceof HTMLElement) {
+        previousFocusRef.current.focus()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     const onKey = (event) => {
       if (event.key === 'Escape') {
         requestClose()
         return
       }
+      if (imageCount > 1 && event.key === 'ArrowLeft') {
+        event.preventDefault()
+        showPrev()
+        return
+      }
+      if (imageCount > 1 && event.key === 'ArrowRight') {
+        event.preventDefault()
+        showNext()
+        return
+      }
       if (event.key !== 'Tab') return
-      const focusables = document.querySelectorAll('.projectModal [data-focusable]')
-      if (!focusables.length) return
+      const focusables = modalRef.current?.querySelectorAll('[data-focusable]')
+      if (!focusables?.length) return
       const first = focusables[0]
       const last = focusables[focusables.length - 1]
+      if (!modalRef.current.contains(document.activeElement)) {
+        event.preventDefault()
+        ;(event.shiftKey ? last : first).focus()
+        return
+      }
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault()
         last.focus()
@@ -140,11 +186,8 @@ function ProjectModal({ project, onClose }) {
     }
 
     window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = previous
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [requestClose])
+    return () => window.removeEventListener('keydown', onKey)
+  }, [imageCount, requestClose, showNext, showPrev])
 
   useEffect(() => {
     setShot(0)
@@ -155,16 +198,18 @@ function ProjectModal({ project, onClose }) {
   return (
     <div
       className={`projectModal__backdrop${closing ? ' isClosing' : ''}`}
-      onClick={requestClose}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) requestClose()
+      }}
       role="presentation"
     >
       <div
         className="projectModal"
+        ref={modalRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="projectModalTitle"
         style={{ '--accent': project.accent }}
-        onClick={(event) => event.stopPropagation()}
       >
         <div className="projectModal__head">
           <div className="projectModal__headText">
@@ -189,15 +234,58 @@ function ProjectModal({ project, onClose }) {
         </div>
 
         <div className="projectModal__scroll">
-          {project.images.length > 0 ? (
+          {imageCount > 0 ? (
             <div className={`projectModal__gallery${project.screensArePortrait ? ' isPhone' : ' isWide'}`}>
-              <div className="projectModal__shot">
+              <div
+                className="projectModal__shot"
+                role={imageCount > 1 ? 'region' : undefined}
+                aria-roledescription={imageCount > 1 ? 'carousel' : undefined}
+                aria-label={imageCount > 1 ? `${project.title} visuals` : undefined}
+              >
                 <img key={shown} src={shown} alt={`${project.title} visual ${shot + 1}`} loading="lazy" />
+                {imageCount > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      className="projectModal__navBtn projectModal__navBtn--prev"
+                      onClick={showPrev}
+                      aria-label="Previous visual"
+                      data-focusable
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none">
+                        <path
+                          d="M9 2.5 4.5 7 9 11.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="projectModal__navBtn projectModal__navBtn--next"
+                      onClick={showNext}
+                      aria-label="Next visual"
+                      data-focusable
+                    >
+                      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none">
+                        <path
+                          d="M5 2.5 9.5 7 5 11.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </>
+                )}
               </div>
-              {project.imageCaptions && project.imageCaptions[shot] && (
+              {(project.imageCaptions?.[shot] || imageCount > 1) && (
                 <p className="projectModal__shotCaption">
-                  <span className="mono">{String(shot + 1).padStart(2, '0')} / {String(project.images.length).padStart(2, '0')}</span>
-                  {project.imageCaptions[shot]}
+                  <span className="mono">{String(shot + 1).padStart(2, '0')} / {String(imageCount).padStart(2, '0')}</span>
+                  {project.imageCaptions?.[shot]}
                 </p>
               )}
               {project.screensNote && (
@@ -212,8 +300,8 @@ function ProjectModal({ project, onClose }) {
                       className="projectModal__thumb"
                       data-active={i === shot}
                       onClick={() => setShot(i)}
-                      aria-label={`Show visual ${i + 1}${project.imageCaptions ? `: ${project.imageCaptions[i]}` : ''}`}
-                      aria-current={i === shot}
+                      aria-label={`Show visual ${i + 1}${project.imageCaptions?.[i] ? `: ${project.imageCaptions[i]}` : ''}`}
+                      aria-current={i === shot ? 'true' : undefined}
                       data-focusable
                     >
                       <img src={img} alt="" aria-hidden="true" loading="lazy" />

@@ -380,6 +380,14 @@
   height: 2px;
   z-index: 20;
   background: rgba(244, 246, 250, 0.03);
+  pointer-events: none;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--blue), var(--violet));
 }
 
 .ide__crumbs {
@@ -426,7 +434,7 @@
 .ide__gutter {
   position: relative;
   overflow: hidden;
-  width: 3.1rem;
+  width: 3.4rem;
   padding-top: 0.85rem;
   border-right: 1px solid var(--id-line);
   background: var(--id-editor);
@@ -453,7 +461,7 @@
 
 @media (max-width: 720px) {
   .ide__gutter {
-    width: 2.1rem;
+    width: 2.45rem;
     padding-top: 0.7rem;
   }
   .ide__gutterInner {

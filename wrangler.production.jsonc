@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-11-10",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "triggers": {
+    "crons": ["1 16 * * *"]
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CONTRIBUTIONS_KV",
+      "id": "b5e8982c05ee47c18289d4903f277161"
+    }
+  ]
+}

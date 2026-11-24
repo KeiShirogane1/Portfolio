@@ -22,6 +22,8 @@ export default function SplitText({
   id
 }) {
   const Tag = as || tag || 'span'
+  /* Callers pass either a number of ms (22) or a CSS time ('30ms'). */
+  const stepValue = typeof step === 'number' ? `${step}ms` : step
 
   /* Keep the prop names straight regardless of which one the caller used. */
   const rows = useMemo(() => {
@@ -71,7 +73,7 @@ export default function SplitText({
                   const style = {
                     '--i': index,
                     '--split-base': `${base}ms`,
-                    '--split-step': `${step}ms`
+                    '--split-step': stepValue
                   }
                   index += 1
                   return (
