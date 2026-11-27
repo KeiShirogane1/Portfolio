@@ -49,7 +49,7 @@ export default {
     if (url.pathname === '/api/contributions' && request.method === 'GET') {
       const { snapshot, source } = await getPublicSnapshot(env)
       return jsonResponse(snapshot, 200, {
-        'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+        'cache-control': 'no-store, no-cache, must-revalidate',
         'x-contributions-source': source
       })
     }

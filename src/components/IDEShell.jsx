@@ -128,7 +128,6 @@ export default function IDEShell({ activeSection, progressBar, children }) {
   const [explorerOpen, setExplorerOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const [treeOpen, setTreeOpen] = useState({ src: true, pages: true })
-  const [scrollTop, setScrollTop] = useState(0)
   const [lineCount, setLineCount] = useState(DEFAULT_LINE_COUNT)
   const viewportRef = useRef(null)
   const gutterInnerRef = useRef(null)
@@ -174,13 +173,16 @@ export default function IDEShell({ activeSection, progressBar, children }) {
     }
   }, [])
   /* Line numbers ride along with the content: the gutter is fixed, only its
-     inner list moves. rAF keeps it to one write per frame. */
-  const onScroll = useCallback((event) => {
-    const top = event.currentTarget.scrollTop
+     inner list moves directly via GPU transform without triggering React re-renders. */
+  const onScroll = useCallback(() => {
     if (frameRef.current) return
     frameRef.current = requestAnimationFrame(() => {
       frameRef.current = 0
-      setScrollTop(top)
+      const pane = viewportRef.current
+      const inner = gutterInnerRef.current
+      if (pane && inner) {
+        inner.style.transform = `translate3d(0, ${-pane.scrollTop}px, 0)`
+      }
     })
   }, [])
 
@@ -419,7 +421,7 @@ export default function IDEShell({ activeSection, progressBar, children }) {
             <div
               ref={gutterInnerRef}
               className="ide__gutterInner"
-              style={{ transform: `translateY(${-scrollTop}px)` }}
+              style={{ transform: 'translate3d(0, 0, 0)' }}
             >
               {lineNumbers.map((line) => (
                 <span key={line} className="ide__lineNo">

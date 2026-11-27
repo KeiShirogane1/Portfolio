@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import IDEShell from './components/IDEShell.jsx'
 import Hero from './components/Hero.jsx'
 import About from './components/About.jsx'
@@ -12,13 +12,14 @@ import AIExperiments from './components/AIExperiments.jsx'
 import Certifications from './components/Certifications.jsx'
 import Contact from './components/Contact.jsx'
 import BootScreen from './components/BootScreen.jsx'
+import CursorCat from './components/CursorCat.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { sections } from './data/sections.js'
 
 export default function App() {
   const [ready, setReady] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const [progress, setProgress] = useState(0)
+  const progressBarRef = useRef(null)
 
   /* Track the current section for the explorer, plus scroll progress.
      Both observe the editor pane, because that is what scrolls now — the
@@ -57,13 +58,12 @@ export default function App() {
         frame = 0
         // The page content now scrolls inside the editor pane, so progress
         // has to be read from that element, not from the window.
-        const pane = document.querySelector('.ide__viewport')
-        if (!pane) {
-          setProgress(0)
-          return
+        const currentPane = document.querySelector('.ide__viewport')
+        const max = currentPane ? currentPane.scrollHeight - currentPane.clientHeight : 0
+        const ratio = max > 0 ? Math.min(1, currentPane.scrollTop / max) : 0
+        if (progressBarRef.current) {
+          progressBarRef.current.style.transform = `scaleX(${ratio})`
         }
-        const max = pane.scrollHeight - pane.clientHeight
-        setProgress(max > 0 ? Math.min(1, pane.scrollTop / max) : 0)
       })
     }
     onScroll()
@@ -86,11 +86,12 @@ export default function App() {
       ) : (
         <ErrorBoundary>
           <>
+            <CursorCat />
             <IDEShell
               activeSection={activeSection}
               progressBar={
                 <div className="progress" aria-hidden="true">
-                  <span style={{ transform: `scaleX(${progress})` }} />
+                  <span ref={progressBarRef} style={{ transform: 'scaleX(0)' }} />
                 </div>
               }
             >

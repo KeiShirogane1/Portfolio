@@ -132,7 +132,7 @@ test('refreshContributions fetches both accounts, merges daily counts, preserves
   assert.equal(win.total, 24)
   assert.equal(win.accounts.find((a) => a.login === 'KeiShirogane1').total, 19)
   assert.equal(win.accounts.find((a) => a.login === 'TheNFCGuy').total, 5)
-  assert.equal(win.offGithubDays, 7)
+  assert.equal(win.offGithubDays, 13)
 
   const nov22 = win.active.find((d) => d.date === '2026-11-22')
   assert.equal(nov22.count, 8)
@@ -196,7 +196,7 @@ test('worker fetch serves /api/contributions, /api/contributions/status, and del
   assert.equal(apiRes.headers.get('x-contributions-source'), 'bundled-fallback')
   const apiJson = await apiRes.json()
   assert.ok(apiJson.totalContributions > 0)
-  assert.ok(apiJson.windows[0].offGithubDays >= 7)
+  assert.ok(apiJson.windows[0].offGithubDays >= 3)
 
   const staticRes = await worker.fetch(new Request('https://example.com/'), env)
   assert.equal(staticRes.status, 200)

@@ -22,7 +22,7 @@ import { eyebrow } from '../data/sections.js'
 const LEVEL_CLASS = ['is-0', 'is-1', 'is-2', 'is-3', 'is-4']
 const WEEKDAY_ROWS = CONTRIBUTION_META.weekdayLabels
 const DAY_MS = 86400000
-const SNAPSHOT_CACHE_KEY = 'portfolio:contributions:v1'
+const SNAPSHOT_CACHE_KEY = 'portfolio:contributions:v3'
 const SNAPSHOT_CACHE_TTL_MS = 15 * 60 * 1000
 
 function isValidSnapshot(data) {
@@ -243,7 +243,7 @@ export default function ContributionGraph() {
       // Ignore storage errors (private mode, quota, etc.)
     }
 
-    fetch('/api/contributions', { headers: { accept: 'application/json' } })
+    fetch('/api/contributions?v=3', { cache: 'no-store', headers: { accept: 'application/json' } })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (!isValidSnapshot(data)) return

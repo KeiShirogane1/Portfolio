@@ -43,12 +43,40 @@ export const MANUAL_OFF_GITHUB_NOTES = [
     note: '50 local commits in QwerNFC repos, never pushed'
   },
   {
+    date: '2026-11-01',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
     date: '2026-11-02',
     note: '5 local TimeCapsule commits, never pushed'
   },
   {
     date: '2026-11-03',
     note: '5 local TimeCapsule commits, never pushed'
+  },
+  {
+    date: '2026-11-04',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
+    date: '2026-11-05',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
+    date: '2026-11-06',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
+    date: '2026-11-10',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
+    date: '2026-11-14',
+    note: 'Off-GitHub local development work, not pushed to GitHub'
+  },
+  {
+    date: '2026-11-23',
+    note: 'Local portfolio & QwerNFC system architecture work, not pushed that day'
   }
 ]
 
