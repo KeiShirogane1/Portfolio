@@ -148,6 +148,40 @@ async function localCommitDays(repos) {
   return { byDay, report }
 }
 
+async function localModifiedFileDays(startDirs) {
+  const byDay = new Map()
+  const skip = new Set(['node_modules', '.git', 'dist', 'build', '.gradle', '.vite', '.wrangler'])
+  const walk = async (dir, depth) => {
+    if (depth > 6) return
+    let entries = []
+    try {
+      entries = await readdir(dir, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      if (skip.has(entry.name)) continue
+      const full = join(dir, entry.name)
+      if (entry.isDirectory()) {
+        await walk(full, depth + 1)
+      } else if (entry.isFile()) {
+        try {
+          const st = await stat(full)
+          const day = toISO(st.mtime)
+          byDay.set(day, (byDay.get(day) || 0) + 1)
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+  }
+  for (const dir of startDirs) {
+    if (!existsSync(dir)) continue
+    await walk(dir, 0)
+  }
+  return byDay
+}
+
 /* ---------- 4. build one switchable window ---------- */
 
 function buildWindow({ key, label, hint, from, to, counts, offGithub, accountTotals }) {
@@ -235,9 +269,15 @@ async function main() {
     'D:/.PORTFOLIO/.PORTFOLIO/portfolio'
   ])
   const { byDay: localDays, report } = await localCommitDays(repos)
+  const modifiedQwerNfcDays = await localModifiedFileDays(['D:/QwerNFC'])
 
-  // Days with local commits that GitHub never saw.
+  // Days with local commits or D:/QwerNFC file updates that GitHub never saw.
   const offGithub = new Map()
+  for (const [date, files] of modifiedQwerNfcDays) {
+    const onGitHub = fetched.reduce((sum, acc) => sum + (acc.map.get(date) || 0), 0)
+    if (onGitHub > 0) continue
+    offGithub.set(date, `Local QwerNFC coding & design work (${files} file${files === 1 ? '' : 's'} updated)`)
+  }
   for (const [date, commits] of localDays) {
     const onGitHub = fetched.reduce((sum, acc) => sum + (acc.map.get(date) || 0), 0)
     if (onGitHub > 0) continue

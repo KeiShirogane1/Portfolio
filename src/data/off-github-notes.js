@@ -77,6 +77,14 @@ export const MANUAL_OFF_GITHUB_NOTES = [
   {
     date: '2026-11-23',
     note: 'Local portfolio & QwerNFC system architecture work, not pushed that day'
+  },
+  {
+    date: '2026-11-25',
+    note: '3 local TimeCapsule commits (device orientation engine & viewfinder framing)'
+  },
+  {
+    date: '2026-11-26',
+    note: 'Local TimeCapsule guest-camera filter grid & UI design work (35 files updated)'
   }
 ]
 
